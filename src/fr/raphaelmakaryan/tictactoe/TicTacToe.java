@@ -2,7 +2,7 @@ package fr.raphaelmakaryan.tictactoe;
 
 import java.util.Random;
 
-public class TicTacToe {
+public class TicTacToe extends Admin {
     public boolean started = false;
     public int whoPlayNow;
     private int size = 3;
@@ -23,19 +23,20 @@ public class TicTacToe {
 
     public void display() {
         System.out.println("Au tour du joueur " + whoPlayNow);
-        System.out.println("-------------");
-        for (int i = 0; i < this.size; i++) {
-            System.out.print("|");
-            for (int j = 0; j < this.size; j++) {
-                Cell c = this.board[i][j];
-                System.out.print(c.getRepresentation());
-                System.out.print("|");
-            }
-            System.out.print("\n");
+        if (debugDisplayBoard) {
             System.out.println("-------------");
+            for (int i = 0; i < this.size; i++) {
+                System.out.print("|");
+                for (int j = 0; j < this.size; j++) {
+                    Cell c = this.board[i][j];
+                    System.out.print(c.getRepresentation());
+                    System.out.print("|");
+                }
+                System.out.print("\n");
+                System.out.println("-------------");
+            }
+            tools.clearLine();
         }
-        verificationGame();
-        tools.clearLine();
         getMoveFromPlayer(ui.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
     }
 
@@ -86,6 +87,7 @@ public class TicTacToe {
     }
 
     public void play() {
+        isOver();
         if (!started) {
             randomPlayer();
             started = true;
@@ -121,7 +123,19 @@ public class TicTacToe {
         }
     }
 
-    public void verificationGame() {
+    public void isOver() {
+        if (checkCellFilled() == 9) {
+            System.out.println("GG tout est rempli");
+            System.exit(0);
+        }
+
+        if (checkWin()) {
+            System.out.println("GG joueur" + whoPlayNow );
+            System.exit(0);
+        }
+    }
+
+    public int checkCellFilled() {
         int valueRempli = 0;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -130,9 +144,23 @@ public class TicTacToe {
                 }
             }
         }
-        if (valueRempli == 9) {
-            System.out.println("GG tout est rempli");
-            System.exit(0);
+        return valueRempli;
+    }
+
+    public boolean checkWin() {
+        int valueWin = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                Cell c = board[i][j];
+                if (c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueWin = valueWin + 1;
+                }
+            }
+        }
+        if (valueWin == 3) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
