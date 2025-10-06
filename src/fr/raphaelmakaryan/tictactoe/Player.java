@@ -6,8 +6,12 @@ public class Player {
     public String representation;
     public String[] listRepresentation = {" O ", " X "};
 
-    public Player() {
-        this.representation = listRepresentation[new Random().nextInt(1, listRepresentation.length)];
+    public Player(int value) {
+        if (value == 1) {
+            this.representation = listRepresentation[0];
+        } else {
+            this.representation = listRepresentation[1];
+        }
     }
 
     public String getRepresentation() {
@@ -16,9 +20,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
-                "representation='" + representation + '\'' +
-                '}';
+        return "Player{" + "representation='" + representation + '\'' + '}';
     }
 
     public String[] getListRepresentation() {
