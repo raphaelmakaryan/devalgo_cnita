@@ -1,12 +1,15 @@
 package fr.raphaelmakaryan.tictactoe;
 
-import java.util.Random;
+import java.util.*;
 
 public class TicTacToe extends Admin {
     private int size = 3;
     private Cell[][] board;
     public boolean started = false;
-    public int whoPlayNow;
+    public List<String> players = new ArrayList<String>();
+    public String whoPlayNow = "null";
+    public String mode;
+    public String[] listRepresentation = {" O ", " X "};
 
     public Player player1;
     public Player player2;
@@ -27,7 +30,7 @@ public class TicTacToe extends Admin {
     }
 
     public void display() {
-        view.println("Au tour du joueur " + whoPlayNow);
+        view.println("Au tour de " + whoPlayNow);
         if (debugDisplayBoard) {
             view.println("-------------");
             for (int i = 0; i < this.size; i++) {
@@ -42,9 +45,12 @@ public class TicTacToe extends Admin {
             }
             tools.clearLine();
         }
-        getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
+        if (whoPlayNow.contains("J")) {
+            getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
+        } else {
+            getMoveFromPlayer("bot");
+        }
     }
-
 
     public int[] returnValueUser(String choice) {
         String[] splitValeur = choice.split(" ");
@@ -56,28 +62,46 @@ public class TicTacToe extends Admin {
     }
 
     public void getMoveFromPlayer(String choice) {
-        int[] valueUser = returnValueUser(choice);
-        Cell[][] board = getBoard();
-        Player player = getPlayerPlayNow();
-        if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-            view.println("Vous etes sorti du tableau !");
-            display();
-        } else if (verificationHavePlayer(board, valueUser, player)) {
-            view.println("Vous avez choisi une case deja prise !");
-            display();
+        if (!Objects.equals(choice, "bot")) {
+            int[] valueUser = returnValueUser(choice);
+            Cell[][] board = getBoard();
+            Player player = getPlayerPlayNow();
+            if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
+                view.println("Vous etes sorti du tableau !");
+                display();
+            } else if (verificationHavePlayer(board, valueUser)) {
+                view.println("Vous avez choisi une case deja prise !");
+                display();
+            } else {
+                setOwner(valueUser[0], valueUser[1], "player");
+            }
         } else {
-            setOwner(valueUser[0], valueUser[1], player);
+            int lineRandomBot = new Random().nextInt(0, 3);
+            int columnRandomBot = new Random().nextInt(0, 3);
+            int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
+            if (verificationHavePlayer(board, valueBot)) {
+                view.println("Vous avez choisi une case deja prise !");
+                display();
+            } else {
+                setOwner(valueBot[0], valueBot[1], "bot");
+            }
         }
     }
 
-    public void setOwner(int ligne, int colonne, Player player) {
+    public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
-        board[ligne][colonne].setRepresentation(player.getRepresentation());
+        if (type.equals("player")) {
+            Player player = getPlayerPlayNow();
+            board[ligne][colonne].setRepresentation(player.getRepresentation());
+        } else if (type.equals("bot")) {
+            ArtificialPlayer bot = getBotPlayNow();
+            board[ligne][colonne].setRepresentation(bot.getRepresentation());
+        }
         play();
     }
 
-    public boolean verificationHavePlayer(Cell[][] board, int[] valueUser, Player player) {
-        String[] listPlayers = player.getListRepresentation();
+    public boolean verificationHavePlayer(Cell[][] board, int[] valueUser) {
+        String[] listPlayers = this.listRepresentation;
         for (int i = 0; i < listPlayers.length; i++) {
             Cell c = board[valueUser[0]][valueUser[1]];
             if (c.getRepresentation().equals(listPlayers[i])) {
@@ -104,39 +128,78 @@ public class TicTacToe extends Admin {
 
     public void randomPlayer() {
         int value = new Random().nextInt(0, 1);
-        if (value == 0) {
-            whoPlayNow = 1;
-        } else {
-            whoPlayNow = 2;
+        if (players.get(0).contains("J") && players.get(1).contains("J")) {
+            if (value == 0) {
+                whoPlayNow = "J1";
+            } else {
+                whoPlayNow = "J2";
+            }
+        } else if (players.get(0).contains("J") && players.get(1).contains("B")) {
+            if (value == 0) {
+                whoPlayNow = "J1";
+            } else {
+                whoPlayNow = "B2";
+            }
+        } else if (players.get(0).contains("B") && players.get(1).contains("B")) {
+            if (value == 0) {
+                whoPlayNow = "B1";
+            } else {
+                whoPlayNow = "B2";
+            }
         }
     }
 
     public void nextPlayer() {
-        if (whoPlayNow == 1) {
-            whoPlayNow = 2;
-        } else {
-            whoPlayNow = 1;
+        if (players.get(0).contains("J") && players.get(1).contains("J")) {
+            if (whoPlayNow == "J1") {
+                whoPlayNow = "J2";
+            } else {
+                whoPlayNow = "J2";
+            }
+        }
+        if (players.get(0).contains("J") && players.get(1).contains("B")) {
+            if (whoPlayNow == "J1") {
+                whoPlayNow = "B1";
+            } else {
+                whoPlayNow = "J1";
+            }
+        }
+        if (players.get(0).contains("B") && players.get(1).contains("B")) {
+            if (whoPlayNow.equals("B1")) {
+                whoPlayNow = "B2";
+            } else {
+                whoPlayNow = "B1";
+            }
         }
     }
 
-
     public Player getPlayerPlayNow() {
-        if (whoPlayNow == 1) {
+        if (whoPlayNow.equals("J1")) {
             return player1;
         } else {
             return player2;
         }
     }
 
-    public void isOver() {
-        if (checkCellFilled() == 9) {
-            view.println("Vous avez vous rempli !");
-            System.exit(0);
+    public ArtificialPlayer getBotPlayNow() {
+        if (whoPlayNow.equals("B1")) {
+            return bot1;
+        } else {
+            return bot2;
         }
+    }
 
-        if (checkWin()) {
-            view.println("GG joueur" + whoPlayNow);
-            System.exit(0);
+    public void isOver() {
+        if (!Objects.equals(whoPlayNow, "null")) {
+            if (checkCellFilled() == 9) {
+                view.println("Vous avez vous rempli !");
+                System.exit(0);
+            }
+
+            if (checkWin()) {
+                view.println("GG " + whoPlayNow);
+                System.exit(0);
+            }
         }
     }
 
@@ -157,7 +220,9 @@ public class TicTacToe extends Admin {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 Cell c = board[i][j];
-                if (c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueWin = valueWin + 1;
+                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueWin = valueWin + 1;
                 }
             }
@@ -176,13 +241,20 @@ public class TicTacToe extends Admin {
     public void createPlayer(int[] value) {
         for (int i = 0; i < value.length; i++) {
             if (value[i] == 10) {
-                player1 = new Player(1);
-            } else if (value[i] == 11) {
-                player2 = new Player(2);
-            } else if (value[i] == 20) {
-                bot1 = new ArtificialPlayer();
-            } else if (value[i] == 21) {
-                bot2 = new ArtificialPlayer();
+                player1 = new Player(this, 1);
+                players.add("J1");
+            }
+            if (value[i] == 11) {
+                player2 = new Player(this, 2);
+                players.add("J2");
+            }
+            if (value[i] == 20) {
+                bot1 = new ArtificialPlayer(this, 1);
+                players.add("B1");
+            }
+            if (value[i] == 21) {
+                bot2 = new ArtificialPlayer(this, 2);
+                players.add("B1");
             }
         }
         play();

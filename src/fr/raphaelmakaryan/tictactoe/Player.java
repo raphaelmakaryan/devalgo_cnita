@@ -4,13 +4,16 @@ import java.util.Random;
 
 public class Player {
     public String representation;
-    public String[] listRepresentation = {" O ", " X "};
 
-    public Player(int value) {
-        if (value == 1) {
-            this.representation = listRepresentation[0];
+    public Player(TicTacToe ticTacToe, int value) {
+        if (ticTacToe.mode.equals("JvB")) {
+            this.representation = ticTacToe.listRepresentation[0];
         } else {
-            this.representation = listRepresentation[1];
+            if (value == 1) {
+                this.representation = ticTacToe.listRepresentation[0];
+            } else {
+                this.representation = ticTacToe.listRepresentation[1];
+            }
         }
     }
 
@@ -23,7 +26,5 @@ public class Player {
         return "Player{" + "representation='" + representation + '\'' + '}';
     }
 
-    public String[] getListRepresentation() {
-        return listRepresentation;
-    }
+
 }

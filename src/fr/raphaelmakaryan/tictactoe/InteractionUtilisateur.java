@@ -26,16 +26,19 @@ public class InteractionUtilisateur {
             case 0:
                 // Mode 1v1 Humain donc 10 (J1) et 11 (J2)
                 view.println("Mode 1v1 Humain sélectionné");
+                game.mode = "JvJ";
                 game.createPlayer(new int[]{10, 11});
                 break;
             case 1:
                 // Mode 1v1 Contre Bot donc 10 et 20 (B1)
                 view.println("Mode 1v1 Contre Bot sélectionné");
+                game.mode = "JvB";
                 game.createPlayer(new int[]{10, 20});
                 break;
             case 2:
                 // Mode 1v1 Bots 20 et 21 (B2)
                 view.println("Mode 1v1 Bots sélectionné");
+                game.mode = "BvB";
                 game.createPlayer(new int[]{20, 21});
                 break;
             default:
