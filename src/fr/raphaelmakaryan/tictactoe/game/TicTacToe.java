@@ -14,7 +14,7 @@ public class TicTacToe extends Admin {
     private int size = 3;
     private Cell[][] board;
     public boolean started = false;
-    public List<String> players = new ArrayList<String>();
+    public List<String> players = new ArrayList<>();
     public String whoPlayNow = "null";
     public String mode;
     public String[] listRepresentation = {" O ", " X "};
@@ -28,6 +28,9 @@ public class TicTacToe extends Admin {
     public Tools tools = new Tools();
     public View view = new View();
 
+    /**
+     * Création du tableau
+     */
     public TicTacToe() {
         this.board = new Cell[this.size][this.size];
         for (int i = 0; i < this.size; i++) {
@@ -37,22 +40,44 @@ public class TicTacToe extends Admin {
         }
     }
 
+    /**
+     * Affichage au choix de l'user pour quel mode de jeu
+     */
+    public void chooseGame() {
+        interactionUtilisateur.chooseGame(this);
+    }
+
+    /**
+     * Logique de jeu
+     */
+    public void play() {
+        isOver();
+        if (!started) {
+            randomPlayer();
+            started = true;
+        } else {
+            nextPlayer();
+        }
+        display();
+    }
+
+    /**
+     * Affichage du tableau
+     */
     public void display() {
         view.println("Au tour de " + whoPlayNow);
-        if (debugDisplayBoard) {
-            view.println("-------------");
-            for (int i = 0; i < this.size; i++) {
+        view.println("-------------");
+        for (int i = 0; i < this.size; i++) {
+            view.print("|");
+            for (int j = 0; j < this.size; j++) {
+                Cell c = this.board[i][j];
+                view.print(c.getRepresentation());
                 view.print("|");
-                for (int j = 0; j < this.size; j++) {
-                    Cell c = this.board[i][j];
-                    view.print(c.getRepresentation());
-                    view.print("|");
-                }
-                System.out.print("\n");
-                view.println("-------------");
             }
-            tools.clearLine();
+            System.out.print("\n");
+            view.println("-------------");
         }
+        tools.clearLine();
         if (whoPlayNow.contains("J")) {
             getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
         } else {
@@ -60,6 +85,21 @@ public class TicTacToe extends Admin {
         }
     }
 
+    /**
+     * Getter pour avoir le plateau
+     *
+     * @return Retourne le tableau
+     */
+    public Cell[][] getBoard() {
+        return board;
+    }
+
+    /**
+     * Retourne la ligne/colonne choisie par l'user
+     *
+     * @param choice Valeur de l'user récupéré via le texte
+     * @return Retourne dans un tableau
+     */
     public int[] returnValueUser(String choice) {
         String[] splitValeur = choice.split(" ");
         int[] valueUser = new int[2];
@@ -69,33 +109,67 @@ public class TicTacToe extends Admin {
         return valueUser;
     }
 
+    /**
+     * Vérification des conditions avant modification du plateau
+     *
+     * @param choice Choix du joueur
+     * @return Retourne si oui ou non, s'il peut jouer
+     */
+    public boolean verificationChoiceUser(String choice) {
+        int[] forValue = returnValueUser(choice);
+        if (choice.length() != 3) {
+            view.println("Veuillez récrire !");
+            return false;
+        }
+        if (forValue[0] < 0 || forValue[0] > 2 || forValue[1] < 0 || forValue[1] > 2) {
+            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Deuxieme fonction de vérification avant modification du plateau
+     *
+     * @param choice Choix du joueur
+     */
     public void getMoveFromPlayer(String choice) {
-        if (!Objects.equals(choice, "bot")) {
-            int[] valueUser = returnValueUser(choice);
-            Cell[][] board = getBoard();
-            Player player = getPlayerPlayNow();
-            if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                view.println("Vous etes sorti du tableau !");
-                display();
-            } else if (verificationHavePlayer(board, valueUser)) {
-                view.println("Vous avez choisi une case deja prise !");
-                display();
+        if (verificationChoiceUser(choice)) {
+            if (!Objects.equals(choice, "bot")) {
+                int[] valueUser = returnValueUser(choice);
+                Cell[][] board = getBoard();
+                if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
+                    view.println("Vous êtes sorti du tableau !");
+                    display();
+                } else if (verificationHavePlayer(board, valueUser)) {
+                    view.println("Vous avez choisi une case deja prise !");
+                    display();
+                } else {
+                    setOwner(valueUser[0], valueUser[1], "player");
+                }
             } else {
-                setOwner(valueUser[0], valueUser[1], "player");
+                int lineRandomBot = new Random().nextInt(0, 3);
+                int columnRandomBot = new Random().nextInt(0, 3);
+                int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
+                if (verificationHavePlayer(board, valueBot)) {
+                    view.println("Vous avez choisi une case deja prise !");
+                    display();
+                } else {
+                    setOwner(valueBot[0], valueBot[1], "bot");
+                }
             }
         } else {
-            int lineRandomBot = new Random().nextInt(0, 3);
-            int columnRandomBot = new Random().nextInt(0, 3);
-            int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
-            if (verificationHavePlayer(board, valueBot)) {
-                view.println("Vous avez choisi une case deja prise !");
-                display();
-            } else {
-                setOwner(valueBot[0], valueBot[1], "bot");
-            }
+            display();
         }
     }
 
+    /**
+     * Modification du plateau
+     *
+     * @param ligne   Ligne
+     * @param colonne Colonne
+     * @param type    Type de joueur
+     */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
         if (type.equals("player")) {
@@ -108,32 +182,27 @@ public class TicTacToe extends Admin {
         play();
     }
 
+    /**
+     * Verification s'il y a deja un joueur ou non
+     *
+     * @param board     Tableau
+     * @param valueUser Valeur ligne/colonne du joueur
+     * @return Retourne s'il y a ou pas un joueur deja dans la case
+     */
     public boolean verificationHavePlayer(Cell[][] board, int[] valueUser) {
         String[] listPlayers = this.listRepresentation;
-        for (int i = 0; i < listPlayers.length; i++) {
+        for (String listPlayer : listPlayers) {
             Cell c = board[valueUser[0]][valueUser[1]];
-            if (c.getRepresentation().equals(listPlayers[i])) {
+            if (c.getRepresentation().equals(listPlayer)) {
                 return true;
             }
         }
         return false;
     }
 
-    public Cell[][] getBoard() {
-        return board;
-    }
-
-    public void play() {
-        isOver();
-        if (!started) {
-            randomPlayer();
-            started = true;
-        } else {
-            nextPlayer();
-        }
-        display();
-    }
-
+    /**
+     * Choix du joueur random au debut du jeu
+     */
     public void randomPlayer() {
         int value = new Random().nextInt(0, 1);
         if (players.get(0).contains("J") && players.get(1).contains("J")) {
@@ -157,30 +226,38 @@ public class TicTacToe extends Admin {
         }
     }
 
+    /**
+     * Changement de joueur
+     */
     public void nextPlayer() {
         if (players.get(0).contains("J") && players.get(1).contains("J")) {
-            if (whoPlayNow == "J1") {
+            if (Objects.equals(whoPlayNow, "J1")) {
                 whoPlayNow = "J2";
-            } else {
-                whoPlayNow = "J2";
+            } else if (Objects.equals(whoPlayNow, "J2")) {
+                whoPlayNow = "J1";
             }
         }
         if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (whoPlayNow == "J1") {
+            if (Objects.equals(whoPlayNow, "J1")) {
                 whoPlayNow = "B1";
-            } else {
+            } else if (Objects.equals(whoPlayNow, "B1")) {
                 whoPlayNow = "J1";
             }
         }
         if (players.get(0).contains("B") && players.get(1).contains("B")) {
             if (whoPlayNow.equals("B1")) {
                 whoPlayNow = "B2";
-            } else {
+            } else if (Objects.equals(whoPlayNow, "B2")) {
                 whoPlayNow = "B1";
             }
         }
     }
 
+    /**
+     * Retourne quel user est actuellement en train de jouer
+     *
+     * @return Retourne le joueur actuel
+     */
     public Player getPlayerPlayNow() {
         if (whoPlayNow.equals("J1")) {
             return player1;
@@ -189,6 +266,11 @@ public class TicTacToe extends Admin {
         }
     }
 
+    /**
+     * Retourne quel bot est actuellement en train de jouer
+     *
+     * @return Retourne le bot actuel
+     */
     public ArtificialPlayer getBotPlayNow() {
         if (whoPlayNow.equals("B1")) {
             return bot1;
@@ -197,6 +279,9 @@ public class TicTacToe extends Admin {
         }
     }
 
+    /**
+     * Vérification de fin de jeu
+     */
     public void isOver() {
         if (!Objects.equals(whoPlayNow, "null")) {
             if (checkCellFilled() == 9) {
@@ -211,6 +296,11 @@ public class TicTacToe extends Admin {
         }
     }
 
+    /**
+     * Vérifie si tout le plateau est rempli
+     *
+     * @return Retourne le nombre de case rempli
+     */
     public int checkCellFilled() {
         int valueRempli = 0;
         for (int i = 0; i < board.length; i++) {
@@ -223,29 +313,80 @@ public class TicTacToe extends Admin {
         return valueRempli;
     }
 
+    /**
+     * Fonctions principal si y'a victoire ou non
+     *
+     * @return Si il a gagné ou pas
+     */
     public boolean checkWin() {
-        int valueWin = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                Cell c = board[i][j];
-                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
-                    valueWin = valueWin + 1;
-                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                    valueWin = valueWin + 1;
+        if (checkVertical()) {
+            return true;
+        }
+        if (checkHorizontal()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Vérification si le joueur à gagner en vertical
+     *
+     * @return Si il a gagné a la vertical
+     */
+    public boolean checkVertical() {
+        int valeurColonne = 0;
+        int checkValue = 0;
+        int valueEqualsPlayer = 0;
+        boolean result = false;
+        while (size != checkValue) {
+            for (int i = 0; i < board.length; i++) {
+                Cell c = board[i][valeurColonne];
+                if (c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (valueEqualsPlayer == 3) {
+                    result = true;
+                } else {
+                    valueEqualsPlayer = 0;
                 }
             }
+            valeurColonne = valeurColonne + 1;
+            checkValue = checkValue + 1;
         }
-        if (valueWin == 3) {
-            return true;
-        } else {
-            return false;
-        }
+        return result;
     }
 
-    public void chooseGame() {
-        interactionUtilisateur.chooseGame(this);
+    /**
+     * Vérification si le joueur a gagné à l'horizontal
+     *
+     * @return Si il a gagné a horizontal
+     */
+    public boolean checkHorizontal() {
+        boolean result = false;
+        int valeurLigne = 0;
+        int checkValue = 0;
+        int valueEqualsPlayer = 0;
+        while (size * 3 != checkValue) {
+            for (int i = 0; i < size; i++) {
+                Cell c = board[valeurLigne][i];
+                if (c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (valueEqualsPlayer == 3) {
+                    result = true;
+                } else {
+                    valueEqualsPlayer = 0;
+                }
+                checkValue = checkValue + 1;
+            }
+            valeurLigne = valeurLigne + 1;
+        }
+        return result;
     }
 
+    /**
+     * Crée les joueurs selon le choix du mode de jeu
+     *
+     * @param value Valeur du joueur
+     */
     public void createPlayer(int[] value) {
         for (int i = 0; i < value.length; i++) {
             if (value[i] == 10) {

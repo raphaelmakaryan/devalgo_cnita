@@ -24,7 +24,7 @@ Le dossier `tictactoe` contient le projet principal du cours de DEV & ALGO, cré
 
 
 ## Recommendation
-Pour jouer au `Tic Tac Toe`, il vous faudra le JDK : [`Java SE 17 (LTS)` (JDK demandé dans le projet)](https://www.oracle.com/java/technologies/downloads/#java17).
+Pour jouer au `Tic Tac Toe`, il vous faudra le JDK : [`Java SE 17 (LTS)`](https://www.oracle.com/java/technologies/downloads/#java17).
 
 ## Lancer le Tic Tac Toe
 Dans la racine du dossier  `tictactoe`, vous trouverez le fichier `Main.java`, vous avez juste à lancer ce fichier et tout se passera dans le terminal !
