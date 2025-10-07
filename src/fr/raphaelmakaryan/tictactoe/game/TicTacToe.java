@@ -88,7 +88,7 @@ public class TicTacToe extends Admin {
     /**
      * Getter pour avoir le plateau
      *
-     * @return
+     * @return Retourne le tableau
      */
     public Cell[][] getBoard() {
         return board;
@@ -98,7 +98,7 @@ public class TicTacToe extends Admin {
      * Retourne la ligne/colonne choisie par l'user
      *
      * @param choice Valeur de l'user récupéré via le texte
-     * @return Retourne dans un tableau d'int
+     * @return Retourne dans un tableau
      */
     public int[] returnValueUser(String choice) {
         String[] splitValeur = choice.split(" ");
@@ -112,13 +112,13 @@ public class TicTacToe extends Admin {
     /**
      * Vérification des conditions avant modification du plateau
      *
-     * @param choice
-     * @return
+     * @param choice Choix du joueur
+     * @return Retourne si oui ou non, s'il peut jouer
      */
     public boolean verificationChoiceUser(String choice) {
         int[] forValue = returnValueUser(choice);
         if (choice.length() != 3) {
-            view.println("Veuillez réecrire !");
+            view.println("Veuillez récrire !");
             return false;
         }
         if (forValue[0] < 0 || forValue[0] > 2 || forValue[1] < 0 || forValue[1] > 2) {
@@ -131,7 +131,7 @@ public class TicTacToe extends Admin {
     /**
      * Deuxieme fonction de vérification avant modification du plateau
      *
-     * @param choice
+     * @param choice Choix du joueur
      */
     public void getMoveFromPlayer(String choice) {
         if (verificationChoiceUser(choice)) {
@@ -139,7 +139,7 @@ public class TicTacToe extends Admin {
                 int[] valueUser = returnValueUser(choice);
                 Cell[][] board = getBoard();
                 if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                    view.println("Vous etes sorti du tableau !");
+                    view.println("Vous êtes sorti du tableau !");
                     display();
                 } else if (verificationHavePlayer(board, valueUser)) {
                     view.println("Vous avez choisi une case deja prise !");
@@ -166,9 +166,9 @@ public class TicTacToe extends Admin {
     /**
      * Modification du plateau
      *
-     * @param ligne
-     * @param colonne
-     * @param type
+     * @param ligne   Ligne
+     * @param colonne Colonne
+     * @param type    Type de joueur
      */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
@@ -183,11 +183,11 @@ public class TicTacToe extends Admin {
     }
 
     /**
-     * Verification si il y a deja un joueur ou non
+     * Verification s'il y a deja un joueur ou non
      *
-     * @param board
-     * @param valueUser
-     * @return
+     * @param board     Tableau
+     * @param valueUser Valeur ligne/colonne du joueur
+     * @return Retourne s'il y a ou pas un joueur deja dans la case
      */
     public boolean verificationHavePlayer(Cell[][] board, int[] valueUser) {
         String[] listPlayers = this.listRepresentation;
@@ -256,7 +256,7 @@ public class TicTacToe extends Admin {
     /**
      * Retourne quel user est actuellement en train de jouer
      *
-     * @return
+     * @return Retourne le joueur actuel
      */
     public Player getPlayerPlayNow() {
         if (whoPlayNow.equals("J1")) {
@@ -269,7 +269,7 @@ public class TicTacToe extends Admin {
     /**
      * Retourne quel bot est actuellement en train de jouer
      *
-     * @return
+     * @return Retourne le bot actuel
      */
     public ArtificialPlayer getBotPlayNow() {
         if (whoPlayNow.equals("B1")) {
@@ -281,8 +281,6 @@ public class TicTacToe extends Admin {
 
     /**
      * Vérification de fin de jeu
-     *
-     * @return
      */
     public void isOver() {
         if (!Objects.equals(whoPlayNow, "null")) {
@@ -301,7 +299,7 @@ public class TicTacToe extends Admin {
     /**
      * Vérifie si tout le plateau est rempli
      *
-     * @return
+     * @return Retourne le nombre de case rempli
      */
     public int checkCellFilled() {
         int valueRempli = 0;
@@ -318,7 +316,7 @@ public class TicTacToe extends Admin {
     /**
      * Fonctions principal si y'a victoire ou non
      *
-     * @return
+     * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
         if (checkVertical()) {
@@ -333,7 +331,7 @@ public class TicTacToe extends Admin {
     /**
      * Vérification si le joueur à gagner en vertical
      *
-     * @return
+     * @return Si il a gagné a la vertical
      */
     public boolean checkVertical() {
         int valeurColonne = 0;
@@ -358,9 +356,9 @@ public class TicTacToe extends Admin {
     }
 
     /**
-     * Vérification si le joueur à gagner à l'horizontal
+     * Vérification si le joueur a gagné à l'horizontal
      *
-     * @return
+     * @return Si il a gagné a horizontal
      */
     public boolean checkHorizontal() {
         boolean result = false;
@@ -387,7 +385,7 @@ public class TicTacToe extends Admin {
     /**
      * Crée les joueurs selon le choix du mode de jeu
      *
-     * @param value
+     * @param value Valeur du joueur
      */
     public void createPlayer(int[] value) {
         for (int i = 0; i < value.length; i++) {
