@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.tictactoe.configurations;
+package fr.raphaelmakaryan.bibliotheque.configurations;
 
 public enum Test {
     JvJ,JvB, BvJ;

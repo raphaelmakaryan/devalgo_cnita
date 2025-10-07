@@ -1,51 +1,23 @@
-package fr.raphaelmakaryan.tictactoe.games;
+package fr.raphaelmakaryan.bibliotheque.games;
 
-import fr.raphaelmakaryan.tictactoe.configurations.InteractionUtilisateur;
-import fr.raphaelmakaryan.tictactoe.configurations.Player;
-import fr.raphaelmakaryan.tictactoe.tools.Tools;
-import fr.raphaelmakaryan.tictactoe.configurations.View;
-import fr.raphaelmakaryan.tictactoe.configurations.ArtificialPlayer;
-import fr.raphaelmakaryan.tictactoe.configurations.Cell;
+import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
+import fr.raphaelmakaryan.bibliotheque.configurations.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
-public class TicTacToe {
-    private int size = 3;
-    private Cell[][] board;
-    public boolean started = false;
+public class Puissance4 extends Game {
+    public Puissance4 gamePuissance4;
+    public Game gameAll;
     public List<String> players = new ArrayList<>();
-    public String whoPlayNow = "null";
-    public String mode;
-    public String[] listRepresentation = {" O ", " X "};
-    int[] leftRight = {0, 1, 2};
-    int[] rightLeft = {2, 1, 0};
 
     public Player player1;
     public Player player2;
-    public ArtificialPlayer bot1;
-    public ArtificialPlayer bot2;
 
-    public InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
-    public Tools tools = new Tools();
-    public View view = new View();
-
-    /**
-     * Création du tableau
-     */
-    public TicTacToe() {
-        this.board = new Cell[this.size][this.size];
-        for (int i = 0; i < this.size; i++) {
-            for (int j = 0; j < this.size; j++) {
-                this.board[i][j] = new Cell();
-            }
-        }
-    }
-
-    /**
-     * Affichage au choix de l'user pour quel mode de jeu
-     */
-    public void chooseGame() {
-        interactionUtilisateur.chooseGame(this);
+    public Puissance4(int size, int victoryValue) {
+        super(size, victoryValue);
     }
 
     /**
@@ -67,7 +39,7 @@ public class TicTacToe {
      */
     public void display() {
         view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println("-------------");
+        view.println("-----------------------------");
         for (int i = 0; i < this.size; i++) {
             view.print("|");
             for (int j = 0; j < this.size; j++) {
@@ -76,23 +48,10 @@ public class TicTacToe {
                 view.print("|");
             }
             System.out.print("\n");
-            view.println("-------------");
+            view.println("-----------------------------");
         }
         tools.clearLine();
-        if (whoPlayNow.contains("J")) {
-            getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
-        } else {
-            getMoveFromPlayer("bot");
-        }
-    }
-
-    /**
-     * Getter pour avoir le plateau
-     *
-     * @return Retourne le tableau
-     */
-    public Cell[][] getBoard() {
-        return board;
+        getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
     }
 
     /**
@@ -131,11 +90,35 @@ public class TicTacToe {
             view.println("Veuillez récrire !");
             return false;
         }
-        if (valueUser[0] < 0 || valueUser[0] > 2 || valueUser[1] < 0 || valueUser[1] > 2) {
-            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
+        if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
+            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
             return false;
         }
         return true;
+    }
+
+    /**
+     * Permet de vérifier si il y a deja un jeton tout en bas
+     *
+     * @param value Valeur écrit de base par le joueur
+     * @return Retourne les nouvel valeur
+     */
+    public int[] tokenDescent(int[] value) {
+        int valeurColonne = value[0];
+        int[] newValue = new int[2];
+        int valueDecrease = size - 1;
+        boolean valueFind = false;
+        for (int i = 0; i < board.length; i++) {
+            Cell c = board[valueDecrease][valeurColonne];
+            if (whoPlayNow.contains("J") && c.getRepresentation().equals("   ") && !valueFind) {
+                newValue[0] = valueDecrease;
+                newValue[1] = valeurColonne;
+                valueFind = true;
+            } else {
+                valueDecrease = valueDecrease - 1;
+            }
+        }
+        return newValue;
     }
 
     /**
@@ -144,32 +127,20 @@ public class TicTacToe {
      * @param choice Choix du joueur
      */
     public void getMoveFromPlayer(String choice) {
-        if (!Objects.equals(choice, "bot")) {
-            if (verificationChoiceUser(choice)) {
-                int[] valueUser = returnValueUser(choice);
-                Cell[][] board = getBoard();
-                if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                    view.println("Vous êtes sorti du tableau !");
-                    display();
-                } else if (verificationHavePlayer(board, valueUser)) {
-                    view.println("Vous avez choisi une case deja prise !");
-                    display();
-                } else {
-                    setOwner(valueUser[0], valueUser[1], "player");
-                }
-            } else {
+        if (verificationChoiceUser(choice)) {
+            int[] valueUser = tokenDescent(returnValueUser(choice));
+            Cell[][] board = getBoard();
+            if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
+                view.println("Vous êtes sorti du tableau !");
                 display();
-            }
-        } else {
-            int lineRandomBot = new Random().nextInt(0, 3);
-            int columnRandomBot = new Random().nextInt(0, 3);
-            int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
-            if (verificationHavePlayer(board, valueBot)) {
+            } else if (verificationHavePlayer(board, valueUser)) {
                 view.println("Vous avez choisi une case deja prise !");
                 display();
             } else {
-                setOwner(valueBot[0], valueBot[1], "bot");
+                setOwner(valueUser[0], valueUser[1], "player");
             }
+        } else {
+            display();
         }
     }
 
@@ -185,9 +156,6 @@ public class TicTacToe {
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
-        } else if (type.equals("bot")) {
-            ArtificialPlayer bot = getBotPlayNow();
-            board[ligne][colonne].setRepresentation(bot.getRepresentation());
         }
         play();
     }
@@ -221,20 +189,9 @@ public class TicTacToe {
             } else {
                 whoPlayNow = "J2";
             }
-        } else if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "J1";
-            } else {
-                whoPlayNow = "B2";
-            }
-        } else if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "B1";
-            } else {
-                whoPlayNow = "B2";
-            }
         }
     }
+
 
     /**
      * Changement de joueur
@@ -245,20 +202,6 @@ public class TicTacToe {
                 whoPlayNow = "J2";
             } else if (Objects.equals(whoPlayNow, "J2")) {
                 whoPlayNow = "J1";
-            }
-        }
-        if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (Objects.equals(whoPlayNow, "J1")) {
-                whoPlayNow = "B1";
-            } else if (Objects.equals(whoPlayNow, "B1")) {
-                whoPlayNow = "J1";
-            }
-        }
-        if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (whoPlayNow.equals("B1")) {
-                whoPlayNow = "B2";
-            } else if (Objects.equals(whoPlayNow, "B2")) {
-                whoPlayNow = "B1";
             }
         }
     }
@@ -277,19 +220,6 @@ public class TicTacToe {
     }
 
     /**
-     * Retourne quel bot est actuellement en train de jouer
-     *
-     * @return Retourne le bot actuel
-     */
-    public ArtificialPlayer getBotPlayNow() {
-        if (whoPlayNow.equals("B1")) {
-            return bot1;
-        } else {
-            return bot2;
-        }
-    }
-
-    /**
      * Vérification de fin de jeu
      */
     public void isOver() {
@@ -298,7 +228,7 @@ public class TicTacToe {
                 view.println("GG " + whoPlayNow);
                 System.exit(0);
             }
-            if (checkCellFilled() == 9) {
+            if (checkCellFilled() == (size * size)) {
                 view.println("Vous avez tout rempli du coup fin du match !");
                 System.exit(0);
             }
@@ -328,7 +258,7 @@ public class TicTacToe {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical() || checkHorizontal() || checkSide(leftRight) || checkSide(rightLeft)) {
+        if (checkVertical() || checkHorizontal()) {
             return true;
         }
         return false;
@@ -344,22 +274,23 @@ public class TicTacToe {
         int checkValue = 0;
         int valueEqualsPlayer = 0;
         boolean result = false;
-        while (size != checkValue) {
+        while (size - 1 != checkValue) {
             for (int i = 0; i < board.length; i++) {
                 Cell c = board[i][valeurColonne];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
-                    result = true;
                 } else {
                     valueEqualsPlayer = 0;
                 }
             }
-            valeurColonne = valeurColonne + 1;
-            valueEqualsPlayer = 0;
-            checkValue = checkValue + 1;
+            if (valueEqualsPlayer == this.victoryValue) {
+                result = true;
+                checkValue = size - 1;
+            } else {
+                valeurColonne = valeurColonne + 1;
+                valueEqualsPlayer = 0;
+                checkValue = checkValue + 1;
+            }
         }
         return result;
     }
@@ -374,14 +305,12 @@ public class TicTacToe {
         int valeurLigne = 0;
         int checkValue = 0;
         int valueEqualsPlayer = 0;
-        while (size * 3 != checkValue) {
+        while (size * size != checkValue) {
             for (int i = 0; i < size; i++) {
                 Cell c = board[valeurLigne][i];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
+                } else if (valueEqualsPlayer == this.victoryValue) {
                     result = true;
                 } else {
                     valueEqualsPlayer = 0;
@@ -389,32 +318,6 @@ public class TicTacToe {
                 checkValue = checkValue + 1;
             }
             valeurLigne = valeurLigne + 1;
-        }
-        return result;
-    }
-
-    /**
-     * Vérification si le joueur a gagné de droite à gauche
-     *
-     * @return si il a gagné
-     */
-    public boolean checkSide(int[] value) {
-        int valueEqualsPlayer = 0;
-        int valueCross = 0;
-        boolean result = false;
-        for (int j = 0; j < value.length; j++) {
-            Cell c = board[valueCross][j];
-            if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
-                valueEqualsPlayer = valueEqualsPlayer + 1;
-            } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                valueEqualsPlayer = valueEqualsPlayer + 1;
-            } else {
-                valueEqualsPlayer = 0;
-            }
-            valueCross = valueCross + 1;
-        }
-        if (valueEqualsPlayer == 3) {
-            result = true;
         }
         return result;
     }
@@ -434,14 +337,6 @@ public class TicTacToe {
                 player2 = new Player(this, 2);
                 players.add("J2");
             }
-            if (value[i] == 20) {
-                bot1 = new ArtificialPlayer(this, 1);
-                players.add("B1");
-            }
-            if (value[i] == 21) {
-                bot2 = new ArtificialPlayer(this, 2);
-                players.add("B1");
-            }
         }
         play();
     }
@@ -456,11 +351,24 @@ public class TicTacToe {
             return player1.getRepresentation();
         } else if (whoPlayNow.equals("J2")) {
             return player2.getRepresentation();
-        } else if (whoPlayNow.equals("B1")) {
-            return bot1.getRepresentation();
-        } else if (whoPlayNow.equals("B2")) {
-            return bot2.getRepresentation();
         }
         return "UNDEFINED";
+    }
+
+    public void setGameAll(Game gameAll) {
+        this.gameAll = gameAll;
+    }
+
+    public void setGameP4(Puissance4 gamePuissance4) {
+        this.gamePuissance4 = gamePuissance4;
+    }
+
+    /**
+     * Getter pour avoir le plateau
+     *
+     * @return Retourne le tableau
+     */
+    public Cell[][] getBoard() {
+        return board;
     }
 }
