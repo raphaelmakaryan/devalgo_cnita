@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.tictactoe;
+package fr.raphaelmakaryan.tictactoe.tools;
 
 public class Colors {
     public static final String RESET = "\u001B[0m";

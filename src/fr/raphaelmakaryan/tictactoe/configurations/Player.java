@@ -1,12 +1,13 @@
-package fr.raphaelmakaryan.tictactoe;
+package fr.raphaelmakaryan.tictactoe.configurations;
 
-public class ArtificialPlayer {
+import fr.raphaelmakaryan.tictactoe.game.TicTacToe;
+
+public class Player {
     public String representation;
 
-    public ArtificialPlayer(TicTacToe ticTacToe, int value) {
-
+    public Player(TicTacToe ticTacToe, int value) {
         if (ticTacToe.mode.equals("JvB")) {
-            this.representation = ticTacToe.listRepresentation[1];
+            this.representation = ticTacToe.listRepresentation[0];
         } else {
             if (value == 1) {
                 this.representation = ticTacToe.listRepresentation[0];
@@ -22,8 +23,8 @@ public class ArtificialPlayer {
 
     @Override
     public String toString() {
-        return "ArtificialPlayer{" +
-                "representation='" + representation + '\'' +
-                '}';
+        return "Player{" + "representation='" + representation + '\'' + '}';
     }
+
+
 }

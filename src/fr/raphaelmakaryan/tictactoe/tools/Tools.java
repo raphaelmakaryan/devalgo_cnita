@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.tictactoe;
+package fr.raphaelmakaryan.tictactoe.tools;
 
 public class Tools {
 

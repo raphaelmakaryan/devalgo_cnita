@@ -1,4 +1,12 @@
-package fr.raphaelmakaryan.tictactoe;
+package fr.raphaelmakaryan.tictactoe.game;
+
+import fr.raphaelmakaryan.tictactoe.configurations.InteractionUtilisateur;
+import fr.raphaelmakaryan.tictactoe.configurations.Player;
+import fr.raphaelmakaryan.tictactoe.tools.Tools;
+import fr.raphaelmakaryan.tictactoe.configurations.View;
+import fr.raphaelmakaryan.tictactoe.configurations.Admin;
+import fr.raphaelmakaryan.tictactoe.configurations.ArtificialPlayer;
+import fr.raphaelmakaryan.tictactoe.configurations.Cell;
 
 import java.util.*;
 
