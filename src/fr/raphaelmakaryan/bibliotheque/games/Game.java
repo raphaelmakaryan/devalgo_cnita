@@ -49,6 +49,13 @@ public class Game {
                 puissance4.setGameP4(puissance4);
                 interactionUtilisateur.chooseGameP4(puissance4);
                 break;
+
+            case "gomaku":
+                Gomoku gomoku = new Gomoku(17, 5);
+                gomoku.setGameAll(this);
+                gomoku.setGameGomoku(gomoku);
+                interactionUtilisateur.chooseGameGomoku(gomoku);
+                break;
         }
     }
 

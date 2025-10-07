@@ -1,6 +1,7 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
 import fr.raphaelmakaryan.bibliotheque.games.Game;
+import fr.raphaelmakaryan.bibliotheque.games.Gomoku;
 import fr.raphaelmakaryan.bibliotheque.games.Puissance4;
 import fr.raphaelmakaryan.bibliotheque.games.TicTacToe;
 
@@ -55,6 +56,12 @@ public class InteractionUtilisateur {
         view.println("Mode 1v1 Humain");
         gameP4.setMode("JvJ");
         gameP4.createPlayer(new int[]{10, 11});
+    }
+
+    public void chooseGameGomoku(Gomoku gameGo) {
+        view.println("Mode 1v1 Humain");
+        gameGo.setMode("JvJ");
+        gameGo.createPlayer(new int[]{10, 11});
     }
 
     public String chooseGame() {

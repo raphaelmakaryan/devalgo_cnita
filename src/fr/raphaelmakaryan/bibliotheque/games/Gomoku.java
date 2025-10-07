@@ -8,15 +8,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Puissance4 extends Game {
-    public Puissance4 gamePuissance4;
+public class Gomoku extends Game {
+
+    public Gomoku gameGomoku;
     public Game gameAll;
     public List<String> players = new ArrayList<>();
 
     public Player player1;
     public Player player2;
 
-    public Puissance4(int size, int victoryValue) {
+    public Gomoku(int size, int victoryValue) {
         super(size, victoryValue);
     }
 
@@ -39,7 +40,7 @@ public class Puissance4 extends Game {
      */
     public void display() {
         view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println("-----------------------------");
+        view.println("---------------------------------------------------------------------");
         for (int i = 0; i < this.size; i++) {
             view.print("|");
             for (int j = 0; j < this.size; j++) {
@@ -48,7 +49,7 @@ public class Puissance4 extends Game {
                 view.print("|");
             }
             System.out.print("\n");
-            view.println("-----------------------------");
+            view.println("---------------------------------------------------------------------");
         }
         tools.clearLine();
         getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
@@ -98,37 +99,13 @@ public class Puissance4 extends Game {
     }
 
     /**
-     * Permet de vérifier si il y a deja un jeton tout en bas
-     *
-     * @param value Valeur écrit de base par le joueur
-     * @return Retourne les nouvel valeur
-     */
-    public int[] tokenDescent(int[] value) {
-        int valeurColonne = value[0];
-        int[] newValue = new int[2];
-        int valueDecrease = size - 1;
-        boolean valueFind = false;
-        for (int i = 0; i < board.length; i++) {
-            Cell c = board[valueDecrease][valeurColonne];
-            if (whoPlayNow.contains("J") && c.getRepresentation().equals("   ") && !valueFind) {
-                newValue[0] = valueDecrease;
-                newValue[1] = valeurColonne;
-                valueFind = true;
-            } else {
-                valueDecrease = valueDecrease - 1;
-            }
-        }
-        return newValue;
-    }
-
-    /**
      * Deuxieme fonction de vérification avant modification du plateau
      *
      * @param choice Choix du joueur
      */
     public void getMoveFromPlayer(String choice) {
         if (verificationChoiceUser(choice)) {
-            int[] valueUser = tokenDescent(returnValueUser(choice));
+            int[] valueUser = returnValueUser(choice);
             Cell[][] board = getBoard();
             if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
                 view.println("Vous êtes sorti du tableau !");
@@ -359,8 +336,8 @@ public class Puissance4 extends Game {
         this.gameAll = gameAll;
     }
 
-    public void setGameP4(Puissance4 gamePuissance4) {
-        this.gamePuissance4 = gamePuissance4;
+    public void setGameGomoku(Gomoku gameGomoku) {
+        this.gameGomoku = gameGomoku;
     }
 
     /**
