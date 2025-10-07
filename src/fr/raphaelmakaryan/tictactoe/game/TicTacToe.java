@@ -18,6 +18,8 @@ public class TicTacToe extends Admin {
     public String whoPlayNow = "null";
     public String mode;
     public String[] listRepresentation = {" O ", " X "};
+    int[] leftRight = {0, 1, 2};
+    int[] rightLeft = {2, 1, 0};
 
     public Player player1;
     public Player player2;
@@ -335,11 +337,11 @@ public class TicTacToe extends Admin {
             System.out.println("Le joueur " + whoPlayNow + " a gagner en horizontal");
             return true;
         }
-        if (checkSideLeftRight()) {
+        if (checkSide(leftRight)) {
             System.out.println("Le joueur " + whoPlayNow + " a gagner de gauche a droite");
             return true;
         }
-        if (checkSideRightLeft()) {
+        if (checkSide(rightLeft)) {
             System.out.println("Le joueur " + whoPlayNow + " a gagner de droite a gauche");
             return true;
         }
@@ -406,16 +408,15 @@ public class TicTacToe extends Admin {
     }
 
     /**
-     * Vérification si le joueur a gagné de gauche a droite
+     * Vérification si le joueur a gagné de droite a gauche
      *
-     * @return SI il a gagné
+     * @return si il a gagné
      */
-    public boolean checkSideLeftRight() {
-        int[] leftRight = {0, 1, 2};
+    public boolean checkSide(int[] value) {
         int valueEqualsPlayer = 0;
         int valueCross = 0;
         boolean result = false;
-        for (int j = 0; j < leftRight.length; j++) {
+        for (int j = 0; j < value.length; j++) {
             Cell c = board[valueCross][j];
             if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                 valueEqualsPlayer = valueEqualsPlayer + 1;
@@ -428,32 +429,6 @@ public class TicTacToe extends Admin {
         }
         if (valueEqualsPlayer == 3) {
             result = true;
-        }
-        return result;
-    }
-
-    /**
-     * Vérification si le joueur a gagné de droite a gauche
-     *
-     * @return si il a gagné
-     */
-    public boolean checkSideRightLeft() {
-        int[] rightLeft = {2, 1, 0};
-        int valueEqualsPlayer = 0;
-        boolean result = false;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < rightLeft.length; j++) {
-                Cell c = board[i][j];
-                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
-                    result = true;
-                } else {
-                    valueEqualsPlayer = 0;
-                }
-            }
         }
         return result;
     }
