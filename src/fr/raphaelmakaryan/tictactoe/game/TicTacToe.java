@@ -134,8 +134,8 @@ public class TicTacToe extends Admin {
      * @param choice Choix du joueur
      */
     public void getMoveFromPlayer(String choice) {
-        if (verificationChoiceUser(choice)) {
-            if (!Objects.equals(choice, "bot")) {
+        if (!Objects.equals(choice, "bot")) {
+            if (verificationChoiceUser(choice)) {
                 int[] valueUser = returnValueUser(choice);
                 Cell[][] board = getBoard();
                 if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
@@ -148,18 +148,18 @@ public class TicTacToe extends Admin {
                     setOwner(valueUser[0], valueUser[1], "player");
                 }
             } else {
-                int lineRandomBot = new Random().nextInt(0, 3);
-                int columnRandomBot = new Random().nextInt(0, 3);
-                int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
-                if (verificationHavePlayer(board, valueBot)) {
-                    view.println("Vous avez choisi une case deja prise !");
-                    display();
-                } else {
-                    setOwner(valueBot[0], valueBot[1], "bot");
-                }
+                display();
             }
         } else {
-            display();
+            int lineRandomBot = new Random().nextInt(0, 3);
+            int columnRandomBot = new Random().nextInt(0, 3);
+            int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
+            if (verificationHavePlayer(board, valueBot)) {
+                view.println("Vous avez choisi une case deja prise !");
+                display();
+            } else {
+                setOwner(valueBot[0], valueBot[1], "bot");
+            }
         }
     }
 
@@ -285,7 +285,7 @@ public class TicTacToe extends Admin {
     public void isOver() {
         if (!Objects.equals(whoPlayNow, "null")) {
             if (checkCellFilled() == 9) {
-                view.println("Vous avez vous rempli !");
+                view.println("Vous avez tout rempli du coup fin du match !");
                 System.exit(0);
             }
 
@@ -321,11 +321,11 @@ public class TicTacToe extends Admin {
     public boolean checkWin() {
         if (checkVertical()) {
             return true;
-        }
-        if (checkHorizontal()) {
+        } else if (checkHorizontal()) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -341,7 +341,9 @@ public class TicTacToe extends Admin {
         while (size != checkValue) {
             for (int i = 0; i < board.length; i++) {
                 Cell c = board[i][valeurColonne];
-                if (c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (valueEqualsPlayer == 3) {
                     result = true;
@@ -368,7 +370,9 @@ public class TicTacToe extends Admin {
         while (size * 3 != checkValue) {
             for (int i = 0; i < size; i++) {
                 Cell c = board[valeurLigne][i];
-                if (c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (valueEqualsPlayer == 3) {
                     result = true;
