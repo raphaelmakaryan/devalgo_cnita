@@ -317,15 +317,17 @@ public class TicTacToe extends Game {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == victoryValue) {
-                    result = true;
                 } else {
                     valueEqualsPlayer = 0;
                 }
             }
-            valeurColonne = valeurColonne + 1;
-            valueEqualsPlayer = 0;
-            checkValue = checkValue + 1;
+            if (valueEqualsPlayer == victoryValue) {
+                result = true;
+            } else {
+                valeurColonne = valeurColonne + 1;
+                valueEqualsPlayer = 0;
+                checkValue = checkValue + 1;
+            }
         }
         return result;
     }
