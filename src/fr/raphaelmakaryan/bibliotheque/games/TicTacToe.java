@@ -264,7 +264,7 @@ public class TicTacToe extends Game {
                 view.println("GG " + whoPlayNow);
                 System.exit(0);
             }
-            if (checkCellFilled() == 9) {
+            if (checkCellFilled() == (size * size)) {
                 view.println("Vous avez tout rempli du coup fin du match !");
                 System.exit(0);
             }

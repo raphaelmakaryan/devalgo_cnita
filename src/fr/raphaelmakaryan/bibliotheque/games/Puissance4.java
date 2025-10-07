@@ -13,14 +13,12 @@ public class Puissance4 extends Game {
     public Puissance4 gamePuissance4;
     public Game gameAll;
     public List<String> players = new ArrayList<>();
-    int[] leftRight = {0, 1, 2};
-    int[] rightLeft = {2, 1, 0};
+    int[] leftRight = {0, 1, 2, 3, 4, 5, 6};
+    int[] rightLeft = {6, 5, 4, 3, 2, 1, 0};
     public String mode;
 
     public Player player1;
     public Player player2;
-    public ArtificialPlayer bot1;
-    public ArtificialPlayer bot2;
 
     public Puissance4(int size, int victoryValue) {
         super(size, victoryValue);
@@ -30,7 +28,7 @@ public class Puissance4 extends Game {
      * Logique de jeu
      */
     public void play() {
-        //isOver();
+        isOver();
         if (!started) {
             randomPlayer();
             started = true;
@@ -57,11 +55,7 @@ public class Puissance4 extends Game {
             view.println("-----------------------------");
         }
         tools.clearLine();
-        if (whoPlayNow.contains("J")) {
-            getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
-        } else {
-            getMoveFromPlayer("bot");
-        }
+        getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
     }
 
     /**
@@ -109,6 +103,7 @@ public class Puissance4 extends Game {
 
     /**
      * Permet de vérifier si il y a deja un jeton tout en bas
+     *
      * @param value Valeur écrit de base par le joueur
      * @return Retourne les nouvel valeur
      */
@@ -136,32 +131,20 @@ public class Puissance4 extends Game {
      * @param choice Choix du joueur
      */
     public void getMoveFromPlayer(String choice) {
-        if (!Objects.equals(choice, "bot")) {
-            if (verificationChoiceUser(choice)) {
-                int[] valueUser = tokenDescent(returnValueUser(choice));
-                Cell[][] board = getBoard();
-                if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                    view.println("Vous êtes sorti du tableau !");
-                    display();
-                } else if (verificationHavePlayer(board, valueUser)) {
-                    view.println("Vous avez choisi une case deja prise !");
-                    display();
-                } else {
-                    setOwner(valueUser[0], valueUser[1], "player");
-                }
-            } else {
+        if (verificationChoiceUser(choice)) {
+            int[] valueUser = tokenDescent(returnValueUser(choice));
+            Cell[][] board = getBoard();
+            if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
+                view.println("Vous êtes sorti du tableau !");
                 display();
-            }
-        } else {
-            int lineRandomBot = new Random().nextInt(0, 3);
-            int columnRandomBot = new Random().nextInt(0, 3);
-            int[] valueBot = tokenDescent(returnValueUser(lineRandomBot + " " + columnRandomBot));
-            if (verificationHavePlayer(board, valueBot)) {
+            } else if (verificationHavePlayer(board, valueUser)) {
                 view.println("Vous avez choisi une case deja prise !");
                 display();
             } else {
-                setOwner(valueBot[0], valueBot[1], "bot");
+                setOwner(valueUser[0], valueUser[1], "player");
             }
+        } else {
+            display();
         }
     }
 
@@ -177,9 +160,6 @@ public class Puissance4 extends Game {
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
-        } else if (type.equals("bot")) {
-            ArtificialPlayer bot = getBotPlayNow();
-            board[ligne][colonne].setRepresentation(bot.getRepresentation());
         }
         play();
     }
@@ -213,18 +193,6 @@ public class Puissance4 extends Game {
             } else {
                 whoPlayNow = "J2";
             }
-        } else if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "J1";
-            } else {
-                whoPlayNow = "B2";
-            }
-        } else if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "B1";
-            } else {
-                whoPlayNow = "B2";
-            }
         }
     }
 
@@ -238,20 +206,6 @@ public class Puissance4 extends Game {
                 whoPlayNow = "J2";
             } else if (Objects.equals(whoPlayNow, "J2")) {
                 whoPlayNow = "J1";
-            }
-        }
-        if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (Objects.equals(whoPlayNow, "J1")) {
-                whoPlayNow = "B1";
-            } else if (Objects.equals(whoPlayNow, "B1")) {
-                whoPlayNow = "J1";
-            }
-        }
-        if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (whoPlayNow.equals("B1")) {
-                whoPlayNow = "B2";
-            } else if (Objects.equals(whoPlayNow, "B2")) {
-                whoPlayNow = "B1";
             }
         }
     }
@@ -270,19 +224,6 @@ public class Puissance4 extends Game {
     }
 
     /**
-     * Retourne quel bot est actuellement en train de jouer
-     *
-     * @return Retourne le bot actuel
-     */
-    public ArtificialPlayer getBotPlayNow() {
-        if (whoPlayNow.equals("B1")) {
-            return bot1;
-        } else {
-            return bot2;
-        }
-    }
-
-    /**
      * Vérification de fin de jeu
      */
     public void isOver() {
@@ -291,7 +232,7 @@ public class Puissance4 extends Game {
                 view.println("GG " + whoPlayNow);
                 System.exit(0);
             }
-            if (checkCellFilled() == 9) {
+            if (checkCellFilled() == (size * size)) {
                 view.println("Vous avez tout rempli du coup fin du match !");
                 System.exit(0);
             }
@@ -321,7 +262,7 @@ public class Puissance4 extends Game {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical() || checkHorizontal() || checkSide(leftRight) || checkSide(rightLeft)) {
+        if (checkVertical() || checkHorizontal()) {
             return true;
         }
         return false;
@@ -337,22 +278,23 @@ public class Puissance4 extends Game {
         int checkValue = 0;
         int valueEqualsPlayer = 0;
         boolean result = false;
-        while (size != checkValue) {
+        while (size - 1 != checkValue) {
             for (int i = 0; i < board.length; i++) {
                 Cell c = board[i][valeurColonne];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == victoryValue) {
-                    result = true;
                 } else {
                     valueEqualsPlayer = 0;
                 }
             }
-            valeurColonne = valeurColonne + 1;
-            valueEqualsPlayer = 0;
-            checkValue = checkValue + 1;
+            if (valueEqualsPlayer == this.victoryValue) {
+                result = true;
+                checkValue = size - 1;
+            } else {
+                valeurColonne = valeurColonne + 1;
+                valueEqualsPlayer = 0;
+                checkValue = checkValue + 1;
+            }
         }
         return result;
     }
@@ -367,14 +309,12 @@ public class Puissance4 extends Game {
         int valeurLigne = 0;
         int checkValue = 0;
         int valueEqualsPlayer = 0;
-        while (size * 3 != checkValue) {
+        while (size * size != checkValue) {
             for (int i = 0; i < size; i++) {
                 Cell c = board[valeurLigne][i];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == victoryValue) {
+                } else if (valueEqualsPlayer == this.victoryValue) {
                     result = true;
                 } else {
                     valueEqualsPlayer = 0;
@@ -399,14 +339,12 @@ public class Puissance4 extends Game {
             Cell c = board[valueCross][j];
             if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                 valueEqualsPlayer = valueEqualsPlayer + 1;
-            } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
-                valueEqualsPlayer = valueEqualsPlayer + 1;
             } else {
                 valueEqualsPlayer = 0;
             }
             valueCross = valueCross + 1;
         }
-        if (valueEqualsPlayer == victoryValue) {
+        if (valueEqualsPlayer == this.victoryValue) {
             result = true;
         }
         return result;
@@ -427,14 +365,6 @@ public class Puissance4 extends Game {
                 player2 = new Player(this, 2);
                 players.add("J2");
             }
-            if (value[i] == 20) {
-                bot1 = new ArtificialPlayer(this, 1);
-                players.add("B1");
-            }
-            if (value[i] == 21) {
-                bot2 = new ArtificialPlayer(this, 2);
-                players.add("B1");
-            }
         }
         play();
     }
@@ -449,10 +379,6 @@ public class Puissance4 extends Game {
             return player1.getRepresentation();
         } else if (whoPlayNow.equals("J2")) {
             return player2.getRepresentation();
-        } else if (whoPlayNow.equals("B1")) {
-            return bot1.getRepresentation();
-        } else if (whoPlayNow.equals("B2")) {
-            return bot2.getRepresentation();
         }
         return "UNDEFINED";
     }

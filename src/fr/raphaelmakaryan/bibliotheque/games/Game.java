@@ -8,19 +8,20 @@ import java.util.List;
 
 public class Game {
     public int size;
+    public int victoryValue;
     public Cell[][] board;
     public boolean started;
     public String whoPlayNow;
-    public List<String> players = new ArrayList<>();
     public String[] listRepresentation;
+    public String mode;
+    public List<String> players = new ArrayList<>();
     public Tools tools = new Tools();
     public View view = new View();
-    public String mode;
-    public int victoryValue;
     public InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
 
     public Game(int size, int victoryValue) {
         this.size = size;
+        this.victoryValue = victoryValue;
         this.board = new Cell[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
