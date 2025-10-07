@@ -319,9 +319,7 @@ public class TicTacToe extends Admin {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical()) {
-            return true;
-        } else if (checkHorizontal()) {
+        if (checkVertical() || checkHorizontal()) {
             return true;
         } else {
             return false;
