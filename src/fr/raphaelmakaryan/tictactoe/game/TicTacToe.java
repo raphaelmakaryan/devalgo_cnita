@@ -116,12 +116,21 @@ public class TicTacToe extends Admin {
      * @return Retourne si oui ou non, s'il peut jouer
      */
     public boolean verificationChoiceUser(String choice) {
-        int[] forValue = returnValueUser(choice);
+        String[] splitValeur = choice.split(" ");
+        int[] valueUser = new int[2];
+        for (int i = 0; i < splitValeur.length; i++) {
+            try {
+                valueUser[i] = Integer.parseInt(splitValeur[i]);
+            } catch (Exception e) {
+                view.println("Veuillez récrire des chiffres avec un espace !");
+                return false;
+            }
+        }
         if (choice.length() != 3) {
             view.println("Veuillez récrire !");
             return false;
         }
-        if (forValue[0] < 0 || forValue[0] > 2 || forValue[1] < 0 || forValue[1] > 2) {
+        if (valueUser[0] < 0 || valueUser[0] > 2 || valueUser[1] < 0 || valueUser[1] > 2) {
             view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
             return false;
         }
