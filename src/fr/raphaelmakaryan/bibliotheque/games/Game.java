@@ -15,9 +15,11 @@ public class Game {
     public String[] listRepresentation;
     public Tools tools = new Tools();
     public View view = new View();
+    public String mode;
+    public int victoryValue;
     public InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
 
-    public Game(int size) {
+    public Game(int size, int victoryValue) {
         this.size = size;
         this.board = new Cell[size][size];
         for (int i = 0; i < size; i++) {
@@ -34,18 +36,22 @@ public class Game {
         String value = interactionUtilisateur.chooseGame();
         switch (value) {
             case "tictactoe":
-                TicTacToe ticTacToe = new TicTacToe(3);
+                TicTacToe ticTacToe = new TicTacToe(3, 3);
                 ticTacToe.setGameAll(this);
                 ticTacToe.setGameTTT(ticTacToe);
                 interactionUtilisateur.chooseGameTicTacToe(ticTacToe);
                 break;
 
             case "p4":
-                P4 p4 = new P4(7);
-                p4.setGameAll(this);
-                p4.setGameP4(p4);
-                p4.chooseGame();
+                Puissance4 puissance4 = new Puissance4(7, 4);
+                puissance4.setGameAll(this);
+                puissance4.setGameP4(puissance4);
+                interactionUtilisateur.chooseGameP4(puissance4);
                 break;
         }
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

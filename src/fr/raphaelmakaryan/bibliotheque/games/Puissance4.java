@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class P4 extends Game {
-    public P4 gameP4;
+public class Puissance4 extends Game {
+    public Puissance4 gamePuissance4;
     public Game gameAll;
     public List<String> players = new ArrayList<>();
     int[] leftRight = {0, 1, 2};
@@ -22,8 +22,8 @@ public class P4 extends Game {
     public ArtificialPlayer bot1;
     public ArtificialPlayer bot2;
 
-    public P4(int size) {
-        super(size);
+    public Puissance4(int size, int victoryValue) {
+        super(size, victoryValue);
     }
 
     /**
@@ -32,12 +32,12 @@ public class P4 extends Game {
     public void play() {
         //isOver();
         if (!started) {
-            //randomPlayer();
+            randomPlayer();
             started = true;
         } else {
-            //nextPlayer();
+            nextPlayer();
         }
-        //display();
+        display();
     }
 
     /**
@@ -45,7 +45,7 @@ public class P4 extends Game {
      */
     public void display() {
         view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println("-------------");
+        view.println("-----------------------------");
         for (int i = 0; i < this.size; i++) {
             view.print("|");
             for (int j = 0; j < this.size; j++) {
@@ -54,7 +54,7 @@ public class P4 extends Game {
                 view.print("|");
             }
             System.out.print("\n");
-            view.println("-------------");
+            view.println("-----------------------------");
         }
         tools.clearLine();
         if (whoPlayNow.contains("J")) {
@@ -63,16 +63,6 @@ public class P4 extends Game {
             getMoveFromPlayer("bot");
         }
     }
-
-    /**
-     * Getter pour avoir le plateau
-     *
-     * @return Retourne le tableau
-     */
-    public Cell[][] getBoard() {
-        return board;
-    }
-
 
     /**
      * Retourne la ligne/colonne choisie par l'user
@@ -110,11 +100,34 @@ public class P4 extends Game {
             view.println("Veuillez récrire !");
             return false;
         }
-        if (valueUser[0] < 0 || valueUser[0] > 2 || valueUser[1] < 0 || valueUser[1] > 2) {
-            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
+        if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
+            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
             return false;
         }
         return true;
+    }
+
+    /**
+     * Permet de vérifier si il y a deja un jeton tout en bas
+     * @param value Valeur écrit de base par le joueur
+     * @return Retourne les nouvel valeur
+     */
+    public int[] tokenDescent(int[] value) {
+        int valeurColonne = value[0];
+        int[] newValue = new int[2];
+        int valueDecrease = size - 1;
+        boolean valueFind = false;
+        for (int i = 0; i < board.length; i++) {
+            Cell c = board[valueDecrease][valeurColonne];
+            if (whoPlayNow.contains("J") && c.getRepresentation().equals("   ") && !valueFind) {
+                newValue[0] = valueDecrease;
+                newValue[1] = valeurColonne;
+                valueFind = true;
+            } else {
+                valueDecrease = valueDecrease - 1;
+            }
+        }
+        return newValue;
     }
 
     /**
@@ -125,7 +138,7 @@ public class P4 extends Game {
     public void getMoveFromPlayer(String choice) {
         if (!Objects.equals(choice, "bot")) {
             if (verificationChoiceUser(choice)) {
-                int[] valueUser = returnValueUser(choice);
+                int[] valueUser = tokenDescent(returnValueUser(choice));
                 Cell[][] board = getBoard();
                 if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
                     view.println("Vous êtes sorti du tableau !");
@@ -142,7 +155,7 @@ public class P4 extends Game {
         } else {
             int lineRandomBot = new Random().nextInt(0, 3);
             int columnRandomBot = new Random().nextInt(0, 3);
-            int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
+            int[] valueBot = tokenDescent(returnValueUser(lineRandomBot + " " + columnRandomBot));
             if (verificationHavePlayer(board, valueBot)) {
                 view.println("Vous avez choisi une case deja prise !");
                 display();
@@ -214,6 +227,7 @@ public class P4 extends Game {
             }
         }
     }
+
 
     /**
      * Changement de joueur
@@ -330,7 +344,7 @@ public class P4 extends Game {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
+                } else if (valueEqualsPlayer == victoryValue) {
                     result = true;
                 } else {
                     valueEqualsPlayer = 0;
@@ -360,7 +374,7 @@ public class P4 extends Game {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
+                } else if (valueEqualsPlayer == victoryValue) {
                     result = true;
                 } else {
                     valueEqualsPlayer = 0;
@@ -392,7 +406,7 @@ public class P4 extends Game {
             }
             valueCross = valueCross + 1;
         }
-        if (valueEqualsPlayer == 3) {
+        if (valueEqualsPlayer == victoryValue) {
             result = true;
         }
         return result;
@@ -403,7 +417,6 @@ public class P4 extends Game {
      *
      * @param value Valeur du joueur
      */
-    /*
     public void createPlayer(int[] value) {
         for (int i = 0; i < value.length; i++) {
             if (value[i] == 10) {
@@ -424,7 +437,7 @@ public class P4 extends Game {
             }
         }
         play();
-    }*/
+    }
 
     /**
      * Permet de récupérer le symbole du joueur actuel
@@ -444,11 +457,20 @@ public class P4 extends Game {
         return "UNDEFINED";
     }
 
-    public void setGameP4(P4 gameP4) {
-        this.gameP4 = gameP4;
-    }
-
     public void setGameAll(Game gameAll) {
         this.gameAll = gameAll;
+    }
+
+    public void setGameP4(Puissance4 gamePuissance4) {
+        this.gamePuissance4 = gamePuissance4;
+    }
+
+    /**
+     * Getter pour avoir le plateau
+     *
+     * @return Retourne le tableau
+     */
+    public Cell[][] getBoard() {
+        return board;
     }
 }

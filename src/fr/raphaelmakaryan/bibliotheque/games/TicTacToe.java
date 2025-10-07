@@ -12,22 +12,14 @@ public class TicTacToe extends Game {
     public List<String> players = new ArrayList<>();
     int[] leftRight = {0, 1, 2};
     int[] rightLeft = {2, 1, 0};
-    public String mode;
 
     public Player player1;
     public Player player2;
     public ArtificialPlayer bot1;
     public ArtificialPlayer bot2;
 
-    public TicTacToe(int size) {
-        super(size);
-    }
-
-    /**
-     * Affichage au choix de l'user pour quel mode de jeu
-     */
-    public void chooseGame() {
-        interactionUtilisateur.chooseGameTicTacToe(this);
+    public TicTacToe(int size, int victoryValue) {
+        super(size, victoryValue);
     }
 
     /**
@@ -325,7 +317,7 @@ public class TicTacToe extends Game {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
+                } else if (valueEqualsPlayer == victoryValue) {
                     result = true;
                 } else {
                     valueEqualsPlayer = 0;
@@ -355,7 +347,7 @@ public class TicTacToe extends Game {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == 3) {
+                } else if (valueEqualsPlayer == victoryValue) {
                     result = true;
                 } else {
                     valueEqualsPlayer = 0;
@@ -387,7 +379,7 @@ public class TicTacToe extends Game {
             }
             valueCross = valueCross + 1;
         }
-        if (valueEqualsPlayer == 3) {
+        if (valueEqualsPlayer == victoryValue) {
             result = true;
         }
         return result;
