@@ -65,7 +65,7 @@ public class TicTacToe extends Admin {
      * Affichage du tableau
      */
     public void display() {
-        view.println("Au tour de " + whoPlayNow);
+        view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
         view.println("-------------");
         for (int i = 0; i < this.size; i++) {
             view.print("|");
@@ -293,13 +293,12 @@ public class TicTacToe extends Admin {
      */
     public void isOver() {
         if (!Objects.equals(whoPlayNow, "null")) {
-            if (checkCellFilled() == 9) {
-                view.println("Vous avez tout rempli du coup fin du match !");
-                System.exit(0);
-            }
-
             if (checkWin()) {
                 view.println("GG " + whoPlayNow);
+                System.exit(0);
+            }
+            if (checkCellFilled() == 9) {
+                view.println("Vous avez tout rempli du coup fin du match !");
                 System.exit(0);
             }
         }
@@ -328,11 +327,23 @@ public class TicTacToe extends Admin {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical() || checkHorizontal()) {
+        if (checkVertical()) {
+            System.out.println("Le joueur " + whoPlayNow + " a gagner en vertical");
             return true;
-        } else {
-            return false;
         }
+        if (checkHorizontal()) {
+            System.out.println("Le joueur " + whoPlayNow + " a gagner en horizontal");
+            return true;
+        }
+        if (checkSideLeftRight()) {
+            System.out.println("Le joueur " + whoPlayNow + " a gagner de gauche a droite");
+            return true;
+        }
+        if (checkSideRightLeft()) {
+            System.out.println("Le joueur " + whoPlayNow + " a gagner de droite a gauche");
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -359,6 +370,7 @@ public class TicTacToe extends Admin {
                 }
             }
             valeurColonne = valeurColonne + 1;
+            valueEqualsPlayer = 0;
             checkValue = checkValue + 1;
         }
         return result;
@@ -394,6 +406,59 @@ public class TicTacToe extends Admin {
     }
 
     /**
+     * Vérification si le joueur a gagné de gauche a droite
+     *
+     * @return SI il a gagné
+     */
+    public boolean checkSideLeftRight() {
+        int[] leftRight = {0, 1, 2};
+        int valueEqualsPlayer = 0;
+        int valueCross = 0;
+        boolean result = false;
+        for (int j = 0; j < leftRight.length; j++) {
+            Cell c = board[valueCross][j];
+            if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                valueEqualsPlayer = valueEqualsPlayer + 1;
+            } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
+                valueEqualsPlayer = valueEqualsPlayer + 1;
+            } else {
+                valueEqualsPlayer = 0;
+            }
+            valueCross = valueCross + 1;
+        }
+        if (valueEqualsPlayer == 3) {
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * Vérification si le joueur a gagné de droite a gauche
+     *
+     * @return si il a gagné
+     */
+    public boolean checkSideRightLeft() {
+        int[] rightLeft = {2, 1, 0};
+        int valueEqualsPlayer = 0;
+        boolean result = false;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < rightLeft.length; j++) {
+                Cell c = board[i][j];
+                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (valueEqualsPlayer == 3) {
+                    result = true;
+                } else {
+                    valueEqualsPlayer = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Crée les joueurs selon le choix du mode de jeu
      *
      * @param value Valeur du joueur
@@ -418,5 +483,23 @@ public class TicTacToe extends Admin {
             }
         }
         play();
+    }
+
+    /**
+     * Permet de récupérer le symbole du joueur actuel
+     *
+     * @return Retourne son symbole
+     */
+    public String getCurrentPlayerRepresentation() {
+        if (whoPlayNow.equals("J1")) {
+            return player1.getRepresentation();
+        } else if (whoPlayNow.equals("J2")) {
+            return player2.getRepresentation();
+        } else if (whoPlayNow.equals("B1")) {
+            return bot1.getRepresentation();
+        } else if (whoPlayNow.equals("B2")) {
+            return bot2.getRepresentation();
+        }
+        return "UNDEFINED";
     }
 }
