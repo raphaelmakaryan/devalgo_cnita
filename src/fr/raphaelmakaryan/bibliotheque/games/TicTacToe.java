@@ -1,51 +1,33 @@
-package fr.raphaelmakaryan.tictactoe.games;
+package fr.raphaelmakaryan.bibliotheque.games;
 
-import fr.raphaelmakaryan.tictactoe.configurations.InteractionUtilisateur;
-import fr.raphaelmakaryan.tictactoe.configurations.Player;
-import fr.raphaelmakaryan.tictactoe.tools.Tools;
-import fr.raphaelmakaryan.tictactoe.configurations.View;
-import fr.raphaelmakaryan.tictactoe.configurations.ArtificialPlayer;
-import fr.raphaelmakaryan.tictactoe.configurations.Cell;
+import fr.raphaelmakaryan.bibliotheque.configurations.Player;
+import fr.raphaelmakaryan.bibliotheque.configurations.ArtificialPlayer;
+import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 
 import java.util.*;
 
-public class TicTacToe {
-    private int size = 3;
-    private Cell[][] board;
-    public boolean started = false;
+public class TicTacToe extends Game {
+    public TicTacToe gameTTT;
+    public Game gameAll;
     public List<String> players = new ArrayList<>();
-    public String whoPlayNow = "null";
-    public String mode;
-    public String[] listRepresentation = {" O ", " X "};
     int[] leftRight = {0, 1, 2};
     int[] rightLeft = {2, 1, 0};
+    public String mode;
 
     public Player player1;
     public Player player2;
     public ArtificialPlayer bot1;
     public ArtificialPlayer bot2;
 
-    public InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
-    public Tools tools = new Tools();
-    public View view = new View();
-
-    /**
-     * Création du tableau
-     */
-    public TicTacToe() {
-        this.board = new Cell[this.size][this.size];
-        for (int i = 0; i < this.size; i++) {
-            for (int j = 0; j < this.size; j++) {
-                this.board[i][j] = new Cell();
-            }
-        }
+    public TicTacToe(int size) {
+        super(size);
     }
 
     /**
      * Affichage au choix de l'user pour quel mode de jeu
      */
     public void chooseGame() {
-        interactionUtilisateur.chooseGame(this);
+        interactionUtilisateur.chooseGameTicTacToe(this);
     }
 
     /**
@@ -84,15 +66,6 @@ public class TicTacToe {
         } else {
             getMoveFromPlayer("bot");
         }
-    }
-
-    /**
-     * Getter pour avoir le plateau
-     *
-     * @return Retourne le tableau
-     */
-    public Cell[][] getBoard() {
-        return board;
     }
 
     /**
@@ -235,6 +208,7 @@ public class TicTacToe {
             }
         }
     }
+
 
     /**
      * Changement de joueur
@@ -462,5 +436,22 @@ public class TicTacToe {
             return bot2.getRepresentation();
         }
         return "UNDEFINED";
+    }
+
+    public void setGameAll(Game gameAll) {
+        this.gameAll = gameAll;
+    }
+
+    public void setGameTTT(TicTacToe gameTTT) {
+        this.gameTTT = gameTTT;
+    }
+
+    /**
+     * Getter pour avoir le plateau
+     *
+     * @return Retourne le tableau
+     */
+    public Cell[][] getBoard() {
+        return board;
     }
 }
