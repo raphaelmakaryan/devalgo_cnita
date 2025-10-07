@@ -40,7 +40,7 @@ public class Gomoku extends Game {
      */
     public void display() {
         view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println("---------------------------------------------------------------------");
+        view.println("-------------------------------------------------------------");
         for (int i = 0; i < this.size; i++) {
             view.print("|");
             for (int j = 0; j < this.size; j++) {
@@ -49,7 +49,7 @@ public class Gomoku extends Game {
                 view.print("|");
             }
             System.out.print("\n");
-            view.println("---------------------------------------------------------------------");
+            view.println("-------------------------------------------------------------");
         }
         tools.clearLine();
         getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));

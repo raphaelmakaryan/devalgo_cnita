@@ -51,7 +51,7 @@ public class Game {
                 break;
 
             case "gomaku":
-                Gomoku gomoku = new Gomoku(17, 5);
+                Gomoku gomoku = new Gomoku(15, 5);
                 gomoku.setGameAll(this);
                 gomoku.setGameGomoku(gomoku);
                 interactionUtilisateur.chooseGameGomoku(gomoku);
