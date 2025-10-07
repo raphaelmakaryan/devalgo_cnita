@@ -1,16 +1,15 @@
-package fr.raphaelmakaryan.tictactoe.game;
+package fr.raphaelmakaryan.tictactoe.games;
 
 import fr.raphaelmakaryan.tictactoe.configurations.InteractionUtilisateur;
 import fr.raphaelmakaryan.tictactoe.configurations.Player;
 import fr.raphaelmakaryan.tictactoe.tools.Tools;
 import fr.raphaelmakaryan.tictactoe.configurations.View;
-import fr.raphaelmakaryan.tictactoe.configurations.Admin;
 import fr.raphaelmakaryan.tictactoe.configurations.ArtificialPlayer;
 import fr.raphaelmakaryan.tictactoe.configurations.Cell;
 
 import java.util.*;
 
-public class TicTacToe extends Admin {
+public class TicTacToe {
     private int size = 3;
     private Cell[][] board;
     public boolean started = false;
@@ -329,20 +328,7 @@ public class TicTacToe extends Admin {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical()) {
-            System.out.println("Le joueur " + whoPlayNow + " a gagner en vertical");
-            return true;
-        }
-        if (checkHorizontal()) {
-            System.out.println("Le joueur " + whoPlayNow + " a gagner en horizontal");
-            return true;
-        }
-        if (checkSide(leftRight)) {
-            System.out.println("Le joueur " + whoPlayNow + " a gagner de gauche a droite");
-            return true;
-        }
-        if (checkSide(rightLeft)) {
-            System.out.println("Le joueur " + whoPlayNow + " a gagner de droite a gauche");
+        if (checkVertical() || checkHorizontal() || checkSide(leftRight) || checkSide(rightLeft)) {
             return true;
         }
         return false;
@@ -408,7 +394,7 @@ public class TicTacToe extends Admin {
     }
 
     /**
-     * Vérification si le joueur a gagné de droite a gauche
+     * Vérification si le joueur a gagné de droite à gauche
      *
      * @return si il a gagné
      */

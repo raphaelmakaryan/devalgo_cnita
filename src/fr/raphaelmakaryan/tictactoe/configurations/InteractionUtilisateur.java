@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.tictactoe.configurations;
 
-import fr.raphaelmakaryan.tictactoe.game.TicTacToe;
+import fr.raphaelmakaryan.tictactoe.games.TicTacToe;
 
 import javax.swing.*;
 
