@@ -58,6 +58,10 @@ public abstract class GameController {
      * @param choice Choix du joueur
      */
     public void getMoveFromPlayer(String choice) {
+        if (choice == null) {
+            game.gameView.println("Vous avez décidé de fermer la page, fermeture du jeu.");
+            System.exit(0);
+        }
         Cell[][] board = game.getBoard();
         if (!Objects.equals(choice, "bot")) {
             if (game.verificationChoiceUser(choice)) {
@@ -158,9 +162,10 @@ public abstract class GameController {
 
     /**
      * Modification du tableau
-     * @param ligne Ligne
+     *
+     * @param ligne   Ligne
      * @param colonne Colonne
-     * @param type Type de joueur
+     * @param type    Type de joueur
      */
     public void handlePlayerMove(int ligne, int colonne, String type) {
         game.setOwner(ligne, colonne, type);
@@ -169,6 +174,7 @@ public abstract class GameController {
 
     /**
      * Création des joueurs
+     *
      * @param value Valeur des joueurs
      */
     public void initializePlayers(int[] value) {
@@ -178,6 +184,7 @@ public abstract class GameController {
 
     /**
      * Retourne quel jeu est lancé
+     *
      * @return Retourne les informations du jeu
      */
     public GameModele getGame() {
