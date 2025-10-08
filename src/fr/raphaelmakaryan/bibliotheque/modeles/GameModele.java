@@ -59,7 +59,8 @@ public class GameModele {
         switch (value) {
             case "tictactoe":
                 TicTacToe modeleTTT = new TicTacToe(3, 3);
-                TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
+                TicTacToeStateVisitor ticTacToeStateVisitor = new TicTacToeStateVisitorImpl();
+                TicTacToeController controllerTTT = new TicTacToeController(modeleTTT, modeleTTT, ticTacToeStateVisitor);
                 interactionUtilisateur.chooseGameTicTacToe(controllerTTT);
                 break;
 
@@ -353,6 +354,7 @@ public class GameModele {
 
     /**
      * Mets à jour le jeu sélectionné
+     *
      * @param gameSelected Jeu sélectionné
      */
     public void setGameSelected(String gameSelected) {
@@ -361,6 +363,7 @@ public class GameModele {
 
     /**
      * Récupère le jeu sélectionné
+     *
      * @return Le retourne
      */
     public String getGameSelected() {
