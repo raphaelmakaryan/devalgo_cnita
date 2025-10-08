@@ -187,10 +187,7 @@ public class GameModele {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical() || checkHorizontal()) {
-            return true;
-        }
-        return false;
+        return checkVertical() || checkHorizontal();
     }
 
     /**
@@ -234,8 +231,8 @@ public class GameModele {
         int valueEqualsPlayer = 0;
         boolean result = false;
         while (size - 1 != checkValue) {
-            for (int i = 0; i < board.length; i++) {
-                Cell c = board[i][valeurColonne];
+            for (Cell[] cells : board) {
+                Cell c = cells[valeurColonne];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else {
@@ -261,9 +258,9 @@ public class GameModele {
      */
     public int checkCellFilled() {
         int valueRempli = 0;
-        for (int i = 0; i < board.length; i++) {
+        for (Cell[] cells : board) {
             for (int j = 0; j < board.length; j++) {
-                if (!board[i][j].isEmpty()) {
+                if (!cells[j].isEmpty()) {
                     valueRempli = valueRempli + 1;
                 }
             }
@@ -277,16 +274,13 @@ public class GameModele {
      * @return Retourne son symbole
      */
     public String getCurrentPlayerRepresentation() {
-        if (whoPlayNow.equals("J1")) {
-            return player1.getRepresentation();
-        } else if (whoPlayNow.equals("J2")) {
-            return player2.getRepresentation();
-        } else if (whoPlayNow.equals("B1")) {
-            return bot1.getRepresentation();
-        } else if (whoPlayNow.equals("B2")) {
-            return bot2.getRepresentation();
-        }
-        return "UNDEFINED";
+        return switch (whoPlayNow) {
+            case "J1" -> player1.getRepresentation();
+            case "J2" -> player2.getRepresentation();
+            case "B1" -> bot1.getRepresentation();
+            case "B2" -> bot2.getRepresentation();
+            default -> "UNDEFINED";
+        };
     }
 
     /**
@@ -309,20 +303,20 @@ public class GameModele {
      * @param value Valeur du joueur
      */
     public void createPlayer(int[] value) {
-        for (int i = 0; i < value.length; i++) {
-            if (value[i] == 10) {
+        for (int j : value) {
+            if (j == 10) {
                 player1 = new Player(this, 1);
                 players.add("J1");
             }
-            if (value[i] == 11) {
+            if (j == 11) {
                 player2 = new Player(this, 2);
                 players.add("J2");
             }
-            if (value[i] == 20) {
+            if (j == 20) {
                 bot1 = new ArtificialPlayer(this, 1);
                 players.add("B1");
             }
-            if (value[i] == 21) {
+            if (j == 21) {
                 bot2 = new ArtificialPlayer(this, 2);
                 players.add("B1");
             }
@@ -331,7 +325,7 @@ public class GameModele {
 
 
     /**
-     * Récupere le board
+     * Récupère le board
      *
      * @return Retourne le board
      */
@@ -349,7 +343,7 @@ public class GameModele {
     }
 
     /**
-     * Récupere le mode
+     * Récupère le mode
      *
      * @return Retourne le mode
      */
@@ -358,15 +352,15 @@ public class GameModele {
     }
 
     /**
-     * Met a jour le jeu selectionné
-     * @param gameSelected Jeu selectionné
+     * Mets à jour le jeu sélectionné
+     * @param gameSelected Jeu sélectionné
      */
     public void setGameSelected(String gameSelected) {
         this.gameSelected = gameSelected;
     }
 
     /**
-     * Récupere le jeu selectionné
+     * Récupère le jeu sélectionné
      * @return Le retourne
      */
     public String getGameSelected() {

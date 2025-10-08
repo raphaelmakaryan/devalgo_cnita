@@ -4,7 +4,7 @@ public class Cell {
     private String representation = "   ";
 
     /**
-     * Récupere la representation de la case
+     * Récupère la representation de la case
      * @return retourne la representation de la case
      */
     public String getRepresentation() {

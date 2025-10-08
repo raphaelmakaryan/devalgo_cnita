@@ -113,8 +113,6 @@ public abstract class GameController {
         }
     }
 
-    ;
-
     /**
      * Changement de joueur
      */

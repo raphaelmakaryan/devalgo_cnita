@@ -4,9 +4,6 @@ import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
-import fr.raphaelmakaryan.bibliotheque.modeles.Gomoku;
-import fr.raphaelmakaryan.bibliotheque.modeles.Puissance4;
-import fr.raphaelmakaryan.bibliotheque.modeles.TicTacToe;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import javax.swing.*;
@@ -17,8 +14,8 @@ public class InteractionUtilisateur {
     /**
      * Affiche la boite de dialogue
      *
-     * @param message Message a afficher
-     * @return Retourne la valeur récuperer
+     * @param message Message à afficher
+     * @return Retourne la valeur récupérée
      */
     public String userInterfaceMessage(String message) {
         return JOptionPane.showInputDialog(message);
@@ -73,7 +70,7 @@ public class InteractionUtilisateur {
     /**
      * Affichage pour le choix du mode dans Puissance 4
      *
-     * @param gameController Controller du puissance 4
+     * @param gameController Controller de puissance 4
      */
     public void chooseGameP4(Puissance4Controller gameController) {
         GameModele modele = gameController.getGame();
@@ -114,19 +111,23 @@ public class InteractionUtilisateur {
                 options[0]
         );
 
-        switch (choix) {
-            case 0:
+        return switch (choix) {
+            case 0 -> {
                 gameView.println("TicTacToe sélectionné");
-                return "tictactoe";
-            case 1:
+                yield "tictactoe";
+            }
+            case 1 -> {
                 gameView.println("Puissance 4 sélectionné");
-                return "p4";
-            case 2:
+                yield "p4";
+            }
+            case 2 -> {
                 gameView.println("Gomoku sélectionné");
-                return "gomoku";
-            default:
+                yield "gomoku";
+            }
+            default -> {
                 gameView.println("Aucun mode sélectionné. Fin du jeu.");
-                return "null";
-        }
+                yield "null";
+            }
+        };
     }
 }

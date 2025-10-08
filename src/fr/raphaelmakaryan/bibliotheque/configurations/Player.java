@@ -22,7 +22,7 @@ public class Player {
     }
 
     /**
-     * Récupere le signe
+     * Récupère le signe
      *
      * @return retourne le signe
      */

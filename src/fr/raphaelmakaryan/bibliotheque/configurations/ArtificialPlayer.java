@@ -24,7 +24,7 @@ public class ArtificialPlayer {
     }
 
     /**
-     * Récupere le signe
+     * Récupère le signe
      *
      * @return retourne le signe
      */
