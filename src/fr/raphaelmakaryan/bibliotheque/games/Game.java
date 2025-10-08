@@ -86,7 +86,7 @@ public class Game {
         } else {
             nextPlayer();
         }
-        tools.setTimeout(2);
+        tools.setTimeout(1);
         display();
     }
 
@@ -180,8 +180,8 @@ public class Game {
                 display();
             }
         } else {
-            int lineRandomBot = new Random().nextInt(0, 3);
-            int columnRandomBot = new Random().nextInt(0, 3);
+            int lineRandomBot = new Random().nextInt(0, size);
+            int columnRandomBot = new Random().nextInt(0, size);
             int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
             if (verificationHavePlayer(board, valueBot)) {
                 view.println("Vous avez choisi une case deja prise !");
@@ -353,12 +353,13 @@ public class Game {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else if (valueEqualsPlayer == victoryValue) {
-                    result = true;
                 } else {
                     valueEqualsPlayer = 0;
                 }
                 checkValue = checkValue + 1;
+            }
+            if (valueEqualsPlayer == victoryValue) {
+                result = true;
             }
             valeurLigne = valeurLigne + 1;
         }
