@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
-import fr.raphaelmakaryan.bibliotheque.games.Game;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 
 public class Player {
     public String representation;
@@ -8,16 +8,16 @@ public class Player {
     /**
      * Création d'un joueur "joueur"
      *
-     * @param game  Le jeu
+     * @param gameModele  Le jeu
      * @param value Valeur de la place
      */
-    public Player(Game game, int value) {
-        if (game.getMode().equals("JvB")) {
-            this.representation = game.listRepresentation[0];
+    public Player(GameModele gameModele, int value) {
+        if (gameModele.getMode().equals("JvB")) {
+            this.representation = gameModele.listRepresentation[0];
         } else {
             this.representation = (value == 1)
-                    ? game.listRepresentation[0]
-                    : game.listRepresentation[1];
+                    ? gameModele.listRepresentation[0]
+                    : gameModele.listRepresentation[1];
         }
     }
 

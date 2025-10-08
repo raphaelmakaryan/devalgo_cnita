@@ -1,8 +1,8 @@
-package fr.raphaelmakaryan.bibliotheque.games;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 
-public class Puissance4 extends Game {
+public class Puissance4 extends GameModele {
 
     public Puissance4(int size, int victoryValue) {
         super(size, victoryValue);
@@ -43,10 +43,10 @@ public class Puissance4 extends Game {
             int[] valueUser = tokenDescent(returnValueUser(choice));
             Cell[][] board = getBoard();
             if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                view.println("Vous êtes sorti du tableau !");
+                gameView.println("Vous êtes sorti du tableau !");
                 display();
             } else if (verificationHavePlayer(board, valueUser)) {
-                view.println("Vous avez choisi une case deja prise !");
+                gameView.println("Vous avez choisi une case deja prise !");
                 display();
             } else {
                 setOwner(valueUser[0], valueUser[1], "player");

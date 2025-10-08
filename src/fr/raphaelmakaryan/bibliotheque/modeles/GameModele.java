@@ -1,14 +1,15 @@
-package fr.raphaelmakaryan.bibliotheque.games;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.tools.Tools;
+import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Game {
+public class GameModele {
     protected int size;
     protected int victoryValue;
     protected Cell[][] board;
@@ -26,7 +27,7 @@ public class Game {
     protected ArtificialPlayer bot2;
 
     protected Tools tools = new Tools();
-    protected View view = new View();
+    protected GameView gameView = new GameView();
     protected InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
 
     /**
@@ -35,7 +36,7 @@ public class Game {
      * @param size         Taille des plateaux
      * @param victoryValue Valeur de victoire
      */
-    public Game(int size, int victoryValue) {
+    public GameModele(int size, int victoryValue) {
         this.size = size;
         this.victoryValue = victoryValue;
         this.board = new Cell[size][size];
@@ -94,17 +95,17 @@ public class Game {
      * Affichage du tableau
      */
     public void display() {
-        view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println(separationBoardGame());
+        gameView.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
+        gameView.println(separationBoardGame());
         for (int i = 0; i < this.size; i++) {
-            view.print("|");
+            gameView.print("|");
             for (int j = 0; j < this.size; j++) {
                 Cell c = this.board[i][j];
-                view.print(c.getRepresentation());
-                view.print("|");
+                gameView.print(c.getRepresentation());
+                gameView.print("|");
             }
             System.out.print("\n");
-            view.println(separationBoardGame());
+            gameView.println(separationBoardGame());
         }
         tools.clearLine();
         if (whoPlayNow.contains("J")) {
@@ -142,16 +143,16 @@ public class Game {
             try {
                 valueUser[i] = Integer.parseInt(splitValeur[i]);
             } catch (Exception e) {
-                view.println("Veuillez récrire des chiffres avec un espace !");
+                gameView.println("Veuillez récrire des chiffres avec un espace !");
                 return false;
             }
         }
         if (choice.length() != 3) {
-            view.println("Veuillez récrire !");
+            gameView.println("Veuillez récrire !");
             return false;
         }
         if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
-            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
+            gameView.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
             return false;
         }
         return true;
@@ -168,10 +169,10 @@ public class Game {
                 int[] valueUser = returnValueUser(choice);
                 Cell[][] board = this.getBoard();
                 if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                    view.println("Vous êtes sorti du tableau !");
+                    gameView.println("Vous êtes sorti du tableau !");
                     display();
                 } else if (verificationHavePlayer(board, valueUser)) {
-                    view.println("Vous avez choisi une case deja prise !");
+                    gameView.println("Vous avez choisi une case deja prise !");
                     display();
                 } else {
                     setOwner(valueUser[0], valueUser[1], "player");
@@ -184,7 +185,7 @@ public class Game {
             int columnRandomBot = new Random().nextInt(0, size);
             int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
             if (verificationHavePlayer(board, valueBot)) {
-                view.println("Vous avez choisi une case deja prise !");
+                gameView.println("Vous avez choisi une case deja prise !");
                 display();
             } else {
                 setOwner(valueBot[0], valueBot[1], "bot");

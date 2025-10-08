@@ -1,10 +1,8 @@
-package fr.raphaelmakaryan.bibliotheque.games;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 
-import java.util.*;
-
-public class TicTacToe extends Game {
+public class TicTacToe extends GameModele {
     int[] leftRight = {0, 1, 2};
     int[] rightLeft = {2, 1, 0};
 

@@ -1,13 +1,14 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
-import fr.raphaelmakaryan.bibliotheque.games.Gomoku;
-import fr.raphaelmakaryan.bibliotheque.games.Puissance4;
-import fr.raphaelmakaryan.bibliotheque.games.TicTacToe;
+import fr.raphaelmakaryan.bibliotheque.modeles.Gomoku;
+import fr.raphaelmakaryan.bibliotheque.modeles.Puissance4;
+import fr.raphaelmakaryan.bibliotheque.modeles.TicTacToe;
+import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import javax.swing.*;
 
 public class InteractionUtilisateur {
-    View view = new View();
+    GameView gameView = new GameView();
 
     /**
      * Affiche la boite de dialogue
@@ -41,24 +42,24 @@ public class InteractionUtilisateur {
         switch (choix) {
             case 0:
                 // Mode 1v1 Humain donc 10 (J1) et 11 (J2)
-                view.println("Mode 1v1 Humain sélectionné");
+                gameView.println("Mode 1v1 Humain sélectionné");
                 gameTTT.setMode("JvJ");
                 gameTTT.createPlayer(new int[]{10, 11});
                 break;
             case 1:
                 // Mode 1v1 Contre Bot donc 10 et 20 (B1)
-                view.println("Mode 1v1 Contre Bot sélectionné");
+                gameView.println("Mode 1v1 Contre Bot sélectionné");
                 gameTTT.setMode("JvB");
                 gameTTT.createPlayer(new int[]{10, 20});
                 break;
             case 2:
                 // Mode 1v1 Bots 20 et 21 (B2)
-                view.println("Mode 1v1 Bots sélectionné");
+                gameView.println("Mode 1v1 Bots sélectionné");
                 gameTTT.setMode("BvB");
                 gameTTT.createPlayer(new int[]{20, 21});
                 break;
             default:
-                view.println("Aucun mode sélectionné. Fin du jeu.");
+                gameView.println("Aucun mode sélectionné. Fin du jeu.");
                 break;
         }
     }
@@ -70,7 +71,7 @@ public class InteractionUtilisateur {
      */
     public void chooseGameP4(Puissance4 gameP4) {
         gameP4.setGameSelected("p4");
-        view.println("Mode 1v1 Humain");
+        gameView.println("Mode 1v1 Humain");
         gameP4.setMode("JvJ");
         gameP4.createPlayer(new int[]{10, 11});
     }
@@ -82,7 +83,7 @@ public class InteractionUtilisateur {
      */
     public void chooseGameGomoku(Gomoku gameGo) {
         gameGo.setGameSelected("gomoku");
-        view.println("Mode 1v1 Humain");
+        gameView.println("Mode 1v1 Humain");
         gameGo.setMode("JvJ");
         gameGo.createPlayer(new int[]{10, 11});
     }
@@ -107,16 +108,16 @@ public class InteractionUtilisateur {
 
         switch (choix) {
             case 0:
-                view.println("TicTacToe sélectionné");
+                gameView.println("TicTacToe sélectionné");
                 return "tictactoe";
             case 1:
-                view.println("Puissance 4 sélectionné");
+                gameView.println("Puissance 4 sélectionné");
                 return "p4";
             case 2:
-                view.println("Gomoku sélectionné");
+                gameView.println("Gomoku sélectionné");
                 return "gomoku";
             default:
-                view.println("Aucun mode sélectionné. Fin du jeu.");
+                gameView.println("Aucun mode sélectionné. Fin du jeu.");
                 return "null";
         }
     }
