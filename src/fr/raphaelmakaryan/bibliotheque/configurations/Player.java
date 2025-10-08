@@ -8,8 +8,8 @@ public class Player {
     /**
      * Création d'un joueur "joueur"
      *
-     * @param gameModele  Le jeu
-     * @param value Valeur de la place
+     * @param gameModele Le jeu
+     * @param value      Valeur de la place
      */
     public Player(GameModele gameModele, int value) {
         if (gameModele.getMode().equals("JvB")) {

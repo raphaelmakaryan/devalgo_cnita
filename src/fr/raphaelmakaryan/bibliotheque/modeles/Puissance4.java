@@ -31,28 +31,4 @@ public class Puissance4 extends GameModele {
         }
         return newValue;
     }
-
-    /**
-     * Deuxieme fonction de vérification avant modification du plateau
-     *
-     * @param choice Choix du joueur
-     */
-    @Override
-    public void getMoveFromPlayer(String choice) {
-        if (verificationChoiceUser(choice)) {
-            int[] valueUser = tokenDescent(returnValueUser(choice));
-            Cell[][] board = getBoard();
-            if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                gameView.println("Vous êtes sorti du tableau !");
-                display();
-            } else if (verificationHavePlayer(board, valueUser)) {
-                gameView.println("Vous avez choisi une case deja prise !");
-                display();
-            } else {
-                setOwner(valueUser[0], valueUser[1], "player");
-            }
-        } else {
-            display();
-        }
-    }
 }

@@ -1,5 +1,9 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
+import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
+import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
+import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 import fr.raphaelmakaryan.bibliotheque.modeles.Gomoku;
 import fr.raphaelmakaryan.bibliotheque.modeles.Puissance4;
 import fr.raphaelmakaryan.bibliotheque.modeles.TicTacToe;
@@ -20,14 +24,16 @@ public class InteractionUtilisateur {
         return JOptionPane.showInputDialog(message);
     }
 
+
     /**
      * Boite d'affichage pour le choix du mode dans TicTacToe
      *
-     * @param gameTTT l'instance du jeu tictactoe
+     * @param gameController Controller du tictactoe
      */
-    public void chooseGameTicTacToe(TicTacToe gameTTT) {
+    public void chooseGameTicTacToe(TicTacToeController gameController) {
+        GameModele modele = gameController.getGame();
+        modele.setGameSelected("tictactoe");
         String[] options = {"1v1 Humain", "1v1 Contre Bot", "1v1 Bots"};
-        gameTTT.setGameSelected("tictactoe");
         int choix = JOptionPane.showOptionDialog(
                 null,
                 "Choisissez le mode de jeu :",
@@ -43,20 +49,20 @@ public class InteractionUtilisateur {
             case 0:
                 // Mode 1v1 Humain donc 10 (J1) et 11 (J2)
                 gameView.println("Mode 1v1 Humain sélectionné");
-                gameTTT.setMode("JvJ");
-                gameTTT.createPlayer(new int[]{10, 11});
+                modele.setMode("JvJ");
+                gameController.initializePlayers(new int[]{10, 11});
                 break;
             case 1:
                 // Mode 1v1 Contre Bot donc 10 et 20 (B1)
                 gameView.println("Mode 1v1 Contre Bot sélectionné");
-                gameTTT.setMode("JvB");
-                gameTTT.createPlayer(new int[]{10, 20});
+                modele.setMode("JvB");
+                gameController.initializePlayers(new int[]{10, 20});
                 break;
             case 2:
                 // Mode 1v1 Bots 20 et 21 (B2)
                 gameView.println("Mode 1v1 Bots sélectionné");
-                gameTTT.setMode("BvB");
-                gameTTT.createPlayer(new int[]{20, 21});
+                modele.setMode("BvB");
+                gameController.initializePlayers(new int[]{20, 21});
                 break;
             default:
                 gameView.println("Aucun mode sélectionné. Fin du jeu.");
@@ -67,25 +73,26 @@ public class InteractionUtilisateur {
     /**
      * Affichage pour le choix du mode dans Puissance 4
      *
-     * @param gameP4 l'instance du jeu puissance 4
+     * @param gameController Controller du puissance 4
      */
-    public void chooseGameP4(Puissance4 gameP4) {
-        gameP4.setGameSelected("p4");
+    public void chooseGameP4(Puissance4Controller gameController) {
+        GameModele modele = gameController.getGame();
+        modele.setGameSelected("p4");
         gameView.println("Mode 1v1 Humain");
-        gameP4.setMode("JvJ");
-        gameP4.createPlayer(new int[]{10, 11});
+
     }
 
     /**
      * Affichage pour le choix du mode dans Gomoku
      *
-     * @param gameGo l'instance du jeu gomoku
+     * @param gameController Controller du go
      */
-    public void chooseGameGomoku(Gomoku gameGo) {
-        gameGo.setGameSelected("gomoku");
+    public void chooseGameGomoku(GomokuController gameController) {
+        GameModele modele = gameController.getGame();
+        modele.setGameSelected("gomoku");
         gameView.println("Mode 1v1 Humain");
-        gameGo.setMode("JvJ");
-        gameGo.createPlayer(new int[]{10, 11});
+        modele.setMode("JvJ");
+        gameController.initializePlayers(new int[]{10, 11});
     }
 
     /**
