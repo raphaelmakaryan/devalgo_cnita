@@ -7,14 +7,12 @@ public class Player {
     public String representation;
 
     public Player(Game game, int value) {
-        if (game.mode.equals("JvB")) {
+        if (game.getMode().equals("JvB")) {
             this.representation = game.listRepresentation[0];
         } else {
-            if (value == 1) {
-                this.representation = game.listRepresentation[0];
-            } else {
-                this.representation = game.listRepresentation[1];
-            }
+            this.representation = (value == 1)
+                    ? game.listRepresentation[0]
+                    : game.listRepresentation[1];
         }
     }
 
