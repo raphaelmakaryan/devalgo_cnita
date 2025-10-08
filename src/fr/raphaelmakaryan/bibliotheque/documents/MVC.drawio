@@ -1,0 +1,40 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" version="28.2.5">
+  <diagram name="Page-1" id="AEfFvpfA0PrJpsahhnSm">
+    <mxGraphModel dx="3021" dy="1068" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="583" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BNPRaXnq0KBUVInosA-8-1" value="Contrôleur&lt;br&gt;&lt;br&gt;- Récupère les valeur du joueur&lt;br&gt;- Demande mise a jour de la vue" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-190" y="57" width="380" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="BNPRaXnq0KBUVInosA-8-2" value="&lt;font&gt;Vue&lt;/font&gt;&lt;div&gt;&lt;font&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;- Affichage de la grille X/0&lt;/div&gt;&lt;div&gt;- Messages&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="210" width="290" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="BNPRaXnq0KBUVInosA-8-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.109;exitY=0.007;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="BNPRaXnq0KBUVInosA-8-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-190" y="100" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-629" y="100" />
+              <mxPoint x="-190" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BNPRaXnq0KBUVInosA-8-5" value="Modèle&lt;br&gt;&lt;br&gt;- Etat u jeu (grille, tour)&lt;br&gt;- Règle du TicTacToe&lt;br&gt;- Bot adverse&lt;br&gt;- Gestion des données (état)" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-680" y="210" width="470" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="BNPRaXnq0KBUVInosA-8-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1.001;entryY=0.581;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.274;exitY=-0.004;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="BNPRaXnq0KBUVInosA-8-2" target="BNPRaXnq0KBUVInosA-8-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BNPRaXnq0KBUVInosA-8-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.851;entryY=-0.041;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-190" y="106.02" as="sourcePoint" />
+            <mxPoint x="-280.03" y="210.00199999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BNPRaXnq0KBUVInosA-8-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.854;entryY=-0.007;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="BNPRaXnq0KBUVInosA-8-1" target="BNPRaXnq0KBUVInosA-8-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
