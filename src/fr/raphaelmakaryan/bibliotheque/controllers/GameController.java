@@ -96,13 +96,39 @@ public abstract class GameController {
         }
     }
 
+/*
+    public void minimax() {
+        int score = 0;
+        if (game.players.get(0).contains("B") && checkHorizontalMinimax(game.getBotPlayNow().getRepresentation())) {
+            score = +10;
+        } else if (game.players.get(1).contains("B") && checkHorizontalMinimax(game.getBotPlayNow().getRepresentation())) {
+            score = +10;
+        } else if (game.players.get(0).contains("J") && checkHorizontalMinimax(game.getPlayerPlayNow().getRepresentation())) {
+            score = -10;
+        } else if (game.players.get(1).contains("J") && checkHorizontalMinimax(game.getPlayerPlayNow().getRepresentation())) {
+            score = -10;
+        }
+        //System.out.println(isMovesLeftMinimax());
+        System.out.println("Score : " + score);
+    }
+ */
 
     public void minimax() {
-        String player1 = game.players.get(1);
-        System.out.println(game.players.get(1));
-        String player2 = game.players.get(2);
-        //System.out.println(isMovesLeftMinimax());
+        String botSymbol = game.getBotPlayNow() != null ? game.getBotPlayNow().getRepresentation() : " X ";
+        String playerSymbol = game.getPlayerPlayNow() != null ? game.getPlayerPlayNow().getRepresentation() : " O ";
+
+        int score = 0;
+
+        if (checkHorizontalMinimax(botSymbol)) {
+            score = +10;
+        } else if (checkHorizontalMinimax(playerSymbol)) {
+            score = -10;
+        }
+
+        System.out.println("Bot : " + botSymbol + " / Player : " + playerSymbol);
+        System.out.println("Score : " + score);
     }
+
 
     /**
      * Vérifie si une cellule est vide (true : case libre, false : plateau plein)
