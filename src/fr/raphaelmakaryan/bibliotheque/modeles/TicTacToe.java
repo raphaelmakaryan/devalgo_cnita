@@ -1,10 +1,8 @@
-package fr.raphaelmakaryan.bibliotheque.games;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 
-import java.util.*;
-
-public class TicTacToe extends Game {
+public class TicTacToe extends GameModele {
     int[] leftRight = {0, 1, 2};
     int[] rightLeft = {2, 1, 0};
 
@@ -19,10 +17,7 @@ public class TicTacToe extends Game {
      */
     @Override
     public boolean checkWin() {
-        if (checkVertical() || checkHorizontal() || checkSide(leftRight) || checkSide(rightLeft)) {
-            return true;
-        }
-        return false;
+        return checkVertical() || checkHorizontal() || this.checkSide(leftRight) || this.checkSide(rightLeft);
     }
 
     /**
@@ -37,8 +32,8 @@ public class TicTacToe extends Game {
         int valueEqualsPlayer = 0;
         boolean result = false;
         while (size != checkValue) {
-            for (int i = 0; i < board.length; i++) {
-                Cell c = board[i][valeurColonne];
+            for (Cell[] cells : board) {
+                Cell c = cells[valeurColonne];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {

@@ -1,33 +1,35 @@
-package fr.raphaelmakaryan.bibliotheque.games;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
+import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
+import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
+import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
 import fr.raphaelmakaryan.bibliotheque.tools.Tools;
+import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 
-public class Game {
-    protected int size;
+public class GameModele {
+    public int size;
     protected int victoryValue;
-    protected Cell[][] board;
-    protected boolean started;
-    protected String whoPlayNow;
+    public Cell[][] board;
+    public boolean started;
+    public String whoPlayNow;
 
     public String gameSelected;
     public String[] listRepresentation;
     public String mode;
 
-    protected List<String> players = new ArrayList<>();
-    protected Player player1;
-    protected Player player2;
-    protected ArtificialPlayer bot1;
-    protected ArtificialPlayer bot2;
+    public List<String> players = new ArrayList<>();
+    public Player player1;
+    public Player player2;
+    public ArtificialPlayer bot1;
+    public ArtificialPlayer bot2;
 
-    protected Tools tools = new Tools();
-    protected View view = new View();
-    protected InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
+    public Tools tools = new Tools();
+    public GameView gameView = new GameView();
+    public InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
 
     /**
      * Constructeur des jeux
@@ -35,7 +37,7 @@ public class Game {
      * @param size         Taille des plateaux
      * @param victoryValue Valeur de victoire
      */
-    public Game(int size, int victoryValue) {
+    public GameModele(int size, int victoryValue) {
         this.size = size;
         this.victoryValue = victoryValue;
         this.board = new Cell[size][size];
@@ -56,61 +58,25 @@ public class Game {
         String value = interactionUtilisateur.chooseGame();
         switch (value) {
             case "tictactoe":
-                TicTacToe ticTacToe = new TicTacToe(3, 3);
-                interactionUtilisateur.chooseGameTicTacToe(ticTacToe);
+                TicTacToe modeleTTT = new TicTacToe(3, 3);
+                TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
+                interactionUtilisateur.chooseGameTicTacToe(controllerTTT);
                 break;
 
             case "p4":
-                Puissance4 puissance4 = new Puissance4(7, 4);
-                interactionUtilisateur.chooseGameP4(puissance4);
+                Puissance4 modeleP4 = new Puissance4(7, 4);
+                Puissance4Controller controllerP4 = new Puissance4Controller(modeleP4);
+                interactionUtilisateur.chooseGameP4(controllerP4);
                 break;
 
             case "gomoku":
-                Gomoku gomoku = new Gomoku(15, 5);
-                interactionUtilisateur.chooseGameGomoku(gomoku);
+                Gomoku modeleGO = new Gomoku(15, 5);
+                GomokuController controllerGO = new GomokuController(modeleGO);
+                interactionUtilisateur.chooseGameGomoku(controllerGO);
                 break;
             default:
                 System.exit(0);
                 break;
-        }
-    }
-
-    /**
-     * Logique de jeu
-     */
-    public void play() {
-        isOver();
-        if (!started) {
-            randomPlayer();
-            started = true;
-        } else {
-            nextPlayer();
-        }
-        tools.setTimeout(1);
-        display();
-    }
-
-    /**
-     * Affichage du tableau
-     */
-    public void display() {
-        view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println(separationBoardGame());
-        for (int i = 0; i < this.size; i++) {
-            view.print("|");
-            for (int j = 0; j < this.size; j++) {
-                Cell c = this.board[i][j];
-                view.print(c.getRepresentation());
-                view.print("|");
-            }
-            System.out.print("\n");
-            view.println(separationBoardGame());
-        }
-        tools.clearLine();
-        if (whoPlayNow.contains("J")) {
-            getMoveFromPlayer(interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
-        } else {
-            getMoveFromPlayer("bot");
         }
     }
 
@@ -142,65 +108,24 @@ public class Game {
             try {
                 valueUser[i] = Integer.parseInt(splitValeur[i]);
             } catch (Exception e) {
-                view.println("Veuillez récrire des chiffres avec un espace !");
+                gameView.println("Veuillez récrire des chiffres avec un espace !");
                 return false;
             }
         }
         if (choice.length() != 3) {
-            view.println("Veuillez récrire !");
+            gameView.println("Veuillez récrire !");
             return false;
         }
         if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
-            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
+            gameView.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
             return false;
         }
         return true;
     }
 
-    /**
-     * Deuxieme fonction de vérification avant modification du plateau
-     *
-     * @param choice Choix du joueur
-     */
-    public void getMoveFromPlayer(String choice) {
-        if (!Objects.equals(choice, "bot")) {
-            if (verificationChoiceUser(choice)) {
-                int[] valueUser = returnValueUser(choice);
-                Cell[][] board = this.getBoard();
-                if (valueUser[0] > size || valueUser[1] > size || valueUser[0] < -1 || valueUser[1] < -1) {
-                    view.println("Vous êtes sorti du tableau !");
-                    display();
-                } else if (verificationHavePlayer(board, valueUser)) {
-                    view.println("Vous avez choisi une case deja prise !");
-                    display();
-                } else {
-                    setOwner(valueUser[0], valueUser[1], "player");
-                }
-            } else {
-                display();
-            }
-        } else {
-            int lineRandomBot = new Random().nextInt(0, size);
-            int columnRandomBot = new Random().nextInt(0, size);
-            int[] valueBot = returnValueUser(lineRandomBot + " " + columnRandomBot);
-            if (verificationHavePlayer(board, valueBot)) {
-                view.println("Vous avez choisi une case deja prise !");
-                display();
-            } else {
-                setOwner(valueBot[0], valueBot[1], "bot");
-            }
-        }
-    }
-
-    /**
-     * Modification du plateau
-     *
-     * @param ligne   Ligne
-     * @param colonne Colonne
-     * @param type    Type de joueur
-     */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
+
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
@@ -208,8 +133,8 @@ public class Game {
             ArtificialPlayer bot = getBotPlayNow();
             board[ligne][colonne].setRepresentation(bot.getRepresentation());
         }
-        play();
     }
+
 
     /**
      * Verification s'il y a deja un joueur ou non
@@ -229,58 +154,6 @@ public class Game {
         return false;
     }
 
-    /**
-     * Choix du joueur random au debut du jeu
-     */
-    public void randomPlayer() {
-        int value = new Random().nextInt(0, 1);
-        if (players.get(0).contains("J") && players.get(1).contains("J")) {
-            if (value == 0) {
-                whoPlayNow = "J1";
-            } else {
-                whoPlayNow = "J2";
-            }
-        } else if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "J1";
-            } else {
-                whoPlayNow = "B2";
-            }
-        } else if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "B1";
-            } else {
-                whoPlayNow = "B2";
-            }
-        }
-    }
-
-    /**
-     * Changement de joueur
-     */
-    public void nextPlayer() {
-        if (players.get(0).contains("J") && players.get(1).contains("J")) {
-            if (Objects.equals(whoPlayNow, "J1")) {
-                whoPlayNow = "J2";
-            } else if (Objects.equals(whoPlayNow, "J2")) {
-                whoPlayNow = "J1";
-            }
-        }
-        if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (Objects.equals(whoPlayNow, "J1")) {
-                whoPlayNow = "B1";
-            } else if (Objects.equals(whoPlayNow, "B1")) {
-                whoPlayNow = "J1";
-            }
-        }
-        if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (whoPlayNow.equals("B1")) {
-                whoPlayNow = "B2";
-            } else if (Objects.equals(whoPlayNow, "B2")) {
-                whoPlayNow = "B1";
-            }
-        }
-    }
 
     /**
      * Retourne quel user est actuellement en train de jouer
@@ -309,31 +182,12 @@ public class Game {
     }
 
     /**
-     * Vérification de fin de jeu
-     */
-    public void isOver() {
-        if (!Objects.equals(whoPlayNow, "null")) {
-            if (checkWin()) {
-                System.out.println("GG " + whoPlayNow);
-                System.exit(0);
-            }
-            if (checkCellFilled() == (size * size)) {
-                System.out.println("Match nul !");
-                System.exit(0);
-            }
-        }
-    }
-
-    /**
      * Fonctions principal si y'a victoire ou non
      *
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        if (checkVertical() || checkHorizontal()) {
-            return true;
-        }
-        return false;
+        return checkVertical() || checkHorizontal();
     }
 
     /**
@@ -377,8 +231,8 @@ public class Game {
         int valueEqualsPlayer = 0;
         boolean result = false;
         while (size - 1 != checkValue) {
-            for (int i = 0; i < board.length; i++) {
-                Cell c = board[i][valeurColonne];
+            for (Cell[] cells : board) {
+                Cell c = cells[valeurColonne];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else {
@@ -404,9 +258,9 @@ public class Game {
      */
     public int checkCellFilled() {
         int valueRempli = 0;
-        for (int i = 0; i < board.length; i++) {
+        for (Cell[] cells : board) {
             for (int j = 0; j < board.length; j++) {
-                if (!board[i][j].isEmpty()) {
+                if (!cells[j].isEmpty()) {
                     valueRempli = valueRempli + 1;
                 }
             }
@@ -415,48 +269,18 @@ public class Game {
     }
 
     /**
-     * Crée les joueurs selon le choix du mode de jeu
-     *
-     * @param value Valeur du joueur
-     */
-    public void createPlayer(int[] value) {
-        for (int i = 0; i < value.length; i++) {
-            if (value[i] == 10) {
-                player1 = new Player(this, 1);
-                players.add("J1");
-            }
-            if (value[i] == 11) {
-                player2 = new Player(this, 2);
-                players.add("J2");
-            }
-            if (value[i] == 20) {
-                bot1 = new ArtificialPlayer(this, 1);
-                players.add("B1");
-            }
-            if (value[i] == 21) {
-                bot2 = new ArtificialPlayer(this, 2);
-                players.add("B1");
-            }
-        }
-        play();
-    }
-
-    /**
      * Permet de récupérer le symbole du joueur actuel
      *
      * @return Retourne son symbole
      */
     public String getCurrentPlayerRepresentation() {
-        if (whoPlayNow.equals("J1")) {
-            return player1.getRepresentation();
-        } else if (whoPlayNow.equals("J2")) {
-            return player2.getRepresentation();
-        } else if (whoPlayNow.equals("B1")) {
-            return bot1.getRepresentation();
-        } else if (whoPlayNow.equals("B2")) {
-            return bot2.getRepresentation();
-        }
-        return "UNDEFINED";
+        return switch (whoPlayNow) {
+            case "J1" -> player1.getRepresentation();
+            case "J2" -> player2.getRepresentation();
+            case "B1" -> bot1.getRepresentation();
+            case "B2" -> bot2.getRepresentation();
+            default -> "UNDEFINED";
+        };
     }
 
     /**
@@ -465,7 +289,6 @@ public class Game {
      * @return Retourne la séparation
      */
     public String separationBoardGame() {
-        ;
         return switch (getGameSelected()) {
             case "tictactoe" -> "-------------";
             case "p4" -> "-----------------------------";
@@ -475,7 +298,34 @@ public class Game {
     }
 
     /**
-     * Récupere le board
+     * Crée les joueurs selon le choix du mode de jeu
+     *
+     * @param value Valeur du joueur
+     */
+    public void createPlayer(int[] value) {
+        for (int j : value) {
+            if (j == 10) {
+                player1 = new Player(this, 1);
+                players.add("J1");
+            }
+            if (j == 11) {
+                player2 = new Player(this, 2);
+                players.add("J2");
+            }
+            if (j == 20) {
+                bot1 = new ArtificialPlayer(this, 1);
+                players.add("B1");
+            }
+            if (j == 21) {
+                bot2 = new ArtificialPlayer(this, 2);
+                players.add("B1");
+            }
+        }
+    }
+
+
+    /**
+     * Récupère le board
      *
      * @return Retourne le board
      */
@@ -493,7 +343,7 @@ public class Game {
     }
 
     /**
-     * Récupere le mode
+     * Récupère le mode
      *
      * @return Retourne le mode
      */
@@ -501,10 +351,18 @@ public class Game {
         return mode;
     }
 
+    /**
+     * Mets à jour le jeu sélectionné
+     * @param gameSelected Jeu sélectionné
+     */
     public void setGameSelected(String gameSelected) {
         this.gameSelected = gameSelected;
     }
 
+    /**
+     * Récupère le jeu sélectionné
+     * @return Le retourne
+     */
     public String getGameSelected() {
         return gameSelected;
     }

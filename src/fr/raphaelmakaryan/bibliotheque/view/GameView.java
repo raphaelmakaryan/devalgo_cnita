@@ -1,6 +1,6 @@
-package fr.raphaelmakaryan.bibliotheque.configurations;
+package fr.raphaelmakaryan.bibliotheque.view;
 
-public class View {
+public class GameView {
 
     /**
      * Fonction d'affichage dans la console à la suite

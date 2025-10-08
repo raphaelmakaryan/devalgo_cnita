@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
-import fr.raphaelmakaryan.bibliotheque.games.Game;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 
 public class ArtificialPlayer {
     public String representation;
@@ -8,23 +8,23 @@ public class ArtificialPlayer {
     /**
      * Création d'un joueur "bot"
      *
-     * @param game  Le jeu
+     * @param gameModele  Le jeu
      * @param value Valeur de la place
      */
-    public ArtificialPlayer(Game game, int value) {
-        if (game.mode.equals("JvB")) {
-            this.representation = game.listRepresentation[1];
+    public ArtificialPlayer(GameModele gameModele, int value) {
+        if (gameModele.mode.equals("JvB")) {
+            this.representation = gameModele.listRepresentation[1];
         } else {
             if (value == 1) {
-                this.representation = game.listRepresentation[0];
+                this.representation = gameModele.listRepresentation[0];
             } else {
-                this.representation = game.listRepresentation[1];
+                this.representation = gameModele.listRepresentation[1];
             }
         }
     }
 
     /**
-     * Récupere le signe
+     * Récupère le signe
      *
      * @return retourne le signe
      */
