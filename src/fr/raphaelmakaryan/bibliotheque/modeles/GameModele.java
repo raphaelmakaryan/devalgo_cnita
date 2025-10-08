@@ -59,8 +59,7 @@ public class GameModele {
         switch (value) {
             case "tictactoe":
                 TicTacToe modeleTTT = new TicTacToe(3, 3);
-                TicTacToeStateVisitor ticTacToeStateVisitor = new TicTacToeStateVisitorImpl();
-                TicTacToeController controllerTTT = new TicTacToeController(modeleTTT, modeleTTT, ticTacToeStateVisitor);
+                TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
                 interactionUtilisateur.chooseGameTicTacToe(controllerTTT);
                 break;
 

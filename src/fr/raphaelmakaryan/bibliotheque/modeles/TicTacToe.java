@@ -1,17 +1,13 @@
 package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
-import fr.raphaelmakaryan.bibliotheque.configurations.TicTacToeState;
-import fr.raphaelmakaryan.bibliotheque.configurations.TicTacToeStateVisitor;
 
 public class TicTacToe extends GameModele {
     int[] leftRight = {0, 1, 2};
     int[] rightLeft = {2, 1, 0};
-    private TicTacToeState state;
 
     public TicTacToe(int size, int victoryValue) {
         super(size, victoryValue);
-        this.state = TicTacToeState.INITIAL;
     }
 
     /**
@@ -82,17 +78,5 @@ public class TicTacToe extends GameModele {
             result = true;
         }
         return result;
-    }
-
-    public void accept(TicTacToeStateVisitor visitor) {
-        visitor.visit(state);
-    }
-
-    public TicTacToeState getState() {
-        return state;
-    }
-
-    public void setState(TicTacToeState state) {
-        this.state = state;
     }
 }
