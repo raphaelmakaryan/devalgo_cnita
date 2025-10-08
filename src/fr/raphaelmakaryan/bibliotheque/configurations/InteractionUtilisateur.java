@@ -78,8 +78,9 @@ public class InteractionUtilisateur {
     public void chooseGameP4(Puissance4Controller gameController) {
         GameModele modele = gameController.getGame();
         modele.setGameSelected("p4");
+        modele.setMode("JvJ");
         gameView.println("Mode 1v1 Humain");
-
+        gameController.initializePlayers(new int[]{10, 11});
     }
 
     /**
