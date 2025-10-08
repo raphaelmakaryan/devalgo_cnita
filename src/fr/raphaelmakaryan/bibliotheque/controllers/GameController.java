@@ -8,9 +8,11 @@ import java.util.Random;
 
 public abstract class GameController {
     protected GameModele game;
+    private GameState state;
 
     public GameController(GameModele game) {
         this.game = game;
+        this.state = GameState.INITIAL;
     }
 
     /**
@@ -22,6 +24,8 @@ public abstract class GameController {
             randomPlayer();
             game.started = true;
         } else {
+            handleEvent("PartieContinue");
+            handleEvent("TourSuivant");
             nextPlayer();
         }
         game.tools.setTimeout(1);
@@ -140,6 +144,7 @@ public abstract class GameController {
                 game.whoPlayNow = "B2";
             } else if (Objects.equals(game.whoPlayNow, "B2")) {
                 game.whoPlayNow = "B1";
+
             }
         }
     }
@@ -150,10 +155,12 @@ public abstract class GameController {
     public void isOver() {
         if (!Objects.equals(game.whoPlayNow, "null")) {
             if (game.checkWin()) {
+                handleEvent("PartieTerminée");
                 System.out.println("GG " + game.whoPlayNow);
                 System.exit(0);
             }
             if (game.checkCellFilled() == (game.size * game.size)) {
+                handleEvent("PartieTerminée");
                 System.out.println("Match nul !");
                 System.exit(0);
             }
@@ -168,6 +175,7 @@ public abstract class GameController {
      * @param type    Type de joueur
      */
     public void handlePlayerMove(int ligne, int colonne, String type) {
+        handleEvent("ActionJoueur");
         game.setOwner(ligne, colonne, type);
         play();
     }
@@ -178,7 +186,9 @@ public abstract class GameController {
      * @param value Valeur des joueurs
      */
     public void initializePlayers(int[] value) {
+        handleEvent("JeuInitialisé");
         game.createPlayer(value);
+        handleEvent("DébutDePartie");
         play();
     }
 
@@ -191,4 +201,47 @@ public abstract class GameController {
         return game;
     }
 
+    public GameState getState() {
+        return state;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
+    }
+
+    public void handleEvent(String event) {
+        switch (state) {
+            case INITIAL:
+                if ("JeuInitialisé".equals(event)) {
+                    setState(GameState.ATTENTE_DEBUT);
+                }
+                break;
+            case ATTENTE_DEBUT:
+                if ("DébutDePartie".equals(event)) {
+                    setState(GameState.TOUR_JOUEUR);
+                }
+                break;
+            case TOUR_JOUEUR:
+                if ("TourTerminé".equals(event)) {
+                    setState(GameState.ATTENTE_TOUR_SUIVANT);
+                } else if ("ActionJoueur".equals(event)) {
+                    setState(GameState.VERIFICATION_FIN_PARTIE);
+                }
+                break;
+            case ATTENTE_TOUR_SUIVANT:
+                if ("TourSuivant".equals(event)) {
+                    setState(GameState.TOUR_JOUEUR);
+                } else if ("ActionJoueur".equals(event)) {
+                    setState(GameState.VERIFICATION_FIN_PARTIE);
+                }
+                break;
+            case VERIFICATION_FIN_PARTIE:
+                if ("PartieTerminée".equals(event)) {
+                    setState(GameState.FIN_PARTIE);
+                } else if ("PartieContinue".equals(event)) {
+                    setState(GameState.TOUR_JOUEUR);
+                }
+                break;
+        }
+    }
 }
