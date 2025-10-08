@@ -95,6 +95,10 @@ public abstract class GameController {
         }
     }
 
+    public void minimax() {
+
+    }
+
     /**
      * Choix du joueur random au debut du jeu
      */
@@ -199,10 +203,6 @@ public abstract class GameController {
      */
     public GameModele getGame() {
         return game;
-    }
-
-    public GameState getState() {
-        return state;
     }
 
     public void setState(GameState state) {
