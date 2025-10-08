@@ -264,36 +264,6 @@ public class Puissance4 extends Game {
         return false;
     }
 
-    /**
-     * Vérification si le joueur à gagner en vertical
-     *
-     * @return Si il a gagné a la vertical
-     */
-    public boolean checkVertical() {
-        int valeurColonne = 0;
-        int checkValue = 0;
-        int valueEqualsPlayer = 0;
-        boolean result = false;
-        while (size - 1 != checkValue) {
-            for (int i = 0; i < board.length; i++) {
-                Cell c = board[i][valeurColonne];
-                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
-                    valueEqualsPlayer = valueEqualsPlayer + 1;
-                } else {
-                    valueEqualsPlayer = 0;
-                }
-            }
-            if (valueEqualsPlayer == this.victoryValue) {
-                result = true;
-                checkValue = size - 1;
-            } else {
-                valeurColonne = valeurColonne + 1;
-                valueEqualsPlayer = 0;
-                checkValue = checkValue + 1;
-            }
-        }
-        return result;
-    }
 
     /**
      * Vérification si le joueur a gagné à l'horizontal

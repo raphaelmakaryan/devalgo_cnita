@@ -27,6 +27,12 @@ public class Game {
     protected View view = new View();
     protected InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
 
+    /**
+     * Constructeur des jeux
+     *
+     * @param size         Taille des plateaux
+     * @param victoryValue Valeur de victoire
+     */
     public Game(int size, int victoryValue) {
         this.size = size;
         this.victoryValue = victoryValue;
@@ -41,13 +47,14 @@ public class Game {
         this.listRepresentation = new String[]{" O ", " X "};
     }
 
+    /**
+     * Input de début pour le choix de jeu
+     */
     public void chooseGame() {
         String value = interactionUtilisateur.chooseGame();
         switch (value) {
             case "tictactoe":
                 TicTacToe ticTacToe = new TicTacToe(3, 3);
-                ticTacToe.setGameAll(this);
-                ticTacToe.setGameTTT(ticTacToe);
                 interactionUtilisateur.chooseGameTicTacToe(ticTacToe);
                 break;
 
@@ -76,7 +83,7 @@ public class Game {
             randomPlayer();
             started = true;
         } else {
-            //nextPlayer();
+            nextPlayer();
         }
         display();
     }
@@ -85,7 +92,7 @@ public class Game {
      * Affichage du tableau
      */
     public void display() {
-        //view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
+        view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
         view.println("-------------");
         for (int i = 0; i < this.size; i++) {
             view.print("|");
@@ -246,7 +253,32 @@ public class Game {
         }
     }
 
-    //nextplayer ici
+    /**
+     * Changement de joueur
+     */
+    public void nextPlayer() {
+        if (players.get(0).contains("J") && players.get(1).contains("J")) {
+            if (Objects.equals(whoPlayNow, "J1")) {
+                whoPlayNow = "J2";
+            } else if (Objects.equals(whoPlayNow, "J2")) {
+                whoPlayNow = "J1";
+            }
+        }
+        if (players.get(0).contains("J") && players.get(1).contains("B")) {
+            if (Objects.equals(whoPlayNow, "J1")) {
+                whoPlayNow = "B1";
+            } else if (Objects.equals(whoPlayNow, "B1")) {
+                whoPlayNow = "J1";
+            }
+        }
+        if (players.get(0).contains("B") && players.get(1).contains("B")) {
+            if (whoPlayNow.equals("B1")) {
+                whoPlayNow = "B2";
+            } else if (Objects.equals(whoPlayNow, "B2")) {
+                whoPlayNow = "B1";
+            }
+        }
+    }
 
     /**
      * Retourne quel user est actuellement en train de jouer
@@ -279,7 +311,6 @@ public class Game {
      */
     public void isOver() {
         if (!Objects.equals(whoPlayNow, "null")) {
-            /*
             if (checkWin()) {
                 System.out.println("GG " + whoPlayNow);
                 System.exit(0);
@@ -288,8 +319,141 @@ public class Game {
                 System.out.println("Match nul !");
                 System.exit(0);
             }
-             */
         }
+    }
+
+    /**
+     * Fonctions principal si y'a victoire ou non
+     *
+     * @return Si il a gagné ou pas
+     */
+    public boolean checkWin() {
+        if (checkVertical() || checkHorizontal()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Vérification si le joueur a gagné à l'horizontal
+     *
+     * @return Si il a gagné a horizontal
+     */
+    public boolean checkHorizontal() {
+        boolean result = false;
+        int valeurLigne = 0;
+        int checkValue = 0;
+        int valueEqualsPlayer = 0;
+        while (size * 3 != checkValue) {
+            for (int i = 0; i < size; i++) {
+                Cell c = board[valeurLigne][i];
+                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (valueEqualsPlayer == victoryValue) {
+                    result = true;
+                } else {
+                    valueEqualsPlayer = 0;
+                }
+                checkValue = checkValue + 1;
+            }
+            valeurLigne = valeurLigne + 1;
+        }
+        return result;
+    }
+
+    /**
+     * Vérification si le joueur à gagner en vertical
+     *
+     * @return Si il a gagné a la vertical
+     */
+    public boolean checkVertical() {
+        int valeurColonne = 0;
+        int checkValue = 0;
+        int valueEqualsPlayer = 0;
+        boolean result = false;
+        while (size - 1 != checkValue) {
+            for (int i = 0; i < board.length; i++) {
+                Cell c = board[i][valeurColonne];
+                if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else {
+                    valueEqualsPlayer = 0;
+                }
+            }
+            if (valueEqualsPlayer == this.victoryValue) {
+                result = true;
+                checkValue = size - 1;
+            } else {
+                valeurColonne = valeurColonne + 1;
+                valueEqualsPlayer = 0;
+                checkValue = checkValue + 1;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Vérifie si tout le plateau est rempli
+     *
+     * @return Retourne le nombre de case rempli
+     */
+    public int checkCellFilled() {
+        int valueRempli = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if (!board[i][j].isEmpty()) {
+                    valueRempli = valueRempli + 1;
+                }
+            }
+        }
+        return valueRempli;
+    }
+
+    /**
+     * Crée les joueurs selon le choix du mode de jeu
+     *
+     * @param value Valeur du joueur
+     */
+    public void createPlayer(int[] value) {
+        for (int i = 0; i < value.length; i++) {
+            if (value[i] == 10) {
+                player1 = new Player(this, 1);
+                players.add("J1");
+            }
+            if (value[i] == 11) {
+                player2 = new Player(this, 2);
+                players.add("J2");
+            }
+            if (value[i] == 20) {
+                bot1 = new ArtificialPlayer(this, 1);
+                players.add("B1");
+            }
+            if (value[i] == 21) {
+                bot2 = new ArtificialPlayer(this, 2);
+                players.add("B1");
+            }
+        }
+        play();
+    }
+
+    /**
+     * Permet de récupérer le symbole du joueur actuel
+     *
+     * @return Retourne son symbole
+     */
+    public String getCurrentPlayerRepresentation() {
+        if (whoPlayNow.equals("J1")) {
+            return player1.getRepresentation();
+        } else if (whoPlayNow.equals("J2")) {
+            return player2.getRepresentation();
+        } else if (whoPlayNow.equals("B1")) {
+            return bot1.getRepresentation();
+        } else if (whoPlayNow.equals("B2")) {
+            return bot2.getRepresentation();
+        }
+        return "UNDEFINED";
     }
 
     /**
@@ -302,11 +466,20 @@ public class Game {
     }
 
     /**
-     * Met a jour le mode de jeu (TicTacToe)
+     * Met à jour le mode de jeu (TicTacToe)
      *
      * @param mode mode choisi
      */
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    /**
+     * Récupere le mode
+     *
+     * @return Retourne le mode
+     */
+    public String getMode() {
+        return mode;
     }
 }
