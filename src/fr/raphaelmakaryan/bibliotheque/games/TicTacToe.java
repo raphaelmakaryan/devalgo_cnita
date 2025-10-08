@@ -1,7 +1,5 @@
 package fr.raphaelmakaryan.bibliotheque.games;
 
-import fr.raphaelmakaryan.bibliotheque.configurations.Player;
-import fr.raphaelmakaryan.bibliotheque.configurations.ArtificialPlayer;
 import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 
 import java.util.*;

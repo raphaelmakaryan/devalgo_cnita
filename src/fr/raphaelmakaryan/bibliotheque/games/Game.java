@@ -14,6 +14,8 @@ public class Game {
     protected Cell[][] board;
     protected boolean started;
     protected String whoPlayNow;
+
+    public String gameSelected;
     public String[] listRepresentation;
     public String mode;
 
@@ -60,16 +62,15 @@ public class Game {
 
             case "p4":
                 Puissance4 puissance4 = new Puissance4(7, 4);
-                puissance4.setGameAll(this);
-                puissance4.setGameP4(puissance4);
                 interactionUtilisateur.chooseGameP4(puissance4);
                 break;
 
-            case "gomaku":
+            case "gomoku":
                 Gomoku gomoku = new Gomoku(15, 5);
-                gomoku.setGameAll(this);
-                gomoku.setGameGomoku(gomoku);
                 interactionUtilisateur.chooseGameGomoku(gomoku);
+                break;
+            default:
+                System.exit(0);
                 break;
         }
     }
@@ -93,7 +94,7 @@ public class Game {
      */
     public void display() {
         view.println("Au tour de " + whoPlayNow + " (" + getCurrentPlayerRepresentation() + ")");
-        view.println("-------------");
+        view.println(separationBoardGame());
         for (int i = 0; i < this.size; i++) {
             view.print("|");
             for (int j = 0; j < this.size; j++) {
@@ -102,7 +103,7 @@ public class Game {
                 view.print("|");
             }
             System.out.print("\n");
-            view.println("-------------");
+            view.println(separationBoardGame());
         }
         tools.clearLine();
         if (whoPlayNow.contains("J")) {
@@ -148,8 +149,8 @@ public class Game {
             view.println("Veuillez récrire !");
             return false;
         }
-        if (valueUser[0] < 0 || valueUser[0] > 2 || valueUser[1] < 0 || valueUser[1] > 2) {
-            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
+        if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
+            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
             return false;
         }
         return true;
@@ -457,6 +458,21 @@ public class Game {
     }
 
     /**
+     * Renvoie le string selon le jeu
+     *
+     * @return Retourne la séparation
+     */
+    public String separationBoardGame() {
+        ;
+        return switch (getGameSelected()) {
+            case "tictactoe" -> "-------------";
+            case "p4" -> "-----------------------------";
+            case "gomoku" -> "-------------------------------------------------------------";
+            default -> "---";
+        };
+    }
+
+    /**
      * Récupere le board
      *
      * @return Retourne le board
@@ -481,5 +497,13 @@ public class Game {
      */
     public String getMode() {
         return mode;
+    }
+
+    public void setGameSelected(String gameSelected) {
+        this.gameSelected = gameSelected;
+    }
+
+    public String getGameSelected() {
+        return gameSelected;
     }
 }

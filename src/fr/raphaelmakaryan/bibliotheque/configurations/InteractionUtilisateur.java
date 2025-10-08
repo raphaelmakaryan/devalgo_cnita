@@ -16,6 +16,7 @@ public class InteractionUtilisateur {
 
     public void chooseGameTicTacToe(TicTacToe gameTTT) {
         String[] options = {"1v1 Humain", "1v1 Contre Bot", "1v1 Bots"};
+        gameTTT.setGameSelected("tictactoe");
         int choix = JOptionPane.showOptionDialog(
                 null,
                 "Choisissez le mode de jeu :",
@@ -53,19 +54,21 @@ public class InteractionUtilisateur {
     }
 
     public void chooseGameP4(Puissance4 gameP4) {
+        gameP4.setGameSelected("p4");
         view.println("Mode 1v1 Humain");
         gameP4.setMode("JvJ");
         gameP4.createPlayer(new int[]{10, 11});
     }
 
     public void chooseGameGomoku(Gomoku gameGo) {
+        gameGo.setGameSelected("gomoku");
         view.println("Mode 1v1 Humain");
         gameGo.setMode("JvJ");
         gameGo.createPlayer(new int[]{10, 11});
     }
 
     public String chooseGame() {
-        String[] options = {"TicTacToe", "Puissance 4", "Gomuku"};
+        String[] options = {"TicTacToe", "Puissance 4", "Gomoku"};
         int choix = JOptionPane.showOptionDialog(
                 null,
                 "Choisissez le mode de jeu :",
@@ -85,8 +88,8 @@ public class InteractionUtilisateur {
                 view.println("Puissance 4 sélectionné");
                 return "p4";
             case 2:
-                view.println("Gomaku sélectionné");
-                return "gomaku";
+                view.println("Gomoku sélectionné");
+                return "gomoku";
             default:
                 view.println("Aucun mode sélectionné. Fin du jeu.");
                 return "null";
