@@ -67,10 +67,6 @@ public class Game {
         }
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
     /**
      * Logique de jeu
      */
@@ -83,21 +79,6 @@ public class Game {
             //nextPlayer();
         }
         display();
-    }
-
-    public void isOver() {
-        if (!Objects.equals(whoPlayNow, "null")) {
-            /*
-            if (checkWin()) {
-                System.out.println("GG " + whoPlayNow);
-                System.exit(0);
-            }
-            if (checkCellFilled() == (size * size)) {
-                System.out.println("Match nul !");
-                System.exit(0);
-            }
-             */
-        }
     }
 
     /**
@@ -124,29 +105,54 @@ public class Game {
         }
     }
 
-    public void randomPlayer() {
-        int value = new Random().nextInt(0, 1);
-        if (players.get(0).contains("J") && players.get(1).contains("J")) {
-            if (value == 0) {
-                whoPlayNow = "J1";
-            } else {
-                whoPlayNow = "J2";
-            }
-        } else if (players.get(0).contains("J") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "J1";
-            } else {
-                whoPlayNow = "B2";
-            }
-        } else if (players.get(0).contains("B") && players.get(1).contains("B")) {
-            if (value == 0) {
-                whoPlayNow = "B1";
-            } else {
-                whoPlayNow = "B2";
-            }
+    /**
+     * Retourne la ligne/colonne choisie par l'user
+     *
+     * @param choice Valeur de l'user récupéré via le texte
+     * @return Retourne dans un tableau
+     */
+    public int[] returnValueUser(String choice) {
+        String[] splitValeur = choice.split(" ");
+        int[] valueUser = new int[2];
+        for (int i = 0; i < splitValeur.length; i++) {
+            valueUser[i] = Integer.parseInt(splitValeur[i]);
         }
+        return valueUser;
     }
 
+    /**
+     * Vérification des conditions avant modification du plateau
+     *
+     * @param choice Choix du joueur
+     * @return Retourne si oui ou non, s'il peut jouer
+     */
+    public boolean verificationChoiceUser(String choice) {
+        String[] splitValeur = choice.split(" ");
+        int[] valueUser = new int[2];
+        for (int i = 0; i < splitValeur.length; i++) {
+            try {
+                valueUser[i] = Integer.parseInt(splitValeur[i]);
+            } catch (Exception e) {
+                view.println("Veuillez récrire des chiffres avec un espace !");
+                return false;
+            }
+        }
+        if (choice.length() != 3) {
+            view.println("Veuillez récrire !");
+            return false;
+        }
+        if (valueUser[0] < 0 || valueUser[0] > 2 || valueUser[1] < 0 || valueUser[1] > 2) {
+            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Deuxieme fonction de vérification avant modification du plateau
+     *
+     * @param choice Choix du joueur
+     */
     public void getMoveFromPlayer(String choice) {
         if (!Objects.equals(choice, "bot")) {
             if (verificationChoiceUser(choice)) {
@@ -177,38 +183,13 @@ public class Game {
         }
     }
 
-
-    public boolean verificationChoiceUser(String choice) {
-        String[] splitValeur = choice.split(" ");
-        int[] valueUser = new int[2];
-        for (int i = 0; i < splitValeur.length; i++) {
-            try {
-                valueUser[i] = Integer.parseInt(splitValeur[i]);
-            } catch (Exception e) {
-                view.println("Veuillez récrire des chiffres avec un espace !");
-                return false;
-            }
-        }
-        if (choice.length() != 3) {
-            view.println("Veuillez récrire !");
-            return false;
-        }
-        if (valueUser[0] < 0 || valueUser[0] > 2 || valueUser[1] < 0 || valueUser[1] > 2) {
-            view.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a 2 !");
-            return false;
-        }
-        return true;
-    }
-
-    public int[] returnValueUser(String choice) {
-        String[] splitValeur = choice.split(" ");
-        int[] valueUser = new int[2];
-        for (int i = 0; i < splitValeur.length; i++) {
-            valueUser[i] = Integer.parseInt(splitValeur[i]);
-        }
-        return valueUser;
-    }
-
+    /**
+     * Modification du plateau
+     *
+     * @param ligne   Ligne
+     * @param colonne Colonne
+     * @param type    Type de joueur
+     */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
         if (type.equals("player")) {
@@ -220,6 +201,52 @@ public class Game {
         }
         play();
     }
+
+    /**
+     * Verification s'il y a deja un joueur ou non
+     *
+     * @param board     Tableau
+     * @param valueUser Valeur ligne/colonne du joueur
+     * @return Retourne s'il y a ou pas un joueur deja dans la case
+     */
+    public boolean verificationHavePlayer(Cell[][] board, int[] valueUser) {
+        String[] listPlayers = this.listRepresentation;
+        for (String listPlayer : listPlayers) {
+            Cell c = board[valueUser[0]][valueUser[1]];
+            if (c.getRepresentation().equals(listPlayer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Choix du joueur random au debut du jeu
+     */
+    public void randomPlayer() {
+        int value = new Random().nextInt(0, 1);
+        if (players.get(0).contains("J") && players.get(1).contains("J")) {
+            if (value == 0) {
+                whoPlayNow = "J1";
+            } else {
+                whoPlayNow = "J2";
+            }
+        } else if (players.get(0).contains("J") && players.get(1).contains("B")) {
+            if (value == 0) {
+                whoPlayNow = "J1";
+            } else {
+                whoPlayNow = "B2";
+            }
+        } else if (players.get(0).contains("B") && players.get(1).contains("B")) {
+            if (value == 0) {
+                whoPlayNow = "B1";
+            } else {
+                whoPlayNow = "B2";
+            }
+        }
+    }
+
+    //nextplayer ici
 
     /**
      * Retourne quel user est actuellement en train de jouer
@@ -247,22 +274,39 @@ public class Game {
         }
     }
 
-    public boolean verificationHavePlayer(Cell[][] board, int[] valueUser) {
-        String[] listPlayers = this.listRepresentation;
-        for (String listPlayer : listPlayers) {
-            Cell c = board[valueUser[0]][valueUser[1]];
-            if (c.getRepresentation().equals(listPlayer)) {
-                return true;
+    /**
+     * Vérification de fin de jeu
+     */
+    public void isOver() {
+        if (!Objects.equals(whoPlayNow, "null")) {
+            /*
+            if (checkWin()) {
+                System.out.println("GG " + whoPlayNow);
+                System.exit(0);
             }
+            if (checkCellFilled() == (size * size)) {
+                System.out.println("Match nul !");
+                System.exit(0);
+            }
+             */
         }
-        return false;
     }
 
+    /**
+     * Récupere le board
+     *
+     * @return Retourne le board
+     */
     public Cell[][] getBoard() {
         return board;
     }
 
-    public String getMode() {
-        return mode;
+    /**
+     * Met a jour le mode de jeu (TicTacToe)
+     *
+     * @param mode mode choisi
+     */
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }
