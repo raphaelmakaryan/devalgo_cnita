@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GameModele {
     public int size;
-    protected int victoryValue;
+    public int victoryValue;
     public Cell[][] board;
     public boolean started;
     public String whoPlayNow;
@@ -125,7 +125,6 @@ public class GameModele {
 
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
-
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
@@ -200,7 +199,7 @@ public class GameModele {
         int valeurLigne = 0;
         int checkValue = 0;
         int valueEqualsPlayer = 0;
-        while (size * 3 != checkValue) {
+        while ((size * size) != checkValue) {
             for (int i = 0; i < size; i++) {
                 Cell c = board[valeurLigne][i];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {

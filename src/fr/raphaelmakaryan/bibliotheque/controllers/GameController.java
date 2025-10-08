@@ -85,6 +85,7 @@ public abstract class GameController {
         } else {
             int lineRandomBot = new Random().nextInt(0, game.size);
             int columnRandomBot = new Random().nextInt(0, game.size);
+            minimax();
             int[] valueBot = game.returnValueUser(lineRandomBot + " " + columnRandomBot);
             if (game.verificationHavePlayer(board, valueBot)) {
                 game.gameView.println("Vous avez choisi une case deja prise !");
@@ -95,8 +96,47 @@ public abstract class GameController {
         }
     }
 
-    public void minimax() {
 
+    public void minimax() {
+        String player1 = game.players.get(1);
+        System.out.println(game.players.get(1));
+        String player2 = game.players.get(2);
+        //System.out.println(isMovesLeftMinimax());
+    }
+
+    /**
+     * Vérifie si une cellule est vide (true : case libre, false : plateau plein)
+     *
+     * @return
+     */
+    private boolean isMovesLeftMinimax() {
+        for (int i = 0; i < game.size; i++) {
+            for (int j = 0; j < game.size; j++) {
+                if (game.board[i][j].isEmpty()) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Vérifie si un joueur a gagné horizontalement
+     */
+    public boolean checkHorizontalMinimax(String representation) {
+        for (int i = 0; i < game.size; i++) {
+            int consecutive = 0;
+            for (int j = 0; j < game.size; j++) {
+                Cell c = game.board[i][j];
+                if (c.getRepresentation().equals(representation)) {
+                    consecutive++;
+                    if (consecutive == game.victoryValue) {
+                        return true;
+                    }
+                } else {
+                    consecutive = 0;
+                }
+            }
+        }
+        return false;
     }
 
     /**
