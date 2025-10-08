@@ -353,6 +353,7 @@ public class GameModele {
 
     /**
      * Mets à jour le jeu sélectionné
+     *
      * @param gameSelected Jeu sélectionné
      */
     public void setGameSelected(String gameSelected) {
@@ -361,6 +362,7 @@ public class GameModele {
 
     /**
      * Récupère le jeu sélectionné
+     *
      * @return Le retourne
      */
     public String getGameSelected() {
