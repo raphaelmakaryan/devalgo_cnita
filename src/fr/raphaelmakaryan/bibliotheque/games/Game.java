@@ -86,6 +86,7 @@ public class Game {
         } else {
             nextPlayer();
         }
+        tools.setTimeout(2);
         display();
     }
 

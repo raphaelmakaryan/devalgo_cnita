@@ -1,11 +1,16 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
 import fr.raphaelmakaryan.bibliotheque.games.Game;
-import fr.raphaelmakaryan.bibliotheque.games.TicTacToe;
 
 public class ArtificialPlayer {
     public String representation;
 
+    /**
+     * Création d'un joueur "bot"
+     *
+     * @param game  Le jeu
+     * @param value Valeur de la place
+     */
     public ArtificialPlayer(Game game, int value) {
         if (game.mode.equals("JvB")) {
             this.representation = game.listRepresentation[1];
@@ -18,6 +23,11 @@ public class ArtificialPlayer {
         }
     }
 
+    /**
+     * Récupere le signe
+     *
+     * @return retourne le signe
+     */
     public String getRepresentation() {
         return representation;
     }

@@ -1,6 +1,5 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
-import fr.raphaelmakaryan.bibliotheque.games.Game;
 import fr.raphaelmakaryan.bibliotheque.games.Gomoku;
 import fr.raphaelmakaryan.bibliotheque.games.Puissance4;
 import fr.raphaelmakaryan.bibliotheque.games.TicTacToe;
@@ -10,10 +9,21 @@ import javax.swing.*;
 public class InteractionUtilisateur {
     View view = new View();
 
+    /**
+     * Affiche la boite de dialogue
+     *
+     * @param message Message a afficher
+     * @return Retourne la valeur récuperer
+     */
     public String userInterfaceMessage(String message) {
         return JOptionPane.showInputDialog(message);
     }
 
+    /**
+     * Boite d'affichage pour le choix du mode dans TicTacToe
+     *
+     * @param gameTTT l'instance du jeu tictactoe
+     */
     public void chooseGameTicTacToe(TicTacToe gameTTT) {
         String[] options = {"1v1 Humain", "1v1 Contre Bot", "1v1 Bots"};
         gameTTT.setGameSelected("tictactoe");
@@ -53,6 +63,11 @@ public class InteractionUtilisateur {
         }
     }
 
+    /**
+     * Affichage pour le choix du mode dans Puissance 4
+     *
+     * @param gameP4 l'instance du jeu puissance 4
+     */
     public void chooseGameP4(Puissance4 gameP4) {
         gameP4.setGameSelected("p4");
         view.println("Mode 1v1 Humain");
@@ -60,6 +75,11 @@ public class InteractionUtilisateur {
         gameP4.createPlayer(new int[]{10, 11});
     }
 
+    /**
+     * Affichage pour le choix du mode dans Gomoku
+     *
+     * @param gameGo l'instance du jeu gomoku
+     */
     public void chooseGameGomoku(Gomoku gameGo) {
         gameGo.setGameSelected("gomoku");
         view.println("Mode 1v1 Humain");
@@ -67,6 +87,11 @@ public class InteractionUtilisateur {
         gameGo.createPlayer(new int[]{10, 11});
     }
 
+    /**
+     * Boite d'affichage pour le choix du mode de jeu
+     *
+     * @return renvoie le nom du jeu choisi
+     */
     public String chooseGame() {
         String[] options = {"TicTacToe", "Puissance 4", "Gomoku"};
         int choix = JOptionPane.showOptionDialog(
@@ -95,5 +120,4 @@ public class InteractionUtilisateur {
                 return "null";
         }
     }
-
 }
