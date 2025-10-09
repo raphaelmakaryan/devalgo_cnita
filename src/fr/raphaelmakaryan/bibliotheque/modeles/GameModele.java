@@ -275,7 +275,7 @@ public class GameModele {
         int valueEqualsPlayer = 0;
         boolean result = false;
         for (int i = 0; i < size; i++) {
-            if (board[i][i].getRepresentation().equals(getPlayerPlayNow().representation)) {
+            if (board[i][i].getRepresentation().equals(getCurrentPlayerRepresentation())) {
                 valueEqualsPlayer = valueEqualsPlayer + 1;
             } else if (valueEqualsPlayer == victoryValue) {
                 result = true;
@@ -284,7 +284,7 @@ public class GameModele {
             }
         }
         for (int i = 0; i < size; i++) {
-            if (board[i][size - 1 - i].getRepresentation().equals(getPlayerPlayNow().representation)) {
+            if (board[i][size - 1 - i].getRepresentation().equals(getCurrentPlayerRepresentation())) {
                 valueEqualsPlayer = valueEqualsPlayer + 1;
             } else if (valueEqualsPlayer == victoryValue) {
                 result = true;

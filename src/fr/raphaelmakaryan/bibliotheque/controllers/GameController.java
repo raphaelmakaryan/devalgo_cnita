@@ -98,7 +98,7 @@ public abstract class GameController {
      * Choix du joueur random au debut du jeu
      */
     public void randomPlayer() {
-        int value = new Random().nextInt(0, 1);
+        int value = new Random().nextInt(2);
         if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
             if (value == 0) {
                 game.whoPlayNow = "J1";
