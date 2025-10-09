@@ -83,118 +83,16 @@ public abstract class GameController {
                 display();
             }
         } else {
-            int lineRandomBot = new Random().nextInt(0, game.size);
-            int columnRandomBot = new Random().nextInt(0, game.size);
-            int[] valueBot = game.returnValueUser(lineRandomBot + " " + columnRandomBot);
-            minimax();
-            if (game.verificationHavePlayer(board, valueBot)) {
+            Minimax minimax = new Minimax(game);
+            int[] best = minimax.findBestMove();
+            if (game.verificationHavePlayer(board, best)) {
                 game.gameView.println("Vous avez choisi une case deja prise !");
                 display();
-            } else {
-                handlePlayerMove(valueBot[0], valueBot[1], "bot");
+            } else if (best[0] != -1) {
+                handlePlayerMove(best[0], best[1], "bot");
             }
         }
     }
-
-    public void minimax() {
-        String botSymbol = game.getCurrentPlayerRepresentation();
-        String playerSymbol = botSymbol.equals(" O ") ? " X " : " O ";
-
-        int score = evaluate(game.board, botSymbol, playerSymbol);
-        System.out.println("Score : " + score);
-    }
-
-    /**
-     * Évalue le plateau : renvoie +10 si le bot gagne, -10 si le joueur gagne, 0 sinon.
-     * Ici, on ne vérifie que les lignes (horizontal).
-     */
-    private int evaluate(Cell[][] board, String botSymbol, String playerSymbol) {
-        // On parcourt chaque ligne du plateau
-        for (int i = 0; i < game.size; i++) {
-            int consecutiveBot = 0;
-            int consecutivePlayer = 0;
-
-            for (int j = 0; j < game.size; j++) {
-                String symbol = board[i][j].getRepresentation();
-
-                if (symbol.equals(botSymbol)) {
-                    consecutiveBot++;
-                    consecutivePlayer = 0;
-                } else if (symbol.equals(playerSymbol)) {
-                    consecutivePlayer++;
-                    consecutiveBot = 0;
-                } else {
-                    // Case vide : on remet à zéro les compteurs
-                    consecutiveBot = 0;
-                    consecutivePlayer = 0;
-                }
-
-                // Si le bot a une ligne complète
-                if (consecutiveBot == game.victoryValue) {
-                    return +10;
-                }
-                // Si le joueur a une ligne complète
-                if (consecutivePlayer == game.victoryValue) {
-                    return -10;
-                }
-            }
-        }
-
-        // Personne n'a gagné horizontalement
-        return 0;
-    }
-
-
-    /**
-     * Crée une copie du plateau actuel (pour simuler des coups sans modifier le vrai jeu)
-     */
-    private Cell[][] cloneBoard(Cell[][] original) {
-        Cell[][] copy = new Cell[original.length][original[0].length];
-        for (int i = 0; i < original.length; i++) {
-            for (int j = 0; j < original[0].length; j++) {
-                Cell c = new Cell();
-                c.setRepresentation(original[i][j].getRepresentation());
-                copy[i][j] = c;
-            }
-        }
-        return copy;
-    }
-
-    /**
-     * Vérifie si un joueur a gagné horizontalement
-     */
-    public boolean checkHorizontalMinimax(String representation) {
-        for (int i = 0; i < game.size; i++) {
-            int consecutive = 0;
-            for (int j = 0; j < game.size; j++) {
-                Cell c = game.board[i][j];
-                if (c.getRepresentation().equals(representation)) {
-                    consecutive++;
-                    if (consecutive == (game.victoryValue)) {
-                        return true;
-                    }
-                } else {
-                    consecutive = 0;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Vérifie si une cellule est vide (true : case libre, false : plateau plein)
-     *
-     * @return
-     */
-    private boolean isMovesLeftMinimax() {
-        for (int i = 0; i < game.size; i++) {
-            for (int j = 0; j < game.size; j++) {
-                if (game.board[i][j].isEmpty()) return true;
-            }
-        }
-        return false;
-    }
-
 
     /**
      * Choix du joueur random au debut du jeu
