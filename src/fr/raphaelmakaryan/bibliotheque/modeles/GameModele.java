@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GameModele {
     public int size;
-    protected int victoryValue;
+    public int victoryValue;
     public Cell[][] board;
     public boolean started;
     public String whoPlayNow;
@@ -123,9 +123,14 @@ public class GameModele {
         return true;
     }
 
+    /**
+     * Met a jour le plateau
+     * @param ligne Ligne
+     * @param colonne Colonne
+     * @param type Type de joueur
+     */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
-
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
@@ -187,7 +192,7 @@ public class GameModele {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        return checkVertical() || checkHorizontal();
+        return checkVertical() || checkHorizontal() || checkDiagonal();
     }
 
     /**
@@ -200,7 +205,7 @@ public class GameModele {
         int valeurLigne = 0;
         int checkValue = 0;
         int valueEqualsPlayer = 0;
-        while (size * 3 != checkValue) {
+        while ((size * size) != checkValue) {
             for (int i = 0; i < size; i++) {
                 Cell c = board[valeurLigne][i];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
@@ -266,6 +271,34 @@ public class GameModele {
             }
         }
         return valueRempli;
+    }
+
+    /**
+     * Vérifie les diagonal
+     * @return Vrai ou faux
+     */
+    private boolean checkDiagonal() {
+        int valueEqualsPlayer = 0;
+        boolean result = false;
+        for (int i = 0; i < size; i++) {
+            if (board[i][i].getRepresentation().equals(getCurrentPlayerRepresentation())) {
+                valueEqualsPlayer = valueEqualsPlayer + 1;
+            } else if (valueEqualsPlayer == victoryValue) {
+                result = true;
+            } else {
+                valueEqualsPlayer = 0;
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            if (board[i][size - 1 - i].getRepresentation().equals(getCurrentPlayerRepresentation())) {
+                valueEqualsPlayer = valueEqualsPlayer + 1;
+            } else if (valueEqualsPlayer == victoryValue) {
+                result = true;
+            } else {
+                valueEqualsPlayer = 0;
+            }
+        }
+        return result;
     }
 
     /**

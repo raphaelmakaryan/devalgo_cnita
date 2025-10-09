@@ -34,6 +34,4 @@ public class Player {
     public String toString() {
         return "Player{" + "representation='" + representation + '\'' + '}';
     }
-
-
 }
