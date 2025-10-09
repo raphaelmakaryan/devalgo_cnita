@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.bibliotheque.tools;
+package fr.raphaelmakaryan.bibliotheque;
 
 public class Tools {
     public static final String RESET = "\u001B[0m";

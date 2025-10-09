@@ -4,7 +4,7 @@ import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
-import fr.raphaelmakaryan.bibliotheque.tools.Tools;
+import fr.raphaelmakaryan.bibliotheque.Tools;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import java.util.ArrayList;
