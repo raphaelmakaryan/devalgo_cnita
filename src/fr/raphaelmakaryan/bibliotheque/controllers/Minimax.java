@@ -11,40 +11,6 @@ public class Minimax {
     }
 
     /**
-     * Fonction minimax, simule tous les coups possibles
-     *
-     * @param board        le plateau sur lequel on simule
-     * @param depth        profondeur actuelle (0 au début)
-     * @param isBot        true si c’est au tour du bot (on veut maximiser le score)
-     * @param botSymbol    symbole du bot
-     * @param playerSymbol symbole du joueur
-     * @return un score estimé pour cette position
-     */
-    private int minimax(Cell[][] board, int depth, boolean isBot, String botSymbol, String playerSymbol) {
-        int best;
-        // Évalué le score
-        int score = evaluate(board, botSymbol, playerSymbol);
-        if (score == 10) {
-            return score - depth;  // victoire bot
-        }
-        if (score == -10) {
-            return score + depth;  // victoire joueur
-        }
-        if (!isMovesLeft(board)) {
-            return 0;  // match nul
-        }
-
-        // Si c'est le bot qui joue
-        if (isBot) {
-            best = simulationMinimax(Integer.MIN_VALUE, board, isBot, depth, botSymbol, playerSymbol);
-            return best;
-        } else {
-            best = simulationMinimax(Integer.MAX_VALUE, board, isBot, depth, botSymbol, playerSymbol);
-            return best;
-        }
-    }
-
-    /**
      * Trouve le meilleur coup pour le bot en utilisant minimax
      */
     public int[] findBestMove() {
@@ -76,6 +42,40 @@ public class Minimax {
             }
         }
         return bestMove;
+    }
+
+    /**
+     * Fonction minimax, simule tous les coups possibles
+     *
+     * @param board        le plateau sur lequel on simule
+     * @param depth        profondeur actuelle (0 au début)
+     * @param isBot        true si c’est au tour du bot (on veut maximiser le score)
+     * @param botSymbol    symbole du bot
+     * @param playerSymbol symbole du joueur
+     * @return un score estimé pour cette position
+     */
+    private int minimax(Cell[][] board, int depth, boolean isBot, String botSymbol, String playerSymbol) {
+        int best;
+        // Évalué le score
+        int score = evaluate(board, botSymbol, playerSymbol);
+        if (score == 10) {
+            return score - depth;  // victoire bot
+        }
+        if (score == -10) {
+            return score + depth;  // victoire joueur
+        }
+        if (!isMovesLeft(board)) {
+            return 0;  // match nul
+        }
+
+        // Si c'est le bot qui joue
+        if (isBot) {
+            best = simulationMinimax(Integer.MIN_VALUE, board, isBot, depth, botSymbol, playerSymbol);
+            return best;
+        } else {
+            best = simulationMinimax(Integer.MAX_VALUE, board, isBot, depth, botSymbol, playerSymbol);
+            return best;
+        }
     }
 
     /**
