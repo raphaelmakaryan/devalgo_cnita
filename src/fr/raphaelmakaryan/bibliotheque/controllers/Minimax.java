@@ -11,74 +11,6 @@ public class Minimax {
     }
 
     /**
-     * Fonction minimax, simule tous les coups possibles
-     *
-     * @param board        le plateau sur lequel on simule
-     * @param depth        profondeur actuelle (0 au début)
-     * @param isBot        true si c’est au tour du bot (on veut maximiser le score)
-     * @param botSymbol    symbole du bot
-     * @param playerSymbol symbole du joueur
-     * @return un score estimé pour cette position
-     */
-    private int minimax(Cell[][] board, int depth, boolean isBot, String botSymbol, String playerSymbol) {
-
-        // Evalue le score
-        int score = evaluate(board, botSymbol, playerSymbol);
-        if (score == 10) {
-            return score - depth;  // victoire bot
-        }
-        if (score == -10) {
-            return score + depth;  // victoire joueur
-        }
-        if (!isMovesLeft(board)) {
-            return 0;  // match nul
-        }
-
-        // Si c'est le bot qui joue
-        if (isBot) {
-            int best = Integer.MIN_VALUE;
-            for (Cell[] cells : board) {
-                for (int j = 0; j < board[0].length; j++) {
-                    if (cells[j].isEmpty()) {
-                        // simule le coup du bot
-                        cells[j].setRepresentation(botSymbol);
-
-                        // Vérifie
-                        int val = minimax(board, depth + 1, false, botSymbol, playerSymbol);
-
-                        // annule le coup
-                        cells[j].setRepresentation("   ");
-
-                        // Ressors lequel est le mieux
-                        best = Math.max(best, val);
-                    }
-                }
-            }
-            return best;
-        } else {
-            int best = Integer.MAX_VALUE;
-            for (Cell[] cells : board) {
-                for (int j = 0; j < board[0].length; j++) {
-                    if (cells[j].isEmpty()) {
-                        // simule le coup du joueur
-                        cells[j].setRepresentation(playerSymbol);
-
-                        // Vérifie
-                        int val = minimax(board, depth + 1, true, botSymbol, playerSymbol);
-
-                        // annule le coup
-                        cells[j].setRepresentation("   ");
-
-                        // Ressors lequel est le pire
-                        best = Math.min(best, val);
-                    }
-                }
-            }
-            return best;
-        }
-    }
-
-    /**
      * Trouve le meilleur coup pour le bot en utilisant minimax
      */
     public int[] findBestMove() {
@@ -113,8 +45,90 @@ public class Minimax {
     }
 
     /**
-     * Évalue le plateau : renvoie +10 si le bot gagne, -10 si le joueur gagne, 0 sinon.
-     * Ici, on ne vérifie que les lignes (horizontal).
+     * Fonction minimax, simule tous les coups possibles
+     *
+     * @param board        le plateau sur lequel on simule
+     * @param depth        profondeur actuelle (0 au début)
+     * @param isBot        true si c’est au tour du bot (on veut maximiser le score)
+     * @param botSymbol    symbole du bot
+     * @param playerSymbol symbole du joueur
+     * @return un score estimé pour cette position
+     */
+    private int minimax(Cell[][] board, int depth, boolean isBot, String botSymbol, String playerSymbol) {
+        int best;
+        // Évalué le score
+        int score = evaluate(board, botSymbol, playerSymbol);
+        if (score == 10) {
+            return score - depth;  // victoire bot
+        }
+        if (score == -10) {
+            return score + depth;  // victoire joueur
+        }
+        if (!isMovesLeft(board)) {
+            return 0;  // match nul
+        }
+
+        if (isBot) {
+            best = simulationMinimax(Integer.MIN_VALUE, board, isBot, depth, botSymbol, playerSymbol);
+            return best;
+        } else {
+            best = simulationMinimax(Integer.MAX_VALUE, board, isBot, depth, botSymbol, playerSymbol);
+            return best;
+        }
+    }
+
+    /**
+     * Crée la simulation pour chercher le meilleur coup
+     *
+     * @param bestOld      Valeur max/min selon le joueur
+     * @param board        Tableau
+     * @param isBot        Si c'est le bot qui joue
+     * @param depth        Profondeur
+     * @param botSymbol    Symbole du bot
+     * @param playerSymbol Symbole du joueur
+     * @return Retourne la valeur
+     */
+    private int simulationMinimax(int bestOld, Cell[][] board, boolean isBot, int depth, String botSymbol, String playerSymbol) {
+        int val;
+        for (Cell[] cells : board) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (cells[j].isEmpty()) {
+                    // simule le coup du bot
+                    if (isBot) {
+                        cells[j].setRepresentation(botSymbol);
+                    } else {
+                        cells[j].setRepresentation(playerSymbol);
+                    }
+
+                    // Vérifie
+                    if (isBot) {
+                        val = minimax(board, depth + 1, false, botSymbol, playerSymbol);
+                    } else {
+                        val = minimax(board, depth + 1, true, botSymbol, playerSymbol);
+                    }
+
+                    // annule le coup
+                    cells[j].setRepresentation("   ");
+
+                    // Ressors lequel est le mieux selon si c'est le bot ou non
+                    if (isBot) {
+                        bestOld = Math.max(bestOld, val);
+                    } else {
+                        bestOld = Math.min(bestOld, val);
+                    }
+                }
+            }
+        }
+        return bestOld;
+    }
+
+    /**
+     * Évalue le plateau : renvoie +10 si le bot gagne, -10 si le joueur gagne, ZÉRO sinon.
+     *
+     * @param board        Plateau
+     * @param botSymbol    Symbole du bot
+     * @param playerSymbol Symbole du joueur
+     * @return Retourne la valeur
      */
     private int evaluate(Cell[][] board, String botSymbol, String playerSymbol) {
         if (checkVertHori(board, botSymbol)) return +10;
@@ -127,7 +141,8 @@ public class Minimax {
     }
 
     /**
-     * Ressors si y'a encore des coups possible
+     * Ressors si il y a encore des coups possibles
+     *
      * @param board Le tableau
      * @return Vrai ou faux
      */
@@ -142,7 +157,8 @@ public class Minimax {
 
     /**
      * Check a l'horizontale et vertical
-     * @param board Tableau
+     *
+     * @param board  Tableau
      * @param symbol Le symbole du joueur
      * @return Vrai ou faux
      */
@@ -163,7 +179,8 @@ public class Minimax {
 
     /**
      * Check a la diagonal
-     * @param board Tableau
+     *
+     * @param board  Tableau
      * @param symbol Symbole
      * @return Vrai Faux
      */
