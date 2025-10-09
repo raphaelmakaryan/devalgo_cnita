@@ -55,7 +55,6 @@ public class Minimax {
      * @return un score estimé pour cette position
      */
     private int minimax(Cell[][] board, int depth, boolean isBot, String botSymbol, String playerSymbol) {
-        int best;
         // Évalué le score
         int score = evaluate(board, botSymbol, playerSymbol);
         if (score == 10) {
@@ -70,11 +69,9 @@ public class Minimax {
 
         // Si c'est le bot qui joue
         if (isBot) {
-            best = simulationMinimax(Integer.MIN_VALUE, board, isBot, depth, botSymbol, playerSymbol);
-            return best;
+            return simulationMinimax(Integer.MIN_VALUE, board, isBot, depth, botSymbol, playerSymbol);
         } else {
-            best = simulationMinimax(Integer.MAX_VALUE, board, isBot, depth, botSymbol, playerSymbol);
-            return best;
+            return simulationMinimax(Integer.MAX_VALUE, board, isBot, depth, botSymbol, playerSymbol);
         }
     }
 
