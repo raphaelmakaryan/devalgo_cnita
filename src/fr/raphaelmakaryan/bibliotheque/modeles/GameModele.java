@@ -186,7 +186,7 @@ public class GameModele {
      * @return Si il a gagné ou pas
      */
     public boolean checkWin() {
-        return checkVertical() || checkHorizontal();
+        return checkVertical() || checkHorizontal() || checkDiagonal();
     }
 
     /**
@@ -265,6 +265,34 @@ public class GameModele {
             }
         }
         return valueRempli;
+    }
+
+    /**
+     * Vérifie les diagonal
+     * @return Vrai ou faux
+     */
+    private boolean checkDiagonal() {
+        int valueEqualsPlayer = 0;
+        boolean result = false;
+        for (int i = 0; i < size; i++) {
+            if (board[i][i].getRepresentation().equals(getPlayerPlayNow().representation)) {
+                valueEqualsPlayer = valueEqualsPlayer + 1;
+            } else if (valueEqualsPlayer == victoryValue) {
+                result = true;
+            } else {
+                valueEqualsPlayer = 0;
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            if (board[i][size - 1 - i].getRepresentation().equals(getPlayerPlayNow().representation)) {
+                valueEqualsPlayer = valueEqualsPlayer + 1;
+            } else if (valueEqualsPlayer == victoryValue) {
+                result = true;
+            } else {
+                valueEqualsPlayer = 0;
+            }
+        }
+        return result;
     }
 
     /**
