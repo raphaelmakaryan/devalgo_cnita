@@ -15,6 +15,10 @@ public class Puissance4Controller extends GameController {
      */
     @Override
     public void getMoveFromPlayer(String choice) {
+        if (choice == null) {
+            game.gameView.println("Vous avez décidé de fermer la page, fermeture du jeu.");
+            System.exit(0);
+        }
         if (game.verificationChoiceUser(choice)) {
             int[] valueUser = tokenDescent(game.returnValueUser(choice));
             Cell[][] board = game.getBoard();
