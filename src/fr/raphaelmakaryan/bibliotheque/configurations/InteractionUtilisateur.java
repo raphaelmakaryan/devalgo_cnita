@@ -21,7 +21,6 @@ public class InteractionUtilisateur {
         return JOptionPane.showInputDialog(message);
     }
 
-
     /**
      * Boite d'affichage pour le choix du mode dans TicTacToe
      *

@@ -70,7 +70,7 @@ public abstract class GameController {
         if (!Objects.equals(choice, "bot")) {
             if (game.verificationChoiceUser(choice)) {
                 int[] valueUser = game.returnValueUser(choice);
-                if (valueUser[0] > game.size || valueUser[1] > game.size || valueUser[0] < -1 || valueUser[1] < -1) {
+                if (verificationOutside(valueUser)) {
                     game.gameView.println("Vous êtes sorti du tableau !");
                     display();
                 } else if (game.verificationHavePlayer(board, valueUser)) {
@@ -92,6 +92,16 @@ public abstract class GameController {
                 handlePlayerMove(best[0], best[1], "bot");
             }
         }
+    }
+
+    /**
+     * Condition de vérification si le jouer sort du tableau
+     *
+     * @param valueUser Valeurs de l'user
+     * @return Vrai faux
+     */
+    public boolean verificationOutside(int[] valueUser) {
+        return valueUser[0] > game.size || valueUser[1] > game.size || valueUser[0] < -1 || valueUser[1] < -1;
     }
 
     /**
@@ -192,18 +202,10 @@ public abstract class GameController {
     }
 
     /**
-     * Retourne quel jeu est lancé
+     * Evenements
      *
-     * @return Retourne les informations du jeu
+     * @param event Evenement précis
      */
-    public GameModele getGame() {
-        return game;
-    }
-
-    public void setState(GameState state) {
-        this.state = state;
-    }
-
     public void handleEvent(String event) {
         switch (state) {
             case INITIAL:
@@ -238,5 +240,47 @@ public abstract class GameController {
                 }
                 break;
         }
+    }
+
+    /**
+     * Permet de vérifier si il y a deja un jeton tout en bas
+     *
+     * @param value Valeur écrit de base par le joueur
+     * @return Retourne les nouvel valeur
+     */
+    public int[] tokenDescent(int[] value) {
+        int valeurColonne = value[0];
+        int[] newValue = new int[2];
+        int valueDecrease = game.size - 1;
+        boolean valueFind = false;
+        for (int i = 0; i < game.board.length; i++) {
+            Cell c = game.board[valueDecrease][valeurColonne];
+            if (game.whoPlayNow.contains("J") && c.getRepresentation().equals("   ") && !valueFind) {
+                newValue[0] = valueDecrease;
+                newValue[1] = valeurColonne;
+                valueFind = true;
+            } else {
+                valueDecrease = valueDecrease - 1;
+            }
+        }
+        return newValue;
+    }
+
+    /**
+     * Retourne quel jeu est lancé
+     *
+     * @return Retourne les informations du jeu
+     */
+    public GameModele getGame() {
+        return game;
+    }
+
+    /**
+     * Met à jour l'état du jeu
+     *
+     * @param state Etat
+     */
+    public void setState(GameState state) {
+        this.state = state;
     }
 }

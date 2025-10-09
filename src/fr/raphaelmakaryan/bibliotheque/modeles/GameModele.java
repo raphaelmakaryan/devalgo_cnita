@@ -123,6 +123,12 @@ public class GameModele {
         return true;
     }
 
+    /**
+     * Met a jour le plateau
+     * @param ligne Ligne
+     * @param colonne Colonne
+     * @param type Type de joueur
+     */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
         if (type.equals("player")) {
