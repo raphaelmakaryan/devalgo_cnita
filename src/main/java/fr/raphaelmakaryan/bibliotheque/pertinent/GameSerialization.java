@@ -89,17 +89,12 @@ public class GameSerialization implements Persistence {
         }
     }
 
-
-    public void dbGetGame(MongoDatabase database) {
+    public String dbGetGame(MongoDatabase database) {
         MongoCollection<Document> collection = database.getCollection("games");
         MongoCursor<Document> cursor;
-
         LocalDateTime today = LocalDateTime.now().with(LocalTime.MIN);
-
         Document filter = new Document("dateCreation", new Document("$gte", today));
-
         cursor = collection.find(filter).iterator();
-
         ObjectId[] listAllIdGame = new ObjectId[0];
         List<String> gameNames = new ArrayList<>();
         int value = 1;
@@ -133,50 +128,35 @@ public class GameSerialization implements Persistence {
 
         if (selectedGame != null) {
             String[] parts = selectedGame.split("\\.\\s+");
-            listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
+            return listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
         } else {
             System.out.println("Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);
         }
+        return "";
     }
 
-    /*
-    public void dbGetGame(MongoDatabase database) {
+    public String[] dbGetGameId(MongoDatabase database, String gameId) {
         MongoCollection<Document> collection = database.getCollection("games");
-        MongoCursor<Document> cursor = collection.find().iterator();
-        ObjectId[] listAllIdGame = new ObjectId[0];
-
-        List<String> gameNames = new ArrayList<>();
-        int value = 1;
-        while (cursor.hasNext()) {
-            Document document = cursor.next();
-            String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
-            listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
-            gameNames.add(gameName);
-            value++;
-        }
-
-        Object[] options = gameNames.toArray();
-        String selectedGame = (String) JOptionPane.showInputDialog(
-                null,
-                "Choisissez un jeu à lancer:",
-                "Sélection de jeu",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options);
-
-
-        if (selectedGame != null) {
-            String[] parts = selectedGame.split("\\.\\s+");
-            listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
+        Document filter = new Document("_id", new ObjectId(gameId));
+        Document game = collection.find(filter).first();
+        String gameChoose;
+        String mode;
+        String turn;
+        String size;
+        String victoryValue;
+        if (game != null) {
+            gameChoose = game.getString("gameChoose");
+            mode = game.getString("mode");
+            turn = game.getString("turn");
+            size = String.valueOf(game.getInteger("size"));
+            victoryValue = String.valueOf(game.getInteger("victoryValue"));
+            return new String[]{gameChoose, mode, turn, size, victoryValue};
         } else {
-            System.out.println("Vous avez décidé de fermer la page, fermeture du jeu.");
-            System.exit(0);
+            System.out.println("Aucun document trouvé avec l'ID " + gameId);
         }
+        return new String[]{};
     }
-
-     */
 
     static Logger root = (Logger) LoggerFactory
             .getLogger(Logger.ROOT_LOGGER_NAME);

@@ -85,8 +85,45 @@ public class GameModele implements GameModeleInterface {
 
             case "loadGame":
                 GameSerialization gameSerialization = new GameSerialization();
-                gameSerialization.dbGetGame(gameSerialization.dbConnection());
+                MongoDatabase database = gameSerialization.dbConnection();
+                String idGame = gameSerialization.dbGetGame(database);
+                String[] dataGame = gameSerialization.dbGetGameId(database, idGame);
+                loadGameCreateGame(dataGame);
+                break;
+            default:
+                System.exit(0);
+                break;
+        }
+    }
 
+    public void loadGameCreateGame(String[] dataGame) {
+        switch (dataGame[0]) {
+            case "tictactoe":
+                TicTacToe modeleTTT = new TicTacToe(3, 3);
+                TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
+                interactionUtilisateur.chooseGameTicTacToe(controllerTTT);
+                break;
+
+            case "p4":
+                Puissance4 modeleP4 = new Puissance4(7, 4);
+                Puissance4Controller controllerP4 = new Puissance4Controller(modeleP4);
+                interactionUtilisateur.chooseGameP4(controllerP4);
+                break;
+
+            case "gomoku":
+                Gomoku modeleGO = new Gomoku(15, 5);
+                GomokuController controllerGO = new GomokuController(modeleGO);
+                interactionUtilisateur.chooseGameGomoku(controllerGO);
+                break;
+
+            case "perso":
+                int sizeUser = customGameSize();
+                int victoryUser = customGameVictory(sizeUser);
+                if (sizeUser != 0 && victoryUser != 0) {
+                    CustomGame modeleCustomGame = new CustomGame(sizeUser, victoryUser);
+                    CustomGameController controllerCG = new CustomGameController(modeleCustomGame);
+                    interactionUtilisateur.chooseGameCustomGame(controllerCG);
+                }
                 break;
             default:
                 System.exit(0);
