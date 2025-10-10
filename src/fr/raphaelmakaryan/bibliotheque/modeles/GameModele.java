@@ -1,16 +1,15 @@
 package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
+import fr.raphaelmakaryan.bibliotheque.controllers.CustomGameController;
 import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
-import fr.raphaelmakaryan.bibliotheque.Tools;
-import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameModele {
+public class GameModele implements GameModeleInterface {
     public int size;
     public int victoryValue;
     public Cell[][] board;
@@ -26,10 +25,6 @@ public class GameModele {
     public Player player2;
     public ArtificialPlayer bot1;
     public ArtificialPlayer bot2;
-
-    public Tools tools = new Tools();
-    public GameView gameView = new GameView();
-    public InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
 
     /**
      * Constructeur des jeux
@@ -74,10 +69,68 @@ public class GameModele {
                 GomokuController controllerGO = new GomokuController(modeleGO);
                 interactionUtilisateur.chooseGameGomoku(controllerGO);
                 break;
+
+            case "perso":
+                int sizeUser = customGameSize();
+                int victoryUser = customGameVictory(sizeUser);
+                if (sizeUser != 0 && victoryUser != 0) {
+                    CustomGame modeleCustomGame = new CustomGame(sizeUser, victoryUser);
+                    CustomGameController controllerCG = new CustomGameController(modeleCustomGame);
+                    interactionUtilisateur.chooseGameCustomGame(controllerCG);
+                }
+                break;
             default:
                 System.exit(0);
                 break;
         }
+    }
+
+    public int customGameSize() {
+        boolean canLeave = false;
+        while (!canLeave) {
+            String sizeUser = interactionUtilisateur.userInterfaceMessage("Quelle taille de plateau de jeu voulez-vous ?");
+            if (sizeUser == null) {
+                gameView.println("Veuillez donner une valeur pour la taille de votre plateau !");
+            } else {
+                try {
+                    int sizeGame = Integer.parseInt(sizeUser);
+                    if (sizeGame < 1) {
+                        gameView.println("Veuillez donner une valeur supérieur a 1 !");
+                    } else {
+                        canLeave = true;
+                        return sizeGame;
+                    }
+                } catch (Exception e) {
+                    gameView.println("Les valeurs que vous avez définis ne sont pas des nombres !");
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int customGameVictory(int sizeGame) {
+        boolean canLeave = false;
+        while (!canLeave) {
+            String victoryUser = interactionUtilisateur.userInterfaceMessage("Combien de jetons faudrait-il aligner pour avoir une victoire ?");
+            if (victoryUser == null) {
+                gameView.println("Veuillez donner une valeur pour le nombre de jetons pour avoir une victoire !");
+            } else {
+                try {
+                    int victoryGame = Integer.parseInt(victoryUser);
+                    if (sizeGame < 1) {
+                        gameView.println("Veuillez donner une valeur supérieur a 1 !");
+                    } else if (sizeGame < victoryGame) {
+                        gameView.println("Veuillez spécifier le nombre de jetons pour la victoire qui est inférieur à la taille du plateau que vous avez défini a " + sizeGame + " !");
+                    } else {
+                        canLeave = true;
+                        return victoryGame;
+                    }
+                } catch (Exception e) {
+                    gameView.println("Les valeurs que vous avez définis ne sont pas des nombres !");
+                }
+            }
+        }
+        return 0;
     }
 
     /**
@@ -125,9 +178,10 @@ public class GameModele {
 
     /**
      * Met a jour le plateau
-     * @param ligne Ligne
+     *
+     * @param ligne   Ligne
      * @param colonne Colonne
-     * @param type Type de joueur
+     * @param type    Type de joueur
      */
     public void setOwner(int ligne, int colonne, String type) {
         Cell[][] board = getBoard();
@@ -139,7 +193,6 @@ public class GameModele {
             board[ligne][colonne].setRepresentation(bot.getRepresentation());
         }
     }
-
 
     /**
      * Verification s'il y a deja un joueur ou non
@@ -158,7 +211,6 @@ public class GameModele {
         }
         return false;
     }
-
 
     /**
      * Retourne quel user est actuellement en train de jouer
@@ -275,9 +327,10 @@ public class GameModele {
 
     /**
      * Vérifie les diagonal
+     *
      * @return Vrai ou faux
      */
-    private boolean checkDiagonal() {
+    public boolean checkDiagonal() {
         int valueEqualsPlayer = 0;
         boolean result = false;
         for (int i = 0; i < size; i++) {
@@ -322,12 +375,7 @@ public class GameModele {
      * @return Retourne la séparation
      */
     public String separationBoardGame() {
-        return switch (getGameSelected()) {
-            case "tictactoe" -> "-------------";
-            case "p4" -> "-----------------------------";
-            case "gomoku" -> "-------------------------------------------------------------";
-            default -> "---";
-        };
+        return "-----".repeat(size);
     }
 
     /**
@@ -355,7 +403,6 @@ public class GameModele {
             }
         }
     }
-
 
     /**
      * Récupère le board

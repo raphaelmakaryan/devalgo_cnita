@@ -1,5 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.configurations;
 
+import fr.raphaelmakaryan.bibliotheque.controllers.CustomGameController;
 import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
@@ -93,12 +94,25 @@ public class InteractionUtilisateur {
     }
 
     /**
+     * Affichage pour le choix du mode dans Gomoku
+     *
+     * @param gameController Controller du go
+     */
+    public void chooseGameCustomGame(CustomGameController gameController) {
+        GameModele modele = gameController.getGame();
+        modele.setGameSelected("perso");
+        gameView.println("Mode 1v1 Humain");
+        modele.setMode("JvJ");
+        gameController.initializePlayers(new int[]{10, 11});
+    }
+
+    /**
      * Boite d'affichage pour le choix du mode de jeu
      *
      * @return renvoie le nom du jeu choisi
      */
     public String chooseGame() {
-        String[] options = {"TicTacToe", "Puissance 4", "Gomoku"};
+        String[] options = {"TicTacToe", "Puissance 4", "Gomoku", "Jeu personnalisé"};
         int choix = JOptionPane.showOptionDialog(
                 null,
                 "Choisissez le mode de jeu :",
@@ -122,6 +136,10 @@ public class InteractionUtilisateur {
             case 2 -> {
                 gameView.println("Gomoku sélectionné");
                 yield "gomoku";
+            }
+            case 3 -> {
+                gameView.println("Jeu personnalisé sélectionné");
+                yield "perso";
             }
             default -> {
                 gameView.println("Aucun mode sélectionné. Fin du jeu.");

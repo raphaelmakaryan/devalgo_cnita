@@ -2,6 +2,7 @@ package fr.raphaelmakaryan.bibliotheque.controllers;
 
 import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
 
 import java.util.Objects;
 import java.util.Random;
@@ -28,7 +29,7 @@ public abstract class GameController {
             handleEvent("TourSuivant");
             nextPlayer();
         }
-        game.tools.setTimeout(1);
+        GameModeleInterface.tools.setTimeout(1);
         display();
     }
 
@@ -36,21 +37,21 @@ public abstract class GameController {
      * Affichage du tableau
      */
     public void display() {
-        game.gameView.println("Au tour de " + game.whoPlayNow + " (" + game.getCurrentPlayerRepresentation() + ")");
-        game.gameView.println(game.separationBoardGame());
+        GameModeleInterface.gameView.println("Au tour de " + game.whoPlayNow + " (" + game.getCurrentPlayerRepresentation() + ")");
+        GameModeleInterface.gameView.println(game.separationBoardGame());
         for (int i = 0; i < game.size; i++) {
-            game.gameView.print("|");
+            GameModeleInterface.gameView.print("|");
             for (int j = 0; j < game.size; j++) {
                 Cell c = game.board[i][j];
-                game.gameView.print(c.getRepresentation());
-                game.gameView.print("|");
+                GameModeleInterface.gameView.print(c.getRepresentation());
+                GameModeleInterface.gameView.print("|");
             }
             System.out.print("\n");
-            game.gameView.println(game.separationBoardGame());
+            GameModeleInterface.gameView.println(game.separationBoardGame());
         }
-        game.tools.clearLine();
+        GameModeleInterface.tools.clearLine();
         if (game.whoPlayNow.contains("J")) {
-            getMoveFromPlayer(game.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
+            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
         } else {
             getMoveFromPlayer("bot");
         }
@@ -63,7 +64,7 @@ public abstract class GameController {
      */
     public void getMoveFromPlayer(String choice) {
         if (choice == null) {
-            game.gameView.println("Vous avez décidé de fermer la page, fermeture du jeu.");
+            GameModeleInterface.gameView.println("Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);
         }
         Cell[][] board = game.getBoard();
@@ -71,10 +72,10 @@ public abstract class GameController {
             if (game.verificationChoiceUser(choice)) {
                 int[] valueUser = game.returnValueUser(choice);
                 if (verificationOutside(valueUser)) {
-                    game.gameView.println("Vous êtes sorti du tableau !");
+                    GameModeleInterface.gameView.println("Vous êtes sorti du tableau !");
                     display();
                 } else if (game.verificationHavePlayer(board, valueUser)) {
-                    game.gameView.println("Vous avez choisi une case deja prise !");
+                    GameModeleInterface.gameView.println("Vous avez choisi une case deja prise !");
                     display();
                 } else {
                     handlePlayerMove(valueUser[0], valueUser[1], "player");
@@ -86,7 +87,7 @@ public abstract class GameController {
             Minimax minimax = new Minimax(game);
             int[] best = minimax.findBestMove();
             if (game.verificationHavePlayer(board, best)) {
-                game.gameView.println("Vous avez choisi une case deja prise !");
+                GameModeleInterface.gameView.println("Vous avez choisi une case deja prise !");
                 display();
             } else if (best[0] != -1) {
                 handlePlayerMove(best[0], best[1], "bot");
