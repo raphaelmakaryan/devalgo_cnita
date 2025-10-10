@@ -9,10 +9,7 @@ import org.bson.Document;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,9 +106,13 @@ public class GameSerialization implements Persistence {
 
         while (cursor.hasNext()) {
             Document document = cursor.next();
-            LocalDateTime dateCreation = document.getDate("dateCreation").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            Instant dateCreation = document.getDate("dateCreation").toInstant();
+            int hourBdd = dateCreation.atZone(ZoneId.systemDefault()).getHour() - 2;
+            int minuteBdd = dateCreation.atZone(ZoneId.systemDefault()).getMinute();
+            int hourNow = LocalDateTime.now().getHour();
+            int minuteNow = LocalDateTime.now().getMinute();
 
-            if (Duration.between(dateCreation, LocalDateTime.now()).toMinutes() < 2) {
+            if (hourBdd == hourNow && (minuteBdd - minuteNow) < 2) {
                 String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
                 listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
                 gameNames.add(gameName);

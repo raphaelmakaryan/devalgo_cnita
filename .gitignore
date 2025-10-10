@@ -33,3 +33,4 @@ bin/
 .*gradle
 .gradle
 gradle
+/build/tmp/compileJava/compileTransaction/stash-dir
