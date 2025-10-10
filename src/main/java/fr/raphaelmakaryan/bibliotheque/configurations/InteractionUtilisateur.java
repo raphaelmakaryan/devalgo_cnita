@@ -25,6 +25,52 @@ public class InteractionUtilisateur {
     }
 
     /**
+     * Boite d'affichage pour le choix du mode de jeu
+     *
+     * @return renvoie le nom du jeu choisi
+     */
+    public String chooseGame() {
+        String[] options = {"TicTacToe", "Puissance 4", "Gomoku", "Jeu personnalisé", "Charger une partie"};
+        int choix = JOptionPane.showOptionDialog(
+                null,
+                "Choisissez le mode de jeu :",
+                "Mode de jeu",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        return switch (choix) {
+            case 0 -> {
+                gameView.println("TicTacToe sélectionné");
+                yield "tictactoe";
+            }
+            case 1 -> {
+                gameView.println("Puissance 4 sélectionné");
+                yield "p4";
+            }
+            case 2 -> {
+                gameView.println("Gomoku sélectionné");
+                yield "gomoku";
+            }
+            case 3 -> {
+                gameView.println("Jeu personnalisé sélectionné");
+                yield "perso";
+            }
+            case 4 -> {
+                gameView.println("Charger une partie sélectionné");
+                yield "loadGame";
+            }
+            default -> {
+                gameView.println("Aucun mode sélectionné. Fin du jeu.");
+                yield "null";
+            }
+        };
+    }
+
+    /**
      * Boite d'affichage pour le choix du mode dans TicTacToe
      *
      * @param gameController Controller du tictactoe
@@ -102,48 +148,6 @@ public class InteractionUtilisateur {
         gameView.println("Mode 1v1 Humain");
         creationElementImportant(modele, "perso", "JvJ", "Jeu personnalisé");
         gameController.initializePlayers(new int[]{10, 11});
-    }
-
-    /**
-     * Boite d'affichage pour le choix du mode de jeu
-     *
-     * @return renvoie le nom du jeu choisi
-     */
-    public String chooseGame() {
-        String[] options = {"TicTacToe", "Puissance 4", "Gomoku", "Jeu personnalisé"};
-        int choix = JOptionPane.showOptionDialog(
-                null,
-                "Choisissez le mode de jeu :",
-                "Mode de jeu",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-
-        return switch (choix) {
-            case 0 -> {
-                gameView.println("TicTacToe sélectionné");
-                yield "tictactoe";
-            }
-            case 1 -> {
-                gameView.println("Puissance 4 sélectionné");
-                yield "p4";
-            }
-            case 2 -> {
-                gameView.println("Gomoku sélectionné");
-                yield "gomoku";
-            }
-            case 3 -> {
-                gameView.println("Jeu personnalisé sélectionné");
-                yield "perso";
-            }
-            default -> {
-                gameView.println("Aucun mode sélectionné. Fin du jeu.");
-                yield "null";
-            }
-        };
     }
 
     /**

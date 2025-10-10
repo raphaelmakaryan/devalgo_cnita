@@ -82,6 +82,12 @@ public class GameModele implements GameModeleInterface {
                     interactionUtilisateur.chooseGameCustomGame(controllerCG);
                 }
                 break;
+
+            case "loadGame":
+                GameSerialization gameSerialization = new GameSerialization();
+                gameSerialization.dbGetGame(gameSerialization.dbConnection());
+
+                break;
             default:
                 System.exit(0);
                 break;

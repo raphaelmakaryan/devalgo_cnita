@@ -4,13 +4,18 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.InsertOneResult;
-import org.bson.BsonObjectId;
+import fr.raphaelmakaryan.bibliotheque.view.GameView;
 import org.bson.Document;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.mongodb.ServerApi;
@@ -20,6 +25,8 @@ import org.bson.types.ObjectId;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+
+import javax.swing.*;
 
 
 public class GameSerialization implements Persistence {
@@ -84,6 +91,91 @@ public class GameSerialization implements Persistence {
             System.out.println("Aucun document trouvé avec l'ID " + gameId);
         }
     }
+
+
+    public void dbGetGame(MongoDatabase database) {
+        MongoCollection<Document> collection = database.getCollection("games");
+        MongoCursor<Document> cursor;
+
+        LocalDateTime today = LocalDateTime.now().with(LocalTime.MIN);
+
+        Document filter = new Document("dateCreation", new Document("$gte", today));
+
+        cursor = collection.find(filter).iterator();
+
+        ObjectId[] listAllIdGame = new ObjectId[0];
+        List<String> gameNames = new ArrayList<>();
+        int value = 1;
+
+        while (cursor.hasNext()) {
+            Document document = cursor.next();
+            LocalDateTime dateCreation = document.getDate("dateCreation").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            if (Duration.between(dateCreation, LocalDateTime.now()).toMinutes() < 2) {
+                String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
+                listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
+                gameNames.add(gameName);
+                value++;
+            }
+        }
+
+        Object[] options = gameNames.toArray();
+        String selectedGame = (String) JOptionPane.showInputDialog(
+                null,
+                "Choisissez un jeu à lancer:",
+                "Sélection de jeu",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options);
+
+
+        if (selectedGame != null) {
+            String[] parts = selectedGame.split("\\.\\s+");
+            listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
+        } else {
+            System.out.println("Vous avez décidé de fermer la page, fermeture du jeu.");
+            System.exit(0);
+        }
+    }
+
+    /*
+    public void dbGetGame(MongoDatabase database) {
+        MongoCollection<Document> collection = database.getCollection("games");
+        MongoCursor<Document> cursor = collection.find().iterator();
+        ObjectId[] listAllIdGame = new ObjectId[0];
+
+        List<String> gameNames = new ArrayList<>();
+        int value = 1;
+        while (cursor.hasNext()) {
+            Document document = cursor.next();
+            String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
+            listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
+            gameNames.add(gameName);
+            value++;
+        }
+
+        Object[] options = gameNames.toArray();
+        String selectedGame = (String) JOptionPane.showInputDialog(
+                null,
+                "Choisissez un jeu à lancer:",
+                "Sélection de jeu",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options);
+
+
+        if (selectedGame != null) {
+            String[] parts = selectedGame.split("\\.\\s+");
+            listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
+        } else {
+            System.out.println("Vous avez décidé de fermer la page, fermeture du jeu.");
+            System.exit(0);
+        }
+    }
+
+     */
 
     static Logger root = (Logger) LoggerFactory
             .getLogger(Logger.ROOT_LOGGER_NAME);

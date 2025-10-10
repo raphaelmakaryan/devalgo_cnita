@@ -1,7 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.pertinent;
 
 import com.mongodb.client.MongoDatabase;
-import org.bson.BsonObjectId;
 
 public interface Persistence {
     String connectionString = "mongodb+srv://raph:ZtpI0vAe2RoDg3AQ@campusnumerique.8msqkrp.mongodb.net/?retryWrites=true&w=majority&appName=campusnumerique";
@@ -17,4 +16,6 @@ public interface Persistence {
     void dbUpdateGame(MongoDatabase database, String playerId, String gameId, String symbole, int colonne, int row);
 
     void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerId);
+
+    void dbGetGame(MongoDatabase database);
 }
