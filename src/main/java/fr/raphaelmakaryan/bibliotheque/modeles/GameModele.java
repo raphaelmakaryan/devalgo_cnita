@@ -2,10 +2,7 @@ package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import com.mongodb.client.MongoDatabase;
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
-import fr.raphaelmakaryan.bibliotheque.controllers.CustomGameController;
-import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
-import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
-import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
+import fr.raphaelmakaryan.bibliotheque.controllers.*;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 import org.bson.BsonObjectId;
 
@@ -194,11 +191,11 @@ public class GameModele implements GameModeleInterface {
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
-            gameSerialization.dbUpdateGame(database, player.getIdDatabase(), idGameDatabase, colonne, ligne);
+            gameSerialization.dbUpdateGame(database, player.getIdDatabase(), idGameDatabase, player.getRepresentation(), colonne, ligne);
         } else if (type.equals("bot")) {
             ArtificialPlayer bot = getBotPlayNow();
             board[ligne][colonne].setRepresentation(bot.getRepresentation());
-            gameSerialization.dbUpdateGame(database, bot.getIdDatabase(), idGameDatabase, colonne, ligne);
+            gameSerialization.dbUpdateGame(database, bot.getIdDatabase(), idGameDatabase, bot.getRepresentation(), colonne, ligne);
         }
     }
 
@@ -420,7 +417,7 @@ public class GameModele implements GameModeleInterface {
                 players.add("B2");
             }
         }
-        setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), size, victoryValue, player1Database, player2Database));
+        setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), getGameSelected(), size, victoryValue, player1Database, player2Database));
     }
 
     /**
@@ -468,6 +465,7 @@ public class GameModele implements GameModeleInterface {
         return gameSelected;
     }
 
+
     public MongoDatabase getDatabase() {
         return database;
     }
@@ -491,4 +489,6 @@ public class GameModele implements GameModeleInterface {
     public void setIdGameDatabase(String idGameDatabase) {
         this.idGameDatabase = idGameDatabase;
     }
+
+
 }

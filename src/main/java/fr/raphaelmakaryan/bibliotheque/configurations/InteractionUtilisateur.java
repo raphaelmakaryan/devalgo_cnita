@@ -47,19 +47,19 @@ public class InteractionUtilisateur {
             case 0:
                 // Mode 1v1 Humain donc 10 (J1) et 11 (J2)
                 gameView.println("Mode 1v1 Humain sélectionné");
-                creationElementImportant(modele, "tictactoe", "JvJ");
+                creationElementImportant(modele, "tictactoe", "JvJ", "TicTacToe");
                 gameController.initializePlayers(new int[]{10, 11});
                 break;
             case 1:
                 // Mode 1v1 Contre Bot donc 10 et 20 (B1)
                 gameView.println("Mode 1v1 Contre Bot sélectionné");
-                creationElementImportant(modele, "tictactoe", "JvB");
+                creationElementImportant(modele, "tictactoe", "JvB", "TicTacToe");
                 gameController.initializePlayers(new int[]{10, 20});
                 break;
             case 2:
                 // Mode 1v1 Bots 20 et 21 (B2)
                 gameView.println("Mode 1v1 Bots sélectionné");
-                creationElementImportant(modele, "tictactoe", "BvB");
+                creationElementImportant(modele, "tictactoe", "BvB", "TicTacToe");
                 gameController.initializePlayers(new int[]{20, 21});
                 break;
             default:
@@ -75,7 +75,7 @@ public class InteractionUtilisateur {
      */
     public void chooseGameP4(Puissance4Controller gameController) {
         GameModele modele = gameController.getGame();
-        creationElementImportant(modele, "p4", "JvJ");
+        creationElementImportant(modele, "p4", "JvJ", "Puissance 4");
         gameView.println("Mode 1v1 Humain");
         gameController.initializePlayers(new int[]{10, 11});
     }
@@ -87,7 +87,7 @@ public class InteractionUtilisateur {
      */
     public void chooseGameGomoku(GomokuController gameController) {
         GameModele modele = gameController.getGame();
-        creationElementImportant(modele, "gomoku", "JvJ");
+        creationElementImportant(modele, "gomoku", "JvJ", "Gomoku");
         gameView.println("Mode 1v1 Humain");
         gameController.initializePlayers(new int[]{10, 11});
     }
@@ -100,7 +100,7 @@ public class InteractionUtilisateur {
     public void chooseGameCustomGame(CustomGameController gameController) {
         GameModele modele = gameController.getGame();
         gameView.println("Mode 1v1 Humain");
-        creationElementImportant(modele, "perso", "JvJ");
+        creationElementImportant(modele, "perso", "JvJ", "Jeu personnalisé");
         gameController.initializePlayers(new int[]{10, 11});
     }
 
@@ -152,10 +152,11 @@ public class InteractionUtilisateur {
      * @param type
      * @param mode
      */
-    public void creationElementImportant(GameModele modele, String type, String mode) {
+    public void creationElementImportant(GameModele modele, String type, String mode, String game) {
         modele.setGameSelected(type);
         modele.setGameSerialization(new GameSerialization());
         modele.setDatabase(modele.getGameSerialization().dbConnection());
         modele.setMode(mode);
+        modele.setGameSelected(game);
     }
 }

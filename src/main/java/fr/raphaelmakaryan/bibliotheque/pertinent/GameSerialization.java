@@ -16,6 +16,7 @@ import java.util.Map;
 import com.mongodb.ServerApi;
 import com.mongodb.client.*;
 import com.mongodb.ServerApiVersion;
+import org.bson.types.ObjectId;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -36,7 +37,7 @@ public class GameSerialization implements Persistence {
         return result.getInsertedId().asObjectId().getValue().toString();
     }
 
-    public String dbCreateGame(MongoDatabase database, String mode, int taille, int jetonVictoire, String player1, String player2) {
+    public String dbCreateGame(MongoDatabase database, String mode, String game, int taille, int jetonVictoire, String player1, String player2) {
         MongoCollection<Document> collection = database.getCollection("games");
         Map<String, Map<String, String>> board = new HashMap<>();
         for (int i = 0; i < taille; i++) {
@@ -46,7 +47,7 @@ public class GameSerialization implements Persistence {
             }
             board.put(String.valueOf(i), row);
         }
-        InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("mod", mode).append("size", taille).append("victoryValue", jetonVictoire).append("player1", player1).append("player2", player2).append("board", board));
+        InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("gameChoose", game).append("mod", mode).append("size", taille).append("victoryValue", jetonVictoire).append("turn", "UNDEFINED").append("player1", new ObjectId(player1)).append("player2", new ObjectId(player2)).append("board", board));
         return result.getInsertedId().asObjectId().getValue().toString();
     }
 
@@ -54,30 +55,34 @@ public class GameSerialization implements Persistence {
 
     }
 
-    public void dbUpdateGame(MongoDatabase database, String playerId, String gameId, int colonne, int row) {
+    public void dbUpdateGame(MongoDatabase database, String playerId, String gameId, String symbole, int colonne, int row) {
         MongoCollection<Document> collection = database.getCollection("games");
-        //collection.find({});
-
-        /*
-        // Trouver le document correspondant
         Document filter = new Document("_id", new ObjectId(gameId));
         Document game = collection.find(filter).first();
-
         if (game != null) {
-            // Mettre à jour le plateau de jeu
             Document board = (Document) game.get("board");
-            board.getDocument(String.valueOf(row)).put(String.valueOf(colonne), playerId);
-
-            // Mettre à jour le document dans la base de données
+            Document rowDoc = (Document) board.get(String.valueOf(row));
+            if (rowDoc == null) {
+                rowDoc = new Document();
+                board.put(String.valueOf(row), rowDoc);
+            }
+            rowDoc.put(String.valueOf(colonne), symbole);
             collection.replaceOne(filter, game);
-
-            System.out.println("Document mis à jour avec succès !");
         } else {
             System.out.println("Aucun document trouvé avec l'ID " + gameId);
         }
+    }
 
-         */
-
+    public void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerId) {
+        MongoCollection<Document> collection = database.getCollection("games");
+        Document filter = new Document("_id", new ObjectId(gameId));
+        Document game = collection.find(filter).first();
+        if (game != null) {
+            game.put("turn", new ObjectId(playerId));
+            collection.replaceOne(filter, game);
+        } else {
+            System.out.println("Aucun document trouvé avec l'ID " + gameId);
+        }
     }
 
     static Logger root = (Logger) LoggerFactory

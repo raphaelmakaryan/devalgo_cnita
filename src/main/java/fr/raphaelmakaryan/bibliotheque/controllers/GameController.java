@@ -28,6 +28,7 @@ public abstract class GameController {
             handleEvent("PartieContinue");
             handleEvent("TourSuivant");
             nextPlayer();
+            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.getPlayerPlayNow().idDatabase);
         }
         GameModeleInterface.tools.setTimeout(1);
         display();
@@ -158,6 +159,37 @@ public abstract class GameController {
             }
         }
     }
+
+    /**
+     *
+     * @return
+     */
+    public String nextPlayerReturn() {
+        if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
+            if (Objects.equals(game.whoPlayNow, "J1")) {
+                return "J2";
+            } else if (Objects.equals(game.whoPlayNow, "J2")) {
+                return "J1";
+            }
+        }
+        if (game.players.get(0).contains("J") && game.players.get(1).contains("B")) {
+            if (Objects.equals(game.whoPlayNow, "J1")) {
+                return "B1";
+            } else if (Objects.equals(game.whoPlayNow, "B1")) {
+                return "J1";
+            }
+        }
+        if (game.players.get(0).contains("B") && game.players.get(1).contains("B")) {
+            if (game.whoPlayNow.equals("B1")) {
+                return "B2";
+            } else if (Objects.equals(game.whoPlayNow, "B2")) {
+                return "B1";
+
+            }
+        }
+        return "undefined";
+    }
+
 
     /**
      * Vérification de fin de jeu

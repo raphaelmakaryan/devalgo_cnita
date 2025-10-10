@@ -1,10 +1,7 @@
 package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.Tools;
-import fr.raphaelmakaryan.bibliotheque.configurations.ArtificialPlayer;
-import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
-import fr.raphaelmakaryan.bibliotheque.configurations.InteractionUtilisateur;
-import fr.raphaelmakaryan.bibliotheque.configurations.Player;
+import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 public interface GameModeleInterface {
