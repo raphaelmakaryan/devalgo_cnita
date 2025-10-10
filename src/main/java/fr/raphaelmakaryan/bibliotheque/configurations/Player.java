@@ -4,6 +4,7 @@ import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 
 public class Player {
     public String representation;
+    public String idDatabase;
 
     /**
      * Création d'un joueur "joueur"
@@ -11,7 +12,7 @@ public class Player {
      * @param gameModele Le jeu
      * @param value      Valeur de la place
      */
-    public Player(GameModele gameModele, int value) {
+    public Player(GameModele gameModele, int value, String idDatabase) {
         if (gameModele.getMode().equals("JvB")) {
             this.representation = gameModele.listRepresentation[0];
         } else {
@@ -19,6 +20,7 @@ public class Player {
                     ? gameModele.listRepresentation[0]
                     : gameModele.listRepresentation[1];
         }
+        this.idDatabase = idDatabase;
     }
 
     /**
@@ -28,6 +30,14 @@ public class Player {
      */
     public String getRepresentation() {
         return representation;
+    }
+
+    public String getIdDatabase() {
+        return idDatabase;
+    }
+
+    public void setIdDatabase(String idDatabase) {
+        this.idDatabase = idDatabase;
     }
 
     @Override

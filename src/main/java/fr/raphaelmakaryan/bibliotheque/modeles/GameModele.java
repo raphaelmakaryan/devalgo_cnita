@@ -1,20 +1,26 @@
 package fr.raphaelmakaryan.bibliotheque.modeles;
 
+import com.mongodb.client.MongoDatabase;
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.controllers.CustomGameController;
 import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
+import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
+import org.bson.BsonObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameModele implements GameModeleInterface {
     public int size;
+    public String idGameDatabase;
     public int victoryValue;
     public Cell[][] board;
     public boolean started;
     public String whoPlayNow;
+    public GameSerialization gameSerialization;
+    public MongoDatabase database;
 
     public String gameSelected;
     public String[] listRepresentation;
@@ -188,9 +194,11 @@ public class GameModele implements GameModeleInterface {
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
+            gameSerialization.dbUpdateGame(database, player.getIdDatabase(), idGameDatabase, colonne, ligne);
         } else if (type.equals("bot")) {
             ArtificialPlayer bot = getBotPlayNow();
             board[ligne][colonne].setRepresentation(bot.getRepresentation());
+            gameSerialization.dbUpdateGame(database, bot.getIdDatabase(), idGameDatabase, colonne, ligne);
         }
     }
 
@@ -384,24 +392,35 @@ public class GameModele implements GameModeleInterface {
      * @param value Valeur du joueur
      */
     public void createPlayer(int[] value) {
+        String player1Database = "";
+        String player2Database = "";
         for (int j : value) {
             if (j == 10) {
-                player1 = new Player(this, 1);
+                player1 = new Player(this, 1, "");
+                player1Database = gameSerialization.dbCreateUser(database, "Joueur", "J1", player1.getRepresentation());
+                player1.setIdDatabase(player1Database);
                 players.add("J1");
             }
             if (j == 11) {
-                player2 = new Player(this, 2);
+                player2 = new Player(this, 2, "");
+                player2Database = gameSerialization.dbCreateUser(database, "Joueur", "J2", player2.getRepresentation());
+                player2.setIdDatabase(player1Database);
                 players.add("J2");
             }
             if (j == 20) {
-                bot1 = new ArtificialPlayer(this, 1);
+                bot1 = new ArtificialPlayer(this, 1, "");
+                player1Database = gameSerialization.dbCreateUser(database, "BOT", "B1", bot1.getRepresentation());
+                bot1.setIdDatabase(player1Database);
                 players.add("B1");
             }
             if (j == 21) {
-                bot2 = new ArtificialPlayer(this, 2);
-                players.add("B1");
+                bot2 = new ArtificialPlayer(this, 2, "");
+                player2Database = gameSerialization.dbCreateUser(database, "BOT", "B2", bot2.getRepresentation());
+                bot2.setIdDatabase(player1Database);
+                players.add("B2");
             }
         }
+        setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), size, victoryValue, player1Database, player2Database));
     }
 
     /**
@@ -447,5 +466,29 @@ public class GameModele implements GameModeleInterface {
      */
     public String getGameSelected() {
         return gameSelected;
+    }
+
+    public MongoDatabase getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(MongoDatabase database) {
+        this.database = database;
+    }
+
+    public GameSerialization getGameSerialization() {
+        return gameSerialization;
+    }
+
+    public void setGameSerialization(GameSerialization gameSerialization) {
+        this.gameSerialization = gameSerialization;
+    }
+
+    public String getIdGameDatabase() {
+        return idGameDatabase;
+    }
+
+    public void setIdGameDatabase(String idGameDatabase) {
+        this.idGameDatabase = idGameDatabase;
     }
 }

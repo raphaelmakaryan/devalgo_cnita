@@ -5,6 +5,8 @@ import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
+import fr.raphaelmakaryan.bibliotheque.pertinent.Persistence;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 
 import javax.swing.*;
@@ -29,7 +31,6 @@ public class InteractionUtilisateur {
      */
     public void chooseGameTicTacToe(TicTacToeController gameController) {
         GameModele modele = gameController.getGame();
-        modele.setGameSelected("tictactoe");
         String[] options = {"1v1 Humain", "1v1 Contre Bot", "1v1 Bots"};
         int choix = JOptionPane.showOptionDialog(
                 null,
@@ -46,19 +47,19 @@ public class InteractionUtilisateur {
             case 0:
                 // Mode 1v1 Humain donc 10 (J1) et 11 (J2)
                 gameView.println("Mode 1v1 Humain sélectionné");
-                modele.setMode("JvJ");
+                creationElementImportant(modele, "tictactoe", "JvJ");
                 gameController.initializePlayers(new int[]{10, 11});
                 break;
             case 1:
                 // Mode 1v1 Contre Bot donc 10 et 20 (B1)
                 gameView.println("Mode 1v1 Contre Bot sélectionné");
-                modele.setMode("JvB");
+                creationElementImportant(modele, "tictactoe", "JvB");
                 gameController.initializePlayers(new int[]{10, 20});
                 break;
             case 2:
                 // Mode 1v1 Bots 20 et 21 (B2)
                 gameView.println("Mode 1v1 Bots sélectionné");
-                modele.setMode("BvB");
+                creationElementImportant(modele, "tictactoe", "BvB");
                 gameController.initializePlayers(new int[]{20, 21});
                 break;
             default:
@@ -74,8 +75,7 @@ public class InteractionUtilisateur {
      */
     public void chooseGameP4(Puissance4Controller gameController) {
         GameModele modele = gameController.getGame();
-        modele.setGameSelected("p4");
-        modele.setMode("JvJ");
+        creationElementImportant(modele, "p4", "JvJ");
         gameView.println("Mode 1v1 Humain");
         gameController.initializePlayers(new int[]{10, 11});
     }
@@ -87,9 +87,8 @@ public class InteractionUtilisateur {
      */
     public void chooseGameGomoku(GomokuController gameController) {
         GameModele modele = gameController.getGame();
-        modele.setGameSelected("gomoku");
+        creationElementImportant(modele, "gomoku", "JvJ");
         gameView.println("Mode 1v1 Humain");
-        modele.setMode("JvJ");
         gameController.initializePlayers(new int[]{10, 11});
     }
 
@@ -100,9 +99,8 @@ public class InteractionUtilisateur {
      */
     public void chooseGameCustomGame(CustomGameController gameController) {
         GameModele modele = gameController.getGame();
-        modele.setGameSelected("perso");
         gameView.println("Mode 1v1 Humain");
-        modele.setMode("JvJ");
+        creationElementImportant(modele, "perso", "JvJ");
         gameController.initializePlayers(new int[]{10, 11});
     }
 
@@ -146,5 +144,18 @@ public class InteractionUtilisateur {
                 yield "null";
             }
         };
+    }
+
+    /**
+     *
+     * @param modele
+     * @param type
+     * @param mode
+     */
+    public void creationElementImportant(GameModele modele, String type, String mode) {
+        modele.setGameSelected(type);
+        modele.setGameSerialization(new GameSerialization());
+        modele.setDatabase(modele.getGameSerialization().dbConnection());
+        modele.setMode(mode);
     }
 }
