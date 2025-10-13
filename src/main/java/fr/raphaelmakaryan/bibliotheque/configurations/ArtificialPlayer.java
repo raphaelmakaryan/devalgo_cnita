@@ -42,6 +42,10 @@ public class ArtificialPlayer {
         this.idDatabase = idDatabase;
     }
 
+    public void setRepresentation(String representation) {
+        this.representation = representation;
+    }
+
     @Override
     public String toString() {
         return "ArtificialPlayer{" +

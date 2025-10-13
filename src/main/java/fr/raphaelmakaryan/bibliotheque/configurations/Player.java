@@ -40,6 +40,10 @@ public class Player {
         this.idDatabase = idDatabase;
     }
 
+    public void setRepresentation(String representation) {
+        this.representation = representation;
+    }
+
     @Override
     public String toString() {
         return "Player{" + "representation='" + representation + '\'' + '}';

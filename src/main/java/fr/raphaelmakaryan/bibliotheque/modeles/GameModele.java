@@ -7,6 +7,7 @@ import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 import org.bson.BsonObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GameModele implements GameModeleInterface {
@@ -79,7 +80,7 @@ public class GameModele implements GameModeleInterface {
                 if (sizeUser != 0 && victoryUser != 0) {
                     CustomGame modeleCustomGame = new CustomGame(sizeUser, victoryUser);
                     CustomGameController controllerCG = new CustomGameController(modeleCustomGame);
-                    interactionUtilisateur.chooseGameCustomGame(controllerCG);
+                    interactionUtilisateur.chooseGameCustomGame(controllerCG, new String[][]{});
                 }
                 break;
 
@@ -88,7 +89,8 @@ public class GameModele implements GameModeleInterface {
                 MongoDatabase database = gameSerialization.dbConnection();
                 String idGame = gameSerialization.dbGetGame(database);
                 String[] dataGame = gameSerialization.dbGetGameId(database, idGame);
-                loadGameCreateGame(dataGame);
+                String[][] dataUsers = gameSerialization.dbGetUsersGameId(database, idGame);
+                loadGameCreateGame(dataGame, dataUsers);
                 break;
             default:
                 System.exit(0);
@@ -96,8 +98,8 @@ public class GameModele implements GameModeleInterface {
         }
     }
 
-    public void loadGameCreateGame(String[] dataGame) {
-        switch (dataGame[0]) {
+    public void loadGameCreateGame(String[] dataGame, String[][] dataUsers) {
+        switch (dataGame[1]) {
             case "tictactoe":
                 TicTacToe modeleTTT = new TicTacToe(3, 3);
                 TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
@@ -117,13 +119,12 @@ public class GameModele implements GameModeleInterface {
                 break;
 
             case "perso":
-                int sizeUser = customGameSize();
-                int victoryUser = customGameVictory(sizeUser);
-                if (sizeUser != 0 && victoryUser != 0) {
-                    CustomGame modeleCustomGame = new CustomGame(sizeUser, victoryUser);
-                    CustomGameController controllerCG = new CustomGameController(modeleCustomGame);
-                    interactionUtilisateur.chooseGameCustomGame(controllerCG);
-                }
+                CustomGame modeleCustomGame = new CustomGame(Integer.parseInt(dataGame[4]), Integer.parseInt(dataGame[5]));
+                CustomGameController controllerCG = new CustomGameController(modeleCustomGame);
+                modeleCustomGame.started = true;
+                modeleCustomGame.whoPlayNow = dataGame[3];
+                modeleCustomGame.setIdGameDatabase(dataGame[0]);
+                interactionUtilisateur.chooseGameCustomGame(controllerCG, dataUsers);
                 break;
             default:
                 System.exit(0);
@@ -431,36 +432,67 @@ public class GameModele implements GameModeleInterface {
      *
      * @param value Valeur du joueur
      */
-    public void createPlayer(int[] value) {
-        String player1Database = "";
-        String player2Database = "";
-        for (int j : value) {
-            if (j == 10) {
-                player1 = new Player(this, 1, "");
-                player1Database = gameSerialization.dbCreateUser(database, "Joueur", "J1", player1.getRepresentation());
-                player1.setIdDatabase(player1Database);
-                players.add("J1");
+    public void createPlayer(int[] value, String[][] userDatabase) {
+        if (userDatabase.length != 0) {
+            for (int i = 0; i < userDatabase.length; i++) {
+                // Place du joueur
+                if (userDatabase[i][2].contains("J")) {
+                    int valueUserDbb = Integer.parseInt(userDatabase[i][2].substring(1));
+                    switch (valueUserDbb) {
+                        case 1:
+                            player1 = new Player(this, 1, userDatabase[i][0]);
+                            player1.setRepresentation(userDatabase[i][3]);
+                            players.add(userDatabase[i][1]);
+                        case 2:
+                            player2 = new Player(this, 2, userDatabase[i][0]);
+                            player2.setRepresentation(userDatabase[i][3]);
+                            players.add(userDatabase[i][1]);
+                    }
+                } else if (userDatabase[i][2].contains("B")) {
+                    int valueUserDbb = Integer.parseInt(userDatabase[i][2].substring(1));
+                    switch (valueUserDbb) {
+                        case 1:
+                            bot1 = new ArtificialPlayer(this, 1, userDatabase[i][0]);
+                            bot1.setRepresentation(userDatabase[i][3]);
+                            players.add(userDatabase[i][1]);
+                        case 2:
+                            bot2 = new ArtificialPlayer(this, 2, userDatabase[i][0]);
+                            bot2.setRepresentation(userDatabase[i][3]);
+                            players.add(userDatabase[i][1]);
+                    }
+                }
             }
-            if (j == 11) {
-                player2 = new Player(this, 2, "");
-                player2Database = gameSerialization.dbCreateUser(database, "Joueur", "J2", player2.getRepresentation());
-                player2.setIdDatabase(player1Database);
-                players.add("J2");
+        } else {
+            String player1Database = "";
+            String player2Database = "";
+            for (int j : value) {
+                if (j == 10) {
+                    player1 = new Player(this, 1, "");
+                    player1Database = gameSerialization.dbCreateUser(database, "Joueur", "J1", player1.getRepresentation());
+                    player1.setIdDatabase(player1Database);
+                    players.add("J1");
+                }
+                if (j == 11) {
+                    player2 = new Player(this, 2, "");
+                    player2Database = gameSerialization.dbCreateUser(database, "Joueur", "J2", player2.getRepresentation());
+                    player2.setIdDatabase(player1Database);
+                    players.add("J2");
+                }
+                if (j == 20) {
+                    bot1 = new ArtificialPlayer(this, 1, "");
+                    player1Database = gameSerialization.dbCreateUser(database, "BOT", "B1", bot1.getRepresentation());
+                    bot1.setIdDatabase(player1Database);
+                    players.add("B1");
+                }
+                if (j == 21) {
+                    bot2 = new ArtificialPlayer(this, 2, "");
+                    player2Database = gameSerialization.dbCreateUser(database, "BOT", "B2", bot2.getRepresentation());
+                    bot2.setIdDatabase(player1Database);
+                    players.add("B2");
+                }
             }
-            if (j == 20) {
-                bot1 = new ArtificialPlayer(this, 1, "");
-                player1Database = gameSerialization.dbCreateUser(database, "BOT", "B1", bot1.getRepresentation());
-                bot1.setIdDatabase(player1Database);
-                players.add("B1");
-            }
-            if (j == 21) {
-                bot2 = new ArtificialPlayer(this, 2, "");
-                player2Database = gameSerialization.dbCreateUser(database, "BOT", "B2", bot2.getRepresentation());
-                bot2.setIdDatabase(player1Database);
-                players.add("B2");
-            }
+            setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), getGameSelected(), size, victoryValue, player1Database, player2Database));
         }
-        setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), getGameSelected(), size, victoryValue, player1Database, player2Database));
     }
 
     /**

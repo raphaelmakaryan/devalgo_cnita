@@ -4,7 +4,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.InsertOneResult;
-import fr.raphaelmakaryan.bibliotheque.view.GameView;
 import org.bson.Document;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -35,6 +34,14 @@ public class GameSerialization implements Persistence {
         return mongoClient.getDatabase("devalgo");
     }
 
+    public MongoCollection<Document> dbReturnCollectionGames(MongoDatabase database) {
+        return database.getCollection("games");
+    }
+
+    public MongoCollection<Document> dbReturnCollectionUsers(MongoDatabase database) {
+        return database.getCollection("users");
+    }
+
     public String dbCreateUser(MongoDatabase database, String type, String place, String symbole) {
         MongoCollection<Document> collection = database.getCollection("users");
         InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("type", type).append("place", place).append("representation", symbole).append("score", 0));
@@ -42,7 +49,7 @@ public class GameSerialization implements Persistence {
     }
 
     public String dbCreateGame(MongoDatabase database, String mode, String game, int taille, int jetonVictoire, String player1, String player2) {
-        MongoCollection<Document> collection = database.getCollection("games");
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Map<String, Map<String, String>> board = new HashMap<>();
         for (int i = 0; i < taille; i++) {
             Map<String, String> row = new HashMap<>();
@@ -60,7 +67,7 @@ public class GameSerialization implements Persistence {
     }
 
     public void dbUpdateGame(MongoDatabase database, String playerId, String gameId, String symbole, int colonne, int row) {
-        MongoCollection<Document> collection = database.getCollection("games");
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
         Document game = collection.find(filter).first();
         if (game != null) {
@@ -77,12 +84,12 @@ public class GameSerialization implements Persistence {
         }
     }
 
-    public void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerId) {
-        MongoCollection<Document> collection = database.getCollection("games");
+    public void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerTurn) {
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
         Document game = collection.find(filter).first();
         if (game != null) {
-            game.put("turn", new ObjectId(playerId));
+            game.put("turn", playerTurn);
             collection.replaceOne(filter, game);
         } else {
             System.out.println("Aucun document trouvé avec l'ID " + gameId);
@@ -90,7 +97,7 @@ public class GameSerialization implements Persistence {
     }
 
     public String dbGetGame(MongoDatabase database) {
-        MongoCollection<Document> collection = database.getCollection("games");
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
         MongoCursor<Document> cursor;
         LocalDateTime today = LocalDateTime.now().with(LocalTime.MIN);
         Document filter = new Document("dateCreation", new Document("$gte", today));
@@ -128,7 +135,11 @@ public class GameSerialization implements Persistence {
 
         if (selectedGame != null) {
             String[] parts = selectedGame.split("\\.\\s+");
-            return listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
+            if (listAllIdGame.length == parts.length) {
+                return listAllIdGame[Integer.parseInt(parts[0])].toString();
+            } else {
+                return listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
+            }
         } else {
             System.out.println("Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);
@@ -137,7 +148,7 @@ public class GameSerialization implements Persistence {
     }
 
     public String[] dbGetGameId(MongoDatabase database, String gameId) {
-        MongoCollection<Document> collection = database.getCollection("games");
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
         Document game = collection.find(filter).first();
         String gameChoose;
@@ -151,11 +162,43 @@ public class GameSerialization implements Persistence {
             turn = game.getString("turn");
             size = String.valueOf(game.getInteger("size"));
             victoryValue = String.valueOf(game.getInteger("victoryValue"));
-            return new String[]{gameChoose, mode, turn, size, victoryValue};
+            return new String[]{gameId, gameChoose, mode, turn, size, victoryValue};
         } else {
             System.out.println("Aucun document trouvé avec l'ID " + gameId);
         }
         return new String[]{};
+    }
+
+    public String[] dbReturnUsersGameId(MongoDatabase database, ObjectId userId) {
+        MongoCollection<Document> collection = dbReturnCollectionUsers(database);
+        Document filter = new Document("_id", userId);
+        Document user = collection.find(filter).first();
+        String id;
+        String type;
+        String place;
+        String representation;
+        if (user != null) {
+            id = String.valueOf(user.getObjectId("_id"));
+            type = user.getString("type");
+            place = user.getString("place");
+            representation = user.getString("representation");
+            return new String[]{id, type, place, representation};
+        } else {
+            return new String[]{};
+        }
+    }
+
+    public String[][] dbGetUsersGameId(MongoDatabase database, String gameId) {
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
+        Document filter = new Document("_id", new ObjectId(gameId));
+        Document game = collection.find(filter).first();
+        if (game != null) {
+            String[] player1Info = dbReturnUsersGameId(database, game.getObjectId("player1"));
+            String[] player2Info = dbReturnUsersGameId(database, game.getObjectId("player2"));
+            return new String[][]{player1Info, player2Info};
+        } else {
+            return new String[][]{null, null};
+        }
     }
 
     static Logger root = (Logger) LoggerFactory

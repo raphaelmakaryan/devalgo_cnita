@@ -23,12 +23,13 @@ public abstract class GameController {
         isOver();
         if (!game.started) {
             randomPlayer();
+            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.whoPlayNow);
             game.started = true;
         } else {
             handleEvent("PartieContinue");
             handleEvent("TourSuivant");
             nextPlayer();
-            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.getPlayerPlayNow().idDatabase);
+            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.whoPlayNow);
         }
         GameModeleInterface.tools.setTimeout(1);
         display();
@@ -227,9 +228,9 @@ public abstract class GameController {
      *
      * @param value Valeur des joueurs
      */
-    public void initializePlayers(int[] value) {
+    public void initializePlayers(int[] value, String[][] usersDatabase) {
         handleEvent("JeuInitialisé");
-        game.createPlayer(value);
+        game.createPlayer(value, usersDatabase);
         handleEvent("DébutDePartie");
         play();
     }

@@ -37,5 +37,5 @@ public interface GameModeleInterface {
 
     String separationBoardGame();
 
-    void createPlayer(int[] value);
+    void createPlayer(int[] value, String[][] usersDatabase);
 }
