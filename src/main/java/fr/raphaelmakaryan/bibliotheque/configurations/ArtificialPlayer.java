@@ -34,14 +34,26 @@ public class ArtificialPlayer {
         return representation;
     }
 
+    /**
+     * Récuperer l'id du bot dans la base de donnée
+     * @return L'id
+     */
     public String getIdDatabase() {
         return idDatabase;
     }
 
+    /**
+     * Insert l'id du bot de la base de donnée
+     * @param idDatabase Id
+     */
     public void setIdDatabase(String idDatabase) {
         this.idDatabase = idDatabase;
     }
 
+    /**
+     * Ajoute la representation du bot
+     * @param representation Symbole
+     */
     public void setRepresentation(String representation) {
         this.representation = representation;
     }

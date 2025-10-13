@@ -162,48 +162,21 @@ public abstract class GameController {
     }
 
     /**
-     *
-     * @return
-     */
-    public String nextPlayerReturn() {
-        if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
-            if (Objects.equals(game.whoPlayNow, "J1")) {
-                return "J2";
-            } else if (Objects.equals(game.whoPlayNow, "J2")) {
-                return "J1";
-            }
-        }
-        if (game.players.get(0).contains("J") && game.players.get(1).contains("B")) {
-            if (Objects.equals(game.whoPlayNow, "J1")) {
-                return "B1";
-            } else if (Objects.equals(game.whoPlayNow, "B1")) {
-                return "J1";
-            }
-        }
-        if (game.players.get(0).contains("B") && game.players.get(1).contains("B")) {
-            if (game.whoPlayNow.equals("B1")) {
-                return "B2";
-            } else if (Objects.equals(game.whoPlayNow, "B2")) {
-                return "B1";
-
-            }
-        }
-        return "undefined";
-    }
-
-
-    /**
      * Vérification de fin de jeu
      */
     public void isOver() {
         if (!Objects.equals(game.whoPlayNow, "null")) {
             if (game.checkWin()) {
                 handleEvent("PartieTerminée");
+                game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase);
+                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase());
                 System.out.println("GG " + game.whoPlayNow);
                 System.exit(0);
             }
             if (game.checkCellFilled() == (game.size * game.size)) {
                 handleEvent("PartieTerminée");
+                game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase);
+                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase());
                 System.out.println("Match nul !");
                 System.exit(0);
             }
@@ -226,7 +199,8 @@ public abstract class GameController {
     /**
      * Création des joueurs
      *
-     * @param value Valeur des joueurs
+     * @param value         Valeur récuperer si c'est une nouvelle partie
+     * @param usersDatabase Valeur récuperer si c'est d'une partie qui existe deja
      */
     public void initializePlayers(int[] value, String[][] usersDatabase) {
         handleEvent("JeuInitialisé");

@@ -28,8 +28,11 @@ import javax.swing.*;
 
 public class GameSerialization implements Persistence {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameSerialization.class);
-
+    /**
+     * Retourne une connection a la base de donnée
+     *
+     * @return Connexion de la base de donnée
+     */
     public MongoDatabase dbConnection() {
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
         MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(new ConnectionString(connectionString)).serverApi(serverApi).build();
@@ -37,20 +40,53 @@ public class GameSerialization implements Persistence {
         return mongoClient.getDatabase("devalgo");
     }
 
+    /**
+     * Retourne les documents de la table Games
+     *
+     * @param database Connexion a la base de données
+     * @return Retourne la table
+     */
     public MongoCollection<Document> dbReturnCollectionGames(MongoDatabase database) {
         return database.getCollection("games");
     }
 
+    /**
+     * Retourne les documents de la table Users
+     *
+     * @param database Connexion a la base de données
+     * @return Retourne la table
+     */
     public MongoCollection<Document> dbReturnCollectionUsers(MongoDatabase database) {
         return database.getCollection("users");
     }
 
+    /**
+     * Crée un user dans la base de données
+     *
+     * @param database Connexion a la base de donnée
+     * @param type     Type d'user
+     * @param place    Place dans le jeu (J/B)
+     * @param symbole  Symbole
+     * @return Retourne son id de la base de donnée
+     */
     public String dbCreateUser(MongoDatabase database, String type, String place, String symbole) {
         MongoCollection<Document> collection = database.getCollection("users");
         InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("type", type).append("place", place).append("representation", symbole).append("score", 0));
         return result.getInsertedId().asObjectId().getValue().toString();
     }
 
+    /**
+     * Crée une partie dans la base de données
+     *
+     * @param database      Connexion a la base de donnée
+     * @param mode          Mode de jeu
+     * @param game          Jeu choisi
+     * @param taille        Taille
+     * @param jetonVictoire Nombre de jeton pour la victoire
+     * @param player1       Id du joueur 1
+     * @param player2       Id du joueur 2
+     * @return Retourne l'id de la partie
+     */
     public String dbCreateGame(MongoDatabase database, String mode, String game, int taille, int jetonVictoire, String player1, String player2) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Map<String, Map<String, String>> board = new HashMap<>();
@@ -61,15 +97,36 @@ public class GameSerialization implements Persistence {
             }
             board.put(String.valueOf(i), row);
         }
-        InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("gameChoose", game).append("mod", mode).append("size", taille).append("victoryValue", jetonVictoire).append("turn", "UNDEFINED").append("player1", new ObjectId(player1)).append("player2", new ObjectId(player2)).append("board", board));
+        InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("gameChoose", game).append("mod", mode).append("size", taille).append("victoryValue", jetonVictoire).append("turn", "UNDEFINED").append("state", "progress").append("player1", new ObjectId(player1)).append("player2", new ObjectId(player2)).append("board", board));
         return result.getInsertedId().asObjectId().getValue().toString();
     }
 
-    public void dbUpdateUser() {
-
+    /**
+     * Met a jour le user car il a gagné
+     * @param database Connexion a la base de donnée
+     * @param userId Id du user
+     */
+    public void dbUpdateUser(MongoDatabase database, String userId) {
+        MongoCollection<Document> collection = dbReturnCollectionUsers(database);
+        Document filter = new Document("_id", new ObjectId(userId));
+        Document user = collection.find(filter).first();
+        if (user != null) {
+            int score = user.getInteger("score") + 1;
+            user.put("score", score);
+            collection.replaceOne(filter, user);
+        }
     }
 
-    public void dbUpdateGame(MongoDatabase database, String playerId, String gameId, String symbole, int colonne, int row) {
+    /**
+     * Met a jour la partie actuel pour le plateau
+     *
+     * @param database Connexion a la base de donnée
+     * @param gameId   Id de la game de la base de donnée
+     * @param symbole  Symbole du joueur qui a jouer
+     * @param colonne  Colonne ou le joueur a joué
+     * @param row      Ligne ou le joueur a joué
+     */
+    public void dbUpdateGame(MongoDatabase database, String gameId, String symbole, int colonne, int row) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
         Document game = collection.find(filter).first();
@@ -87,6 +144,29 @@ public class GameSerialization implements Persistence {
         }
     }
 
+    /**
+     * Fonction qui met a jour l'etat de la partie de jeu a la fin
+     *
+     * @param database Connexion a la base de donnée
+     * @param gameId   Id de la partie
+     */
+    public void dbUpdateGameState(MongoDatabase database, String gameId) {
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
+        Document filter = new Document("_id", new ObjectId(gameId));
+        Document game = collection.find(filter).first();
+        if (game != null) {
+            game.put("state", "end");
+            collection.replaceOne(filter, game);
+        }
+    }
+
+    /**
+     * Met a jour le tour
+     *
+     * @param database   COnnexion a la base de donnée
+     * @param gameId     Id de la partie
+     * @param playerTurn Nouveau tour du joueur
+     */
     public void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerTurn) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
@@ -99,6 +179,12 @@ public class GameSerialization implements Persistence {
         }
     }
 
+    /**
+     * Affiche les parties dans la base de donnée pour le choix de charger une partie
+     *
+     * @param database Connexion de la base de donnée
+     * @return Retourne l'id de la partie
+     */
     public String dbGetGame(MongoDatabase database) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         MongoCursor<Document> cursor;
@@ -112,18 +198,19 @@ public class GameSerialization implements Persistence {
         while (cursor.hasNext()) {
             Document document = cursor.next();
             Instant dateCreation = document.getDate("dateCreation").toInstant();
+            String state = document.getString("state");
             int hourBdd = dateCreation.atZone(ZoneId.systemDefault()).getHour() - 2;
             int minuteBdd = dateCreation.atZone(ZoneId.systemDefault()).getMinute();
             int hourNow = LocalDateTime.now().getHour();
             int minuteNow = LocalDateTime.now().getMinute();
 
-            // if (hourBdd == hourNow && (minuteBdd - minuteNow) < 2) {
-            String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
-            listAllIdGame[valueOnList] = document.getObjectId("_id");
-            gameNames.add(gameName);
-            value++;
-            valueOnList++;
-            //}
+            if (hourBdd == hourNow && (minuteBdd - minuteNow) < 2 && state.equals("progress")) {
+                String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
+                listAllIdGame[valueOnList] = document.getObjectId("_id");
+                gameNames.add(gameName);
+                value++;
+                valueOnList++;
+            }
         }
 
         Object[] options = gameNames.toArray();
@@ -151,6 +238,13 @@ public class GameSerialization implements Persistence {
         return "";
     }
 
+    /**
+     * Récupere les informations précises de la partie
+     *
+     * @param database Connexion de la base de données
+     * @param gameId   Id de la partie
+     * @return Retourne le tableau d'information
+     */
     public String[] dbGetGameId(MongoDatabase database, String gameId) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
@@ -173,6 +267,13 @@ public class GameSerialization implements Persistence {
         return new String[]{};
     }
 
+    /**
+     * Récupere le tableau de la base de donnée pour le charger dans le jeu
+     *
+     * @param database COnnexion a la base de donnée
+     * @param gameId   Id de la partie
+     * @return Retourne le nouveau plateau
+     */
     public Cell[][] dbGetBoardGameId(MongoDatabase database, String gameId) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));
@@ -209,6 +310,13 @@ public class GameSerialization implements Persistence {
         }
     }
 
+    /**
+     * Retourne les informations des users selon les joueurs de le partie
+     *
+     * @param database Connexion a la base de donnée
+     * @param userId   Id du user de la base de donnée
+     * @return Retourne le tablau de ces informations
+     */
     public String[] dbReturnUsersGameId(MongoDatabase database, ObjectId userId) {
         MongoCollection<Document> collection = dbReturnCollectionUsers(database);
         Document filter = new Document("_id", userId);
@@ -228,6 +336,13 @@ public class GameSerialization implements Persistence {
         }
     }
 
+    /**
+     * Récupere via la base de donnée les deux joueurs pour récuperer leur informations
+     *
+     * @param database Connexion a la base de donnée
+     * @param gameId   Id de la partie
+     * @return Retourne les infos des deux players
+     */
     public String[][] dbGetUsersGameId(MongoDatabase database, String gameId) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
         Document filter = new Document("_id", new ObjectId(gameId));

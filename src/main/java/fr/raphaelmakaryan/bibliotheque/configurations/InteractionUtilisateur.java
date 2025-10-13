@@ -74,6 +74,8 @@ public class InteractionUtilisateur {
      * Boite d'affichage pour le choix du mode dans TicTacToe
      *
      * @param gameController Controller du tictactoe
+     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
+     * @param mode           Mode du jeu si c'est une partie deja existante (bdd)
      */
     public void chooseGameTicTacToe(TicTacToeController gameController, String[][] usersDatabase, String mode) {
         GameModele modele = gameController.getGame();
@@ -140,6 +142,7 @@ public class InteractionUtilisateur {
      * Affichage pour le choix du mode dans Puissance 4
      *
      * @param gameController Controller de puissance 4
+     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
      */
     public void chooseGameP4(Puissance4Controller gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
@@ -152,18 +155,19 @@ public class InteractionUtilisateur {
      * Affichage pour le choix du mode dans Gomoku
      *
      * @param gameController Controller du go
+     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
      */
     public void chooseGameGomoku(GomokuController gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
         creationElementImportant(modele, "gomoku", "JvJ");
         gameView.println("Mode 1v1 Humain");
-        gameController.initializePlayers(new int[]{10, 11}, new String[][]{});
+        gameController.initializePlayers(new int[]{10, 11}, usersDatabase);
     }
 
     /**
-     * Affichage pour le choix du mode dans Gomoku
-     *
-     * @param gameController Controller du go
+     * Affichage pour le choix du mode customisé
+     * @param gameController Controller du customisé
+     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
      */
     public void chooseGameCustomGame(CustomGameController gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
@@ -173,10 +177,10 @@ public class InteractionUtilisateur {
     }
 
     /**
-     *
-     * @param modele
-     * @param type
-     * @param mode
+     * Fonction de création des elements importants
+     * @param modele Modele du jeu
+     * @param type TYpe de jeu
+     * @param mode Mode de jeu
      */
     public void creationElementImportant(GameModele modele, String type, String mode) {
         modele.setGameSelected(type);

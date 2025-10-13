@@ -32,14 +32,26 @@ public class Player {
         return representation;
     }
 
+    /**
+     * Récuperer l'id de l'user dans la base de donnée
+     * @return L'id
+     */
     public String getIdDatabase() {
         return idDatabase;
     }
 
+    /**
+     * Insert l'id de l'user de la base de donnée
+     * @param idDatabase Id
+     */
     public void setIdDatabase(String idDatabase) {
         this.idDatabase = idDatabase;
     }
 
+    /**
+     * Ajoute la representation de l'user
+     * @param representation Symbole
+     */
     public void setRepresentation(String representation) {
         this.representation = representation;
     }

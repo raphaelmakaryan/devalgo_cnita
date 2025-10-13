@@ -99,6 +99,13 @@ public class GameModele implements GameModeleInterface {
         }
     }
 
+    /**
+     * Fonction de chargement d'un jeu existe deja (bdd)
+     *
+     * @param dataGame  Data de la partie récuperer de la bdd
+     * @param dataUsers Data des users récuperer de la bdd
+     * @param dataBoard Data du tableau de jeu récuperer de la bdd
+     */
     public void loadGameCreateGame(String[] dataGame, String[][] dataUsers, Cell[][] dataBoard) {
         switch (dataGame[1]) {
             case "tictactoe":
@@ -146,6 +153,11 @@ public class GameModele implements GameModeleInterface {
         }
     }
 
+    /**
+     * Affichage de la demande pour créer la taille du tableau de jeu personnalisé
+     *
+     * @return Retourne la valeur
+     */
     public int customGameSize() {
         boolean canLeave = false;
         while (!canLeave) {
@@ -169,6 +181,12 @@ public class GameModele implements GameModeleInterface {
         return 0;
     }
 
+    /**
+     * Affichage de la demande pour demander le nombre de piece pour une victoire du tableau de jeu personnalisé
+     *
+     * @param sizeGame Taille du tableau
+     * @return Retourne la valeur
+     */
     public int customGameVictory(int sizeGame) {
         boolean canLeave = false;
         while (!canLeave) {
@@ -249,11 +267,11 @@ public class GameModele implements GameModeleInterface {
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
-            gameSerialization.dbUpdateGame(database, player.getIdDatabase(), idGameDatabase, player.getRepresentation(), colonne, ligne);
+            gameSerialization.dbUpdateGame(database, idGameDatabase, player.getRepresentation(), colonne, ligne);
         } else if (type.equals("bot")) {
             ArtificialPlayer bot = getBotPlayNow();
             board[ligne][colonne].setRepresentation(bot.getRepresentation());
-            gameSerialization.dbUpdateGame(database, bot.getIdDatabase(), idGameDatabase, bot.getRepresentation(), colonne, ligne);
+            gameSerialization.dbUpdateGame(database, idGameDatabase, bot.getRepresentation(), colonne, ligne);
         }
     }
 
@@ -444,12 +462,12 @@ public class GameModele implements GameModeleInterface {
     /**
      * Crée les joueurs selon le choix du mode de jeu
      *
-     * @param value Valeur du joueur
+     * @param value        Valeur du joueur
+     * @param userDatabase Valeurs des users récuperes dans une partie qui existe deja (bdd)
      */
     public void createPlayer(int[] value, String[][] userDatabase) {
         if (userDatabase.length != 0) {
             for (int i = 0; i < userDatabase.length; i++) {
-                // Place du joueur
                 if (userDatabase[i][2].contains("J")) {
                     int valueUserDbb = Integer.parseInt(userDatabase[i][2].substring(1));
                     switch (valueUserDbb) {
@@ -554,30 +572,48 @@ public class GameModele implements GameModeleInterface {
         return gameSelected;
     }
 
-
-    public MongoDatabase getDatabase() {
-        return database;
-    }
-
+    /**
+     * Ajoute la base de donnée
+     *
+     * @param database Base de donnée mongo
+     */
     public void setDatabase(MongoDatabase database) {
         this.database = database;
     }
 
+    /**
+     * Récuperer l'instance de la base de donnée
+     *
+     * @return Retourne
+     */
     public GameSerialization getGameSerialization() {
         return gameSerialization;
     }
 
+    /**
+     * Ajoute l'instance de la base de donnée
+     *
+     * @param gameSerialization Instance
+     */
     public void setGameSerialization(GameSerialization gameSerialization) {
         this.gameSerialization = gameSerialization;
     }
 
+    /**
+     * Récupere l'id de la game pour la base de donnée
+     *
+     * @return Retourne son id
+     */
     public String getIdGameDatabase() {
         return idGameDatabase;
     }
 
+    /**
+     * Ajoute l'id de la game pour la base de donnée
+     *
+     * @param idGameDatabase Id de la base de donnée
+     */
     public void setIdGameDatabase(String idGameDatabase) {
         this.idGameDatabase = idGameDatabase;
     }
-
-
 }
