@@ -29,3 +29,11 @@ bin/
 .DS_Store
 
 .idea
+
+.*gradle
+.gradle
+gradle
+/build/tmp/compileJava/compileTransaction/stash-dir
+build/*
+build
+out
