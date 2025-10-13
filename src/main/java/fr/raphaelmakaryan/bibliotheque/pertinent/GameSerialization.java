@@ -4,6 +4,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.InsertOneResult;
+import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
 import org.bson.Document;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -26,6 +27,8 @@ import javax.swing.*;
 
 
 public class GameSerialization implements Persistence {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameSerialization.class);
 
     public MongoDatabase dbConnection() {
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
@@ -114,12 +117,12 @@ public class GameSerialization implements Persistence {
             int hourNow = LocalDateTime.now().getHour();
             int minuteNow = LocalDateTime.now().getMinute();
 
-            if (hourBdd == hourNow && (minuteBdd - minuteNow) < 2) {
-                String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
-                listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
-                gameNames.add(gameName);
-                value++;
-            }
+            // if (hourBdd == hourNow && (minuteBdd - minuteNow) < 2) {
+            String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
+            listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
+            gameNames.add(gameName);
+            value++;
+            //}
         }
 
         Object[] options = gameNames.toArray();
@@ -167,6 +170,42 @@ public class GameSerialization implements Persistence {
             System.out.println("Aucun document trouvé avec l'ID " + gameId);
         }
         return new String[]{};
+    }
+
+    public Cell[][] dbGetBoardGameId(MongoDatabase database, String gameId) {
+        MongoCollection<Document> collection = dbReturnCollectionGames(database);
+        Document filter = new Document("_id", new ObjectId(gameId));
+        Document game = collection.find(filter).first();
+        int size = game.getInteger("size");
+        int valueRow = 0;
+        if (game != null) {
+            Cell[][] newBoard = new Cell[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    newBoard[i][j] = new Cell();
+                }
+            }
+            Document boardData = (Document) game.get("board");
+            while (valueRow != size) {
+                for (int i = 0; i < size; i++) {
+                    Document row0 = (Document) boardData.get(String.valueOf(valueRow));
+                    String cellValue = row0.getString(String.valueOf(i));
+                    switch (cellValue) {
+                        case " X ":
+                            newBoard[valueRow][i].setRepresentation(" X ");
+                            break;
+
+                        case " O ":
+                            newBoard[valueRow][i].setRepresentation(" O ");
+                            break;
+                    }
+                }
+                valueRow++;
+            }
+            return newBoard;
+        } else {
+            return null;
+        }
     }
 
     public String[] dbReturnUsersGameId(MongoDatabase database, ObjectId userId) {

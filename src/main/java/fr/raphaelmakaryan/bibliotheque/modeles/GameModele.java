@@ -89,8 +89,9 @@ public class GameModele implements GameModeleInterface {
                 MongoDatabase database = gameSerialization.dbConnection();
                 String idGame = gameSerialization.dbGetGame(database);
                 String[] dataGame = gameSerialization.dbGetGameId(database, idGame);
+                Cell[][] newBoard = gameSerialization.dbGetBoardGameId(database, idGame);
                 String[][] dataUsers = gameSerialization.dbGetUsersGameId(database, idGame);
-                loadGameCreateGame(dataGame, dataUsers);
+                loadGameCreateGame(dataGame, dataUsers, newBoard);
                 break;
             default:
                 System.exit(0);
@@ -98,7 +99,7 @@ public class GameModele implements GameModeleInterface {
         }
     }
 
-    public void loadGameCreateGame(String[] dataGame, String[][] dataUsers) {
+    public void loadGameCreateGame(String[] dataGame, String[][] dataUsers, Cell[][] dataBoard) {
         switch (dataGame[1]) {
             case "tictactoe":
                 TicTacToe modeleTTT = new TicTacToe(3, 3);
@@ -123,6 +124,7 @@ public class GameModele implements GameModeleInterface {
                 CustomGameController controllerCG = new CustomGameController(modeleCustomGame);
                 modeleCustomGame.started = true;
                 modeleCustomGame.whoPlayNow = dataGame[3];
+                modeleCustomGame.board = dataBoard;
                 modeleCustomGame.setIdGameDatabase(dataGame[0]);
                 interactionUtilisateur.chooseGameCustomGame(controllerCG, dataUsers);
                 break;
