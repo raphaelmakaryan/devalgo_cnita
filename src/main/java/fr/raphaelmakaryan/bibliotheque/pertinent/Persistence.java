@@ -11,7 +11,7 @@ public interface Persistence {
 
     String dbCreateGame(MongoDatabase database, String mode, String game, int taille, int jetonVictoire, String player1, String player2);
 
-    void dbUpdateUser();
+    void dbUpdateUser(MongoDatabase database, String userId);
 
     void dbUpdateGame(MongoDatabase database, String playerId, String gameId, String symbole, int colonne, int row);
 
