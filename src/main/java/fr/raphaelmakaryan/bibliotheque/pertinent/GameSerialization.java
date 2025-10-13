@@ -105,10 +105,10 @@ public class GameSerialization implements Persistence {
         LocalDateTime today = LocalDateTime.now().with(LocalTime.MIN);
         Document filter = new Document("dateCreation", new Document("$gte", today));
         cursor = collection.find(filter).iterator();
-        ObjectId[] listAllIdGame = new ObjectId[0];
+        ObjectId[] listAllIdGame = new ObjectId[Integer.parseInt(String.valueOf(collection.countDocuments()))];
         List<String> gameNames = new ArrayList<>();
         int value = 1;
-
+        int valueOnList = 0;
         while (cursor.hasNext()) {
             Document document = cursor.next();
             Instant dateCreation = document.getDate("dateCreation").toInstant();
@@ -119,9 +119,10 @@ public class GameSerialization implements Persistence {
 
             // if (hourBdd == hourNow && (minuteBdd - minuteNow) < 2) {
             String gameName = value + ". " + document.getString("mod") + " - " + document.getString("gameChoose");
-            listAllIdGame = new ObjectId[]{document.getObjectId("_id")};
+            listAllIdGame[valueOnList] = document.getObjectId("_id");
             gameNames.add(gameName);
             value++;
+            valueOnList++;
             //}
         }
 
@@ -138,7 +139,7 @@ public class GameSerialization implements Persistence {
 
         if (selectedGame != null) {
             String[] parts = selectedGame.split("\\.\\s+");
-            if (listAllIdGame.length == parts.length) {
+            if (listAllIdGame.length == 0) {
                 return listAllIdGame[Integer.parseInt(parts[0])].toString();
             } else {
                 return listAllIdGame[Integer.parseInt(parts[0]) - 1].toString();
@@ -161,7 +162,7 @@ public class GameSerialization implements Persistence {
         String victoryValue;
         if (game != null) {
             gameChoose = game.getString("gameChoose");
-            mode = game.getString("mode");
+            mode = game.getString("mod");
             turn = game.getString("turn");
             size = String.valueOf(game.getInteger("size"));
             victoryValue = String.valueOf(game.getInteger("victoryValue"));

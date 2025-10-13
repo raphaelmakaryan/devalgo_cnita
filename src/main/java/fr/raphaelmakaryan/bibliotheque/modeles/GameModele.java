@@ -59,19 +59,19 @@ public class GameModele implements GameModeleInterface {
             case "tictactoe":
                 TicTacToe modeleTTT = new TicTacToe(3, 3);
                 TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
-                interactionUtilisateur.chooseGameTicTacToe(controllerTTT);
+                interactionUtilisateur.chooseGameTicTacToe(controllerTTT, new String[][]{}, "");
                 break;
 
             case "p4":
                 Puissance4 modeleP4 = new Puissance4(7, 4);
                 Puissance4Controller controllerP4 = new Puissance4Controller(modeleP4);
-                interactionUtilisateur.chooseGameP4(controllerP4);
+                interactionUtilisateur.chooseGameP4(controllerP4, new String[][]{});
                 break;
 
             case "gomoku":
                 Gomoku modeleGO = new Gomoku(15, 5);
                 GomokuController controllerGO = new GomokuController(modeleGO);
-                interactionUtilisateur.chooseGameGomoku(controllerGO);
+                interactionUtilisateur.chooseGameGomoku(controllerGO, new String[][]{});
                 break;
 
             case "perso":
@@ -104,19 +104,31 @@ public class GameModele implements GameModeleInterface {
             case "tictactoe":
                 TicTacToe modeleTTT = new TicTacToe(3, 3);
                 TicTacToeController controllerTTT = new TicTacToeController(modeleTTT);
-                interactionUtilisateur.chooseGameTicTacToe(controllerTTT);
+                modeleTTT.started = true;
+                modeleTTT.whoPlayNow = dataGame[3];
+                modeleTTT.board = dataBoard;
+                modeleTTT.setIdGameDatabase(dataGame[0]);
+                interactionUtilisateur.chooseGameTicTacToe(controllerTTT, dataUsers, dataGame[2]);
                 break;
 
             case "p4":
                 Puissance4 modeleP4 = new Puissance4(7, 4);
                 Puissance4Controller controllerP4 = new Puissance4Controller(modeleP4);
-                interactionUtilisateur.chooseGameP4(controllerP4);
+                modeleP4.started = true;
+                modeleP4.whoPlayNow = dataGame[3];
+                modeleP4.board = dataBoard;
+                modeleP4.setIdGameDatabase(dataGame[0]);
+                interactionUtilisateur.chooseGameP4(controllerP4, dataUsers);
                 break;
 
             case "gomoku":
                 Gomoku modeleGO = new Gomoku(15, 5);
                 GomokuController controllerGO = new GomokuController(modeleGO);
-                interactionUtilisateur.chooseGameGomoku(controllerGO);
+                modeleGO.started = true;
+                modeleGO.whoPlayNow = dataGame[3];
+                modeleGO.board = dataBoard;
+                modeleGO.setIdGameDatabase(dataGame[0]);
+                interactionUtilisateur.chooseGameGomoku(controllerGO, dataUsers);
                 break;
 
             case "perso":
