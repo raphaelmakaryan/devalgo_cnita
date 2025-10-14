@@ -7,7 +7,7 @@ import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class GameController {
+public abstract class GameController  {
     protected GameModele game;
     private GameState state;
 
@@ -66,7 +66,7 @@ public abstract class GameController {
      */
     public void getMoveFromPlayer(String choice) {
         if (choice == null) {
-            GameModeleInterface.gameView.println("Vous avez décidé de fermer la page, fermeture du jeu.");
+            GameModeleInterface.gameView.onLeaveGame("Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);
         }
         Cell[][] board = game.getBoard();

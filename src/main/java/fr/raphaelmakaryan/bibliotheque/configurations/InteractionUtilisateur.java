@@ -8,11 +8,20 @@ import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 import fr.raphaelmakaryan.bibliotheque.pertinent.Persistence;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
+import fr.raphaelmakaryan.bibliotheque.view.MenuObservable;
+import fr.raphaelmakaryan.bibliotheque.view.MenuObserver;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class InteractionUtilisateur {
-    GameView gameView = new GameView();
+public class InteractionUtilisateur implements MenuObservable {
+    public GameView gameView;
+
+    public InteractionUtilisateur(GameView gameView) {
+        this.gameView = gameView;
+        this.addMenuObserver(gameView);
+    }
 
     /**
      * Affiche la boite de dialogue
@@ -64,7 +73,7 @@ public class InteractionUtilisateur {
                 yield "loadGame";
             }
             default -> {
-                gameView.println("Aucun mode sélectionné. Fin du jeu.");
+                notifyLeaveGame("Aucun mode sélectionné. Fin du jeu.");
                 yield "null";
             }
         };
@@ -112,7 +121,7 @@ public class InteractionUtilisateur {
                     gameController.initializePlayers(new int[]{20, 21}, new String[][]{});
                     break;
                 default:
-                    gameView.println("Aucun mode sélectionné. Fin du jeu.");
+                    notifyLeaveGame("Aucun mode sélectionné. Fin du jeu.");
                     break;
             }
         } else {
@@ -166,6 +175,7 @@ public class InteractionUtilisateur {
 
     /**
      * Affichage pour le choix du mode customisé
+     *
      * @param gameController Controller du customisé
      * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
      */
@@ -178,14 +188,32 @@ public class InteractionUtilisateur {
 
     /**
      * Fonction de création des elements importants
+     *
      * @param modele Modele du jeu
-     * @param type TYpe de jeu
-     * @param mode Mode de jeu
+     * @param type   TYpe de jeu
+     * @param mode   Mode de jeu
      */
     public void creationElementImportant(GameModele modele, String type, String mode) {
         modele.setGameSelected(type);
         modele.setGameSerialization(new GameSerialization());
         modele.setDatabase(modele.getGameSerialization().dbConnection());
         modele.setMode(mode);
+    }
+
+    @Override
+    public void addMenuObserver(MenuObserver observer) {
+        gameView.observers.add(observer);
+    }
+
+    @Override
+    public void removeMenuObserver(MenuObserver observer) {
+        gameView.observers.remove(observer);
+    }
+
+    @Override
+    public void notifyLeaveGame(String message) {
+        for (MenuObserver observer : gameView.observers) {
+            observer.onLeaveGame(message);
+        }
     }
 }

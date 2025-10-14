@@ -4,6 +4,7 @@ import com.mongodb.client.MongoDatabase;
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.controllers.*;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
+import fr.raphaelmakaryan.bibliotheque.view.MenuObserver;
 import org.bson.BsonObjectId;
 
 import java.util.ArrayList;
