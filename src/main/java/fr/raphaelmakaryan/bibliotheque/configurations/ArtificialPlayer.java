@@ -35,7 +35,7 @@ public class ArtificialPlayer {
     }
 
     /**
-     * Récuperer l'id du bot dans la base de donnée
+     * Récupérer l'id du bot dans la base de donnée
      * @return L'id
      */
     public String getIdDatabase() {

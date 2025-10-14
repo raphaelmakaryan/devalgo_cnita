@@ -1,9 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque;
 
 public class Tools {
-    public static final String RESET = "\u001B[0m";
-    public static final String SEPARATION_BLACK = "\u001B[30m";
-
     /**
      * Fonction de temps pour permettre un affichage fluide
      *
@@ -15,12 +12,5 @@ public class Tools {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
-
-    /**
-     * Fonction de séparation pour l'affichage dans la console
-     */
-    public void clearLine() {
-        System.out.println(SEPARATION_BLACK + "\n" + "-".repeat(40) + "\n" + RESET);
     }
 }

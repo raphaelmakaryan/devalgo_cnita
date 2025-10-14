@@ -7,11 +7,12 @@ import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class GameController  {
+public abstract class GameController extends DisplayBoard {
     protected GameModele game;
     private GameState state;
 
     public GameController(GameModele game) {
+        super(new String[]{}, new Cell[][]{});
         this.game = game;
         this.state = GameState.INITIAL;
     }
@@ -39,23 +40,14 @@ public abstract class GameController  {
      * Affichage du tableau
      */
     public void display() {
-        GameModeleInterface.gameView.println("Au tour de " + game.whoPlayNow + " (" + game.getCurrentPlayerRepresentation() + ")");
-        GameModeleInterface.gameView.println(game.separationBoardGame());
-        for (int i = 0; i < game.size; i++) {
-            GameModeleInterface.gameView.print("|");
-            for (int j = 0; j < game.size; j++) {
-                Cell c = game.board[i][j];
-                GameModeleInterface.gameView.print(c.getRepresentation());
-                GameModeleInterface.gameView.print("|");
-            }
-            System.out.print("\n");
-            GameModeleInterface.gameView.println(game.separationBoardGame());
-        }
-        GameModeleInterface.tools.clearLine();
+        DisplayBoard displayBoard = new DisplayBoard(
+                new String[]{String.valueOf(game.size)},
+                game.board
+        );
         if (game.whoPlayNow.contains("J")) {
-            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"));
+            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer " + game.whoPlayNow + " ? (exemple : '1 1')"), displayBoard);
         } else {
-            getMoveFromPlayer("bot");
+            getMoveFromPlayer("bot", displayBoard);
         }
     }
 
@@ -64,15 +56,21 @@ public abstract class GameController  {
      *
      * @param choice Choix du joueur
      */
-    public void getMoveFromPlayer(String choice) {
+    public void getMoveFromPlayer(String choice, DisplayBoard displayBoard) {
+        displayBoard.dispose();
         if (choice == null) {
             GameModeleInterface.gameView.onLeaveGame("Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);
         }
         Cell[][] board = game.getBoard();
+        int[] valueUser;
         if (!Objects.equals(choice, "bot")) {
             if (game.verificationChoiceUser(choice)) {
-                int[] valueUser = game.returnValueUser(choice);
+                if (game.getGameSelected().equals("p4")) {
+                    valueUser = tokenDescent(game.returnValueUser(choice));
+                } else {
+                    valueUser = game.returnValueUser(choice);
+                }
                 if (verificationOutside(valueUser)) {
                     GameModeleInterface.gameView.println("Vous êtes sorti du tableau !");
                     display();
@@ -114,21 +112,21 @@ public abstract class GameController  {
         int value = new Random().nextInt(2);
         if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
             if (value == 0) {
-                game.whoPlayNow = "J1";
+                game.whoPlayNow = "Joueur 1";
             } else {
-                game.whoPlayNow = "J2";
+                game.whoPlayNow = "Joueur 2";
             }
         } else if (game.players.get(0).contains("J") && game.players.get(1).contains("B")) {
             if (value == 0) {
-                game.whoPlayNow = "J1";
+                game.whoPlayNow = "Joueur 1";
             } else {
-                game.whoPlayNow = "B2";
+                game.whoPlayNow = "BOT 2";
             }
         } else if (game.players.get(0).contains("B") && game.players.get(1).contains("B")) {
             if (value == 0) {
-                game.whoPlayNow = "B1";
+                game.whoPlayNow = "BOT 1";
             } else {
-                game.whoPlayNow = "B2";
+                game.whoPlayNow = "BOT 2";
             }
         }
     }
@@ -138,24 +136,24 @@ public abstract class GameController  {
      */
     public void nextPlayer() {
         if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
-            if (Objects.equals(game.whoPlayNow, "J1")) {
-                game.whoPlayNow = "J2";
-            } else if (Objects.equals(game.whoPlayNow, "J2")) {
-                game.whoPlayNow = "J1";
+            if (Objects.equals(game.whoPlayNow, "Joueur 1")) {
+                game.whoPlayNow = "Joueur 2";
+            } else if (Objects.equals(game.whoPlayNow, "Joueur 2")) {
+                game.whoPlayNow = "Joueur 1";
             }
         }
         if (game.players.get(0).contains("J") && game.players.get(1).contains("B")) {
-            if (Objects.equals(game.whoPlayNow, "J1")) {
-                game.whoPlayNow = "B1";
-            } else if (Objects.equals(game.whoPlayNow, "B1")) {
-                game.whoPlayNow = "J1";
+            if (Objects.equals(game.whoPlayNow, "Joueur 1")) {
+                game.whoPlayNow = "BOT 1";
+            } else if (Objects.equals(game.whoPlayNow, "BOT 1")) {
+                game.whoPlayNow = "Joueur 1";
             }
         }
         if (game.players.get(0).contains("B") && game.players.get(1).contains("B")) {
-            if (game.whoPlayNow.equals("B1")) {
-                game.whoPlayNow = "B2";
-            } else if (Objects.equals(game.whoPlayNow, "B2")) {
-                game.whoPlayNow = "B1";
+            if (game.whoPlayNow.equals("BOT 1")) {
+                game.whoPlayNow = "BOT 2";
+            } else if (Objects.equals(game.whoPlayNow, "BOT 2")) {
+                game.whoPlayNow = "BOT 1";
 
             }
         }
@@ -199,8 +197,8 @@ public abstract class GameController  {
     /**
      * Création des joueurs
      *
-     * @param value         Valeur récuperer si c'est une nouvelle partie
-     * @param usersDatabase Valeur récuperer si c'est d'une partie qui existe deja
+     * @param value         Valeur récupérer si c'est une nouvelle partie
+     * @param usersDatabase Valeur récupérer si c'est d'une partie qui existe deja
      */
     public void initializePlayers(int[] value, String[][] usersDatabase) {
         handleEvent("JeuInitialisé");

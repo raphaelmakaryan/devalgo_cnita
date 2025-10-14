@@ -6,14 +6,11 @@ import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
-import fr.raphaelmakaryan.bibliotheque.pertinent.Persistence;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 import fr.raphaelmakaryan.bibliotheque.view.MenuObservable;
 import fr.raphaelmakaryan.bibliotheque.view.MenuObserver;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InteractionUtilisateur implements MenuObservable {
     public GameView gameView;
@@ -83,12 +80,12 @@ public class InteractionUtilisateur implements MenuObservable {
      * Boite d'affichage pour le choix du mode dans TicTacToe
      *
      * @param gameController Controller du tictactoe
-     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
+     * @param usersDatabase  Les users récupérer si c'est une partie deja existante (bdd)
      * @param mode           Mode du jeu si c'est une partie deja existante (bdd)
      */
     public void chooseGameTicTacToe(TicTacToeController gameController, String[][] usersDatabase, String mode) {
         GameModele modele = gameController.getGame();
-        if (usersDatabase.length == 0 && mode.equals("")) {
+        if (usersDatabase.length == 0 && mode.isEmpty()) {
             String[] options = {"1v1 Humain", "1v1 Contre Bot", "1v1 Bots"};
             int choix = JOptionPane.showOptionDialog(
                     null,
@@ -151,7 +148,7 @@ public class InteractionUtilisateur implements MenuObservable {
      * Affichage pour le choix du mode dans Puissance 4
      *
      * @param gameController Controller de puissance 4
-     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
+     * @param usersDatabase  Les users récupérer si c'est une partie deja existante (bdd)
      */
     public void chooseGameP4(Puissance4Controller gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
@@ -164,7 +161,7 @@ public class InteractionUtilisateur implements MenuObservable {
      * Affichage pour le choix du mode dans Gomoku
      *
      * @param gameController Controller du go
-     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
+     * @param usersDatabase  Les users récupérer si c'est une partie deja existante (bdd)
      */
     public void chooseGameGomoku(GomokuController gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
@@ -177,7 +174,7 @@ public class InteractionUtilisateur implements MenuObservable {
      * Affichage pour le choix du mode customisé
      *
      * @param gameController Controller du customisé
-     * @param usersDatabase  Les users récuperer si c'est une partie deja existante (bdd)
+     * @param usersDatabase  Les users récupérer si c'est une partie deja existante (bdd)
      */
     public void chooseGameCustomGame(CustomGameController gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();

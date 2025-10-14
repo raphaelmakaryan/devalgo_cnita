@@ -4,7 +4,6 @@ import com.mongodb.client.MongoDatabase;
 
 public interface Persistence {
     String connectionString = "mongodb+srv://raph:ZtpI0vAe2RoDg3AQ@campusnumerique.8msqkrp.mongodb.net/?retryWrites=true&w=majority&appName=campusnumerique";
-
     MongoDatabase dbConnection();
 
     String dbCreateUser(MongoDatabase database, String type, String place, String symbole);
