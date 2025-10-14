@@ -45,7 +45,7 @@ public abstract class GameController extends DisplayBoard {
                 game.board
         );
         if (game.whoPlayNow.contains("J")) {
-            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer ? (exemple : '1 1')"), displayBoard);
+            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer " + game.whoPlayNow + " ? (exemple : '1 1')"), displayBoard);
         } else {
             getMoveFromPlayer("bot", displayBoard);
         }
@@ -63,9 +63,14 @@ public abstract class GameController extends DisplayBoard {
             System.exit(0);
         }
         Cell[][] board = game.getBoard();
+        int[] valueUser;
         if (!Objects.equals(choice, "bot")) {
             if (game.verificationChoiceUser(choice)) {
-                int[] valueUser = game.returnValueUser(choice);
+                if (game.getGameSelected().equals("p4")) {
+                    valueUser = tokenDescent(game.returnValueUser(choice));
+                } else {
+                    valueUser = game.returnValueUser(choice);
+                }
                 if (verificationOutside(valueUser)) {
                     GameModeleInterface.gameView.println("Vous êtes sorti du tableau !");
                     display();
@@ -107,21 +112,21 @@ public abstract class GameController extends DisplayBoard {
         int value = new Random().nextInt(2);
         if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
             if (value == 0) {
-                game.whoPlayNow = "J1";
+                game.whoPlayNow = "Joueur 1";
             } else {
-                game.whoPlayNow = "J2";
+                game.whoPlayNow = "Joueur 2";
             }
         } else if (game.players.get(0).contains("J") && game.players.get(1).contains("B")) {
             if (value == 0) {
-                game.whoPlayNow = "J1";
+                game.whoPlayNow = "Joueur 1";
             } else {
-                game.whoPlayNow = "B2";
+                game.whoPlayNow = "BOT 2";
             }
         } else if (game.players.get(0).contains("B") && game.players.get(1).contains("B")) {
             if (value == 0) {
-                game.whoPlayNow = "B1";
+                game.whoPlayNow = "BOT 1";
             } else {
-                game.whoPlayNow = "B2";
+                game.whoPlayNow = "BOT 2";
             }
         }
     }
@@ -131,24 +136,24 @@ public abstract class GameController extends DisplayBoard {
      */
     public void nextPlayer() {
         if (game.players.get(0).contains("J") && game.players.get(1).contains("J")) {
-            if (Objects.equals(game.whoPlayNow, "J1")) {
-                game.whoPlayNow = "J2";
-            } else if (Objects.equals(game.whoPlayNow, "J2")) {
-                game.whoPlayNow = "J1";
+            if (Objects.equals(game.whoPlayNow, "Joueur 1")) {
+                game.whoPlayNow = "Joueur 2";
+            } else if (Objects.equals(game.whoPlayNow, "Joueur 2")) {
+                game.whoPlayNow = "Joueur 1";
             }
         }
         if (game.players.get(0).contains("J") && game.players.get(1).contains("B")) {
-            if (Objects.equals(game.whoPlayNow, "J1")) {
-                game.whoPlayNow = "B1";
-            } else if (Objects.equals(game.whoPlayNow, "B1")) {
-                game.whoPlayNow = "J1";
+            if (Objects.equals(game.whoPlayNow, "Joueur 1")) {
+                game.whoPlayNow = "BOT 1";
+            } else if (Objects.equals(game.whoPlayNow, "BOT 1")) {
+                game.whoPlayNow = "Joueur 1";
             }
         }
         if (game.players.get(0).contains("B") && game.players.get(1).contains("B")) {
-            if (game.whoPlayNow.equals("B1")) {
-                game.whoPlayNow = "B2";
-            } else if (Objects.equals(game.whoPlayNow, "B2")) {
-                game.whoPlayNow = "B1";
+            if (game.whoPlayNow.equals("BOT 1")) {
+                game.whoPlayNow = "BOT 2";
+            } else if (Objects.equals(game.whoPlayNow, "BOT 2")) {
+                game.whoPlayNow = "BOT 1";
 
             }
         }

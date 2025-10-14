@@ -300,7 +300,7 @@ public class GameModele implements GameModeleInterface {
      * @return Retourne le joueur actuel
      */
     public Player getPlayerPlayNow() {
-        if (whoPlayNow.equals("J1")) {
+        if (whoPlayNow.equals("Joueur 1")) {
             return player1;
         } else {
             return player2;
@@ -313,7 +313,7 @@ public class GameModele implements GameModeleInterface {
      * @return Retourne le bot actuel
      */
     public ArtificialPlayer getBotPlayNow() {
-        if (whoPlayNow.equals("B1")) {
+        if (whoPlayNow.equals("BOT 1")) {
             return bot1;
         } else {
             return bot2;
@@ -443,10 +443,10 @@ public class GameModele implements GameModeleInterface {
      */
     public String getCurrentPlayerRepresentation() {
         return switch (whoPlayNow) {
-            case "J1" -> player1.getRepresentation();
-            case "J2" -> player2.getRepresentation();
-            case "B1" -> bot1.getRepresentation();
-            case "B2" -> bot2.getRepresentation();
+            case "Joueur 1" -> player1.getRepresentation();
+            case "Joueur 2" -> player2.getRepresentation();
+            case "BOT 1" -> bot1.getRepresentation();
+            case "BOT 2" -> bot2.getRepresentation();
             default -> "UNDEFINED";
         };
     }
@@ -501,27 +501,27 @@ public class GameModele implements GameModeleInterface {
             for (int j : value) {
                 if (j == 10) {
                     player1 = new Player(this, 1, "");
-                    player1Database = gameSerialization.dbCreateUser(database, "Joueur", "J1", player1.getRepresentation());
+                    player1Database = gameSerialization.dbCreateUser(database, "Joueur", "Joueur 1", player1.getRepresentation());
                     player1.setIdDatabase(player1Database);
-                    players.add("J1");
+                    players.add("Joueur 1");
                 }
                 if (j == 11) {
                     player2 = new Player(this, 2, "");
-                    player2Database = gameSerialization.dbCreateUser(database, "Joueur", "J2", player2.getRepresentation());
+                    player2Database = gameSerialization.dbCreateUser(database, "Joueur", "Joueur 2", player2.getRepresentation());
                     player2.setIdDatabase(player1Database);
-                    players.add("J2");
+                    players.add("Joueur 2");
                 }
                 if (j == 20) {
                     bot1 = new ArtificialPlayer(this, 1, "");
-                    player1Database = gameSerialization.dbCreateUser(database, "BOT", "B1", bot1.getRepresentation());
+                    player1Database = gameSerialization.dbCreateUser(database, "BOT", "BOT 1", bot1.getRepresentation());
                     bot1.setIdDatabase(player1Database);
-                    players.add("B1");
+                    players.add("BOT 1");
                 }
                 if (j == 21) {
                     bot2 = new ArtificialPlayer(this, 2, "");
-                    player2Database = gameSerialization.dbCreateUser(database, "BOT", "B2", bot2.getRepresentation());
+                    player2Database = gameSerialization.dbCreateUser(database, "BOT", "BOT 2", bot2.getRepresentation());
                     bot2.setIdDatabase(player1Database);
-                    players.add("B2");
+                    players.add("BOT 2");
                 }
             }
             setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), getGameSelected(), size, victoryValue, player1Database, player2Database));
