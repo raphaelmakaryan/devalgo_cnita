@@ -10,10 +10,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.mongodb.ServerApi;
 import com.mongodb.client.*;
@@ -29,7 +26,7 @@ import javax.swing.*;
 public class GameSerialization implements Persistence {
 
     /**
-     * Retourne une connection a la base de donnée
+     * Retourne une connection à la base de donnée
      *
      * @return Connexion de la base de donnée
      */
@@ -72,7 +69,7 @@ public class GameSerialization implements Persistence {
     public String dbCreateUser(MongoDatabase database, String type, String place, String symbole) {
         MongoCollection<Document> collection = database.getCollection("users");
         InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("type", type).append("place", place).append("representation", symbole).append("score", 0));
-        return result.getInsertedId().asObjectId().getValue().toString();
+        return Objects.requireNonNull(result.getInsertedId()).asObjectId().getValue().toString();
     }
 
     /**
@@ -82,7 +79,7 @@ public class GameSerialization implements Persistence {
      * @param mode          Mode de jeu
      * @param game          Jeu choisi
      * @param taille        Taille
-     * @param jetonVictoire Nombre de jeton pour la victoire
+     * @param jetonVictoire Nombre de jetons pour la victoire
      * @param player1       Id du joueur 1
      * @param player2       Id du joueur 2
      * @return Retourne l'id de la partie
@@ -98,14 +95,14 @@ public class GameSerialization implements Persistence {
             board.put(String.valueOf(i), row);
         }
         InsertOneResult result = collection.insertOne(new Document("dateCreation", LocalDateTime.now()).append("gameChoose", game).append("mod", mode).append("size", taille).append("victoryValue", jetonVictoire).append("turn", "UNDEFINED").append("state", "progress").append("player1", new ObjectId(player1)).append("player2", new ObjectId(player2)).append("board", board));
-        return result.getInsertedId().asObjectId().getValue().toString();
+        return Objects.requireNonNull(result.getInsertedId()).asObjectId().getValue().toString();
     }
 
     /**
      * Met a jour le user car il a gagné
      *
      * @param database Connexion a la base de donnée
-     * @param userId   Id du user
+     * @param userId   Id de l'user
      */
     public void dbUpdateUser(MongoDatabase database, String userId) {
         MongoCollection<Document> collection = dbReturnCollectionUsers(database);
@@ -119,13 +116,13 @@ public class GameSerialization implements Persistence {
     }
 
     /**
-     * Met a jour la partie actuel pour le plateau
+     * Met à jour la partie actuel pour le plateau
      *
      * @param database Connexion a la base de donnée
      * @param gameId   Id de la game de la base de donnée
-     * @param symbole  Symbole du joueur qui a jouer
-     * @param colonne  Colonne ou le joueur a joué
-     * @param row      Ligne ou le joueur a joué
+     * @param symbole  Symbole du joueur qui a joué
+     * @param colonne  Colonne où le joueur a joué
+     * @param row      Ligne où le joueur a joué
      */
     public void dbUpdateGame(MongoDatabase database, String gameId, String symbole, int colonne, int row) {
         MongoCollection<Document> collection = dbReturnCollectionGames(database);
@@ -146,7 +143,7 @@ public class GameSerialization implements Persistence {
     }
 
     /**
-     * Fonction qui met a jour l'etat de la partie de jeu a la fin
+     * Fonction qui met à jour l'état de la partie de jeu a la fin
      *
      * @param database Connexion a la base de donnée
      * @param gameId   Id de la partie
@@ -164,7 +161,7 @@ public class GameSerialization implements Persistence {
     /**
      * Met a jour le tour
      *
-     * @param database   COnnexion a la base de donnée
+     * @param database   CConnexion a la base de donnée
      * @param gameId     Id de la partie
      * @param playerTurn Nouveau tour du joueur
      */
@@ -240,7 +237,7 @@ public class GameSerialization implements Persistence {
     }
 
     /**
-     * Récupere les informations précises de la partie
+     * Récupère les informations précises de la partie
      *
      * @param database Connexion de la base de données
      * @param gameId   Id de la partie
@@ -269,9 +266,9 @@ public class GameSerialization implements Persistence {
     }
 
     /**
-     * Récupere le tableau de la base de donnée pour le charger dans le jeu
+     * Récupère le tableau de la base de donnée pour le charger dans le jeu
      *
-     * @param database COnnexion a la base de donnée
+     * @param database CConnexion a la base de donnée
      * @param gameId   Id de la partie
      * @return Retourne le nouveau plateau
      */
@@ -281,42 +278,38 @@ public class GameSerialization implements Persistence {
         Document game = collection.find(filter).first();
         int size = game.getInteger("size");
         int valueRow = 0;
-        if (game != null) {
-            Cell[][] newBoard = new Cell[size][size];
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    newBoard[i][j] = new Cell();
-                }
+        Cell[][] newBoard = new Cell[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                newBoard[i][j] = new Cell();
             }
-            Document boardData = (Document) game.get("board");
-            while (valueRow != size) {
-                for (int i = 0; i < size; i++) {
-                    Document row0 = (Document) boardData.get(String.valueOf(valueRow));
-                    String cellValue = row0.getString(String.valueOf(i));
-                    switch (cellValue) {
-                        case " X ":
-                            newBoard[valueRow][i].setRepresentation(" X ");
-                            break;
-
-                        case " O ":
-                            newBoard[valueRow][i].setRepresentation(" O ");
-                            break;
-                    }
-                }
-                valueRow++;
-            }
-            return newBoard;
-        } else {
-            return null;
         }
+        Document boardData = (Document) game.get("board");
+        while (valueRow != size) {
+            for (int i = 0; i < size; i++) {
+                Document row0 = (Document) boardData.get(String.valueOf(valueRow));
+                String cellValue = row0.getString(String.valueOf(i));
+                switch (cellValue) {
+                    case " X ":
+                        newBoard[valueRow][i].setRepresentation(" X ");
+                        break;
+
+                    case " O ":
+                        newBoard[valueRow][i].setRepresentation(" O ");
+                        break;
+                }
+            }
+            valueRow++;
+        }
+        return newBoard;
     }
 
     /**
-     * Retourne les informations des users selon les joueurs de le partie
+     * Retourne les informations des users selon les joueurs de la partie
      *
      * @param database Connexion a la base de donnée
-     * @param userId   Id du user de la base de donnée
-     * @return Retourne le tablau de ces informations
+     * @param userId   Id de l'user de la base de donnée
+     * @return Retourne le tableau de ces informations
      */
     public String[] dbReturnUsersGameId(MongoDatabase database, ObjectId userId) {
         MongoCollection<Document> collection = dbReturnCollectionUsers(database);
@@ -338,7 +331,7 @@ public class GameSerialization implements Persistence {
     }
 
     /**
-     * Récupere via la base de donnée les deux joueurs pour récuperer leur informations
+     * Récupère via la base de donnée les deux joueurs pour récupérer leurs informations
      *
      * @param database Connexion a la base de donnée
      * @param gameId   Id de la partie

@@ -69,9 +69,9 @@ public class Minimax {
 
         // Si c'est le bot qui joue
         if (isBot) {
-            return simulationMinimax(Integer.MIN_VALUE, board, isBot, depth, botSymbol, playerSymbol);
+            return simulationMinimax(Integer.MIN_VALUE, board, true, depth, botSymbol, playerSymbol);
         } else {
-            return simulationMinimax(Integer.MAX_VALUE, board, isBot, depth, botSymbol, playerSymbol);
+            return simulationMinimax(Integer.MAX_VALUE, board, false, depth, botSymbol, playerSymbol);
         }
     }
 

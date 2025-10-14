@@ -33,7 +33,7 @@ public class Player {
     }
 
     /**
-     * Récuperer l'id de l'user dans la base de donnée
+     * Récupérer l'id de l'user dans la base de donnée
      * @return L'id
      */
     public String getIdDatabase() {

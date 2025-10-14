@@ -9,17 +9,17 @@ public class DisplayBoard extends JFrame {
 
     /**
      * Affichage du jeu a l'écran
-     * @param strings Toute les infos récuperer du jeu
-     * @param cells Tableau du jeu récuperer
+     *
+     * @param strings Toutes les infos récupérer du jeu
+     * @param cells   Tableau du jeu récupérer
      */
     public DisplayBoard(String[] strings, Cell[][] cells) {
         super("Plateau de jeu");
         if (strings.length != 0) {
             int size = Integer.parseInt(strings[0]);
-            Cell[][] board = cells;
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            DrawPane drawPane = new DrawPane(size, board);
+            DrawPane drawPane = new DrawPane(size, cells);
             setContentPane(drawPane);
             int displaySize = 500 * size / 2;
             setSize(displaySize, displaySize);
@@ -27,13 +27,14 @@ public class DisplayBoard extends JFrame {
         }
     }
 
-    class DrawPane extends JPanel {
-        private int size;
-        private Cell[][] board;
+    static class DrawPane extends JPanel {
+        private final int size;
+        private final Cell[][] board;
 
         /**
          * Initiation de DrawPane pour la creation visuel
-         * @param size Taille du tableau
+         *
+         * @param size  Taille du tableau
          * @param board Tableau
          */
         public DrawPane(int size, Cell[][] board) {
@@ -42,7 +43,8 @@ public class DisplayBoard extends JFrame {
         }
 
         /**
-         * Création visuel du tableau
+         * Création visuelle du tableau
+         *
          * @param g the <code>Graphics</code> object to protect
          */
         @Override
@@ -54,6 +56,7 @@ public class DisplayBoard extends JFrame {
 
         /**
          * Création du tableau visuel
+         *
          * @param g Graphics
          */
         private void drawGrid(Graphics g) {
@@ -72,6 +75,7 @@ public class DisplayBoard extends JFrame {
 
         /**
          * Création des pieces dans le tableau
+         *
          * @param g Graphics
          */
         private void drawPieces(Graphics g) {
@@ -98,6 +102,6 @@ public class DisplayBoard extends JFrame {
     }
 
     public static void main(String[] args, Cell[][] board) {
-        JFrame frame = new DisplayBoard(args, board);
+        new DisplayBoard(args, board);
     }
 }

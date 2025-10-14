@@ -197,8 +197,8 @@ public abstract class GameController extends DisplayBoard {
     /**
      * Création des joueurs
      *
-     * @param value         Valeur récuperer si c'est une nouvelle partie
-     * @param usersDatabase Valeur récuperer si c'est d'une partie qui existe deja
+     * @param value         Valeur récupérer si c'est une nouvelle partie
+     * @param usersDatabase Valeur récupérer si c'est d'une partie qui existe deja
      */
     public void initializePlayers(int[] value, String[][] usersDatabase) {
         handleEvent("JeuInitialisé");

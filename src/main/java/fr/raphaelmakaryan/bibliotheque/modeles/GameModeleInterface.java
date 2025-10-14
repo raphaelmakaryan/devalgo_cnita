@@ -3,10 +3,6 @@ package fr.raphaelmakaryan.bibliotheque.modeles;
 import fr.raphaelmakaryan.bibliotheque.Tools;
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
-import fr.raphaelmakaryan.bibliotheque.view.MenuObserver;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public interface GameModeleInterface {
     Tools tools = new Tools();
