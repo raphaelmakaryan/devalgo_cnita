@@ -6,7 +6,5 @@ public interface MenuObservable {
 
     void removeMenuObserver(MenuObserver observer);
 
-    void notifyChooseGame();
-
-    void notifyLeaveGame();
+    void notifyLeaveGame(String message);
 }

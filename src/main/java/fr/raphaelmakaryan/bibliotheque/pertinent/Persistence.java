@@ -13,7 +13,9 @@ public interface Persistence {
 
     void dbUpdateUser(MongoDatabase database, String userId);
 
-    void dbUpdateGame(MongoDatabase database, String playerId, String gameId, String symbole, int colonne, int row);
+    void dbUpdateGame(MongoDatabase database, String gameId, String symbole, int colonne, int row);
+
+    void dbUpdateGameState(MongoDatabase database, String gameId);
 
     void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerId);
 

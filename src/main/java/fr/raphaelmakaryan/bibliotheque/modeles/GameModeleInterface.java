@@ -3,11 +3,15 @@ package fr.raphaelmakaryan.bibliotheque.modeles;
 import fr.raphaelmakaryan.bibliotheque.Tools;
 import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
+import fr.raphaelmakaryan.bibliotheque.view.MenuObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface GameModeleInterface {
     Tools tools = new Tools();
     GameView gameView = new GameView();
-    InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur();
+    InteractionUtilisateur interactionUtilisateur = new InteractionUtilisateur(gameView);
 
     void chooseGame();
 
