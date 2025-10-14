@@ -510,10 +510,10 @@ public class GameModele implements GameModeleInterface {
                 }
                 if (j == 20) {
                     bot1 = new ArtificialPlayer(this, 1, "");
-                    if (player1Database.isEmpty()) {
+                    if (player1Database.isEmpty() && !getMode().equals("BvB")) {
                         player1Database = gameSerialization.dbCreateUser(database, "BOT", "BOT 1", bot1.getRepresentation());
                         bot1.setIdDatabase(player1Database);
-                    } else {
+                    } else if (!getMode().equals("BvB")) {
                         player2Database = gameSerialization.dbCreateUser(database, "BOT", "BOT 1", bot1.getRepresentation());
                         bot1.setIdDatabase(player2Database);
                     }
@@ -521,17 +521,19 @@ public class GameModele implements GameModeleInterface {
                 }
                 if (j == 21) {
                     bot2 = new ArtificialPlayer(this, 2, "");
-                    if (player2Database.isEmpty()) {
+                    if (player2Database.isEmpty() && !getMode().equals("BvB")) {
                         player2Database = gameSerialization.dbCreateUser(database, "BOT", "BOT 2", bot2.getRepresentation());
                         bot2.setIdDatabase(player2Database);
-                    } else {
+                    } else if (!getMode().equals("BvB")) {
                         player1Database = gameSerialization.dbCreateUser(database, "BOT", "BOT 2", bot2.getRepresentation());
                         bot2.setIdDatabase(player1Database);
                     }
                     players.add("BOT 2");
                 }
             }
-            setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), getGameSelected(), size, victoryValue, player1Database, player2Database));
+            if (!getMode().equals("BvB")) {
+                setIdGameDatabase(gameSerialization.dbCreateGame(database, getMode(), getGameSelected(), size, victoryValue, player1Database, player2Database));
+            }
         }
     }
 

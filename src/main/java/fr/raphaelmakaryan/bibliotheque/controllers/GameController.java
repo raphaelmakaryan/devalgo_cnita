@@ -24,13 +24,13 @@ public abstract class GameController extends DisplayBoard {
         isOver();
         if (!game.started) {
             randomPlayer();
-            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.whoPlayNow);
+            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.whoPlayNow, game.getMode());
             game.started = true;
         } else {
             handleEvent("PartieContinue");
             handleEvent("TourSuivant");
             nextPlayer();
-            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.whoPlayNow);
+            game.gameSerialization.dbUpdateGameTurnPlayer(game.database, game.getIdGameDatabase(), game.whoPlayNow, game.getMode());
         }
         GameModeleInterface.tools.setTimeout(1);
         display();
@@ -166,15 +166,15 @@ public abstract class GameController extends DisplayBoard {
         if (!Objects.equals(game.whoPlayNow, "null")) {
             if (game.checkWin()) {
                 handleEvent("PartieTerminée");
-                game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase);
-                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase());
+                game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase, game.getMode());
+                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase(), game.getMode());
                 System.out.println("GG " + game.whoPlayNow);
                 System.exit(0);
             }
             if (game.checkCellFilled() == (game.size * game.size)) {
                 handleEvent("PartieTerminée");
-                game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase);
-                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase());
+                game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase, game.getMode());
+                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase(), game.getMode());
                 System.out.println("Match nul !");
                 System.exit(0);
             }

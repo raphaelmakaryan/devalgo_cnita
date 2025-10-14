@@ -104,14 +104,16 @@ public class GameSerialization implements Persistence {
      * @param database Connexion a la base de donnée
      * @param userId   Id de l'user
      */
-    public void dbUpdateUser(MongoDatabase database, String userId) {
-        MongoCollection<Document> collection = dbReturnCollectionUsers(database);
-        Document filter = new Document("_id", new ObjectId(userId));
-        Document user = collection.find(filter).first();
-        if (user != null) {
-            int score = user.getInteger("score") + 1;
-            user.put("score", score);
-            collection.replaceOne(filter, user);
+    public void dbUpdateUser(MongoDatabase database, String userId, String mode) {
+        if (!mode.equals("BvB")) {
+            MongoCollection<Document> collection = dbReturnCollectionUsers(database);
+            Document filter = new Document("_id", new ObjectId(userId));
+            Document user = collection.find(filter).first();
+            if (user != null) {
+                int score = user.getInteger("score") + 1;
+                user.put("score", score);
+                collection.replaceOne(filter, user);
+            }
         }
     }
 
@@ -148,13 +150,15 @@ public class GameSerialization implements Persistence {
      * @param database Connexion a la base de donnée
      * @param gameId   Id de la partie
      */
-    public void dbUpdateGameState(MongoDatabase database, String gameId) {
-        MongoCollection<Document> collection = dbReturnCollectionGames(database);
-        Document filter = new Document("_id", new ObjectId(gameId));
-        Document game = collection.find(filter).first();
-        if (game != null) {
-            game.put("state", "end");
-            collection.replaceOne(filter, game);
+    public void dbUpdateGameState(MongoDatabase database, String gameId, String mode) {
+        if (!mode.equals("BvB")) {
+            MongoCollection<Document> collection = dbReturnCollectionGames(database);
+            Document filter = new Document("_id", new ObjectId(gameId));
+            Document game = collection.find(filter).first();
+            if (game != null) {
+                game.put("state", "end");
+                collection.replaceOne(filter, game);
+            }
         }
     }
 
@@ -165,15 +169,17 @@ public class GameSerialization implements Persistence {
      * @param gameId     Id de la partie
      * @param playerTurn Nouveau tour du joueur
      */
-    public void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerTurn) {
-        MongoCollection<Document> collection = dbReturnCollectionGames(database);
-        Document filter = new Document("_id", new ObjectId(gameId));
-        Document game = collection.find(filter).first();
-        if (game != null) {
-            game.put("turn", playerTurn);
-            collection.replaceOne(filter, game);
-        } else {
-            System.out.println("Aucun document trouvé avec l'ID " + gameId);
+    public void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerTurn, String mode) {
+        if (!mode.equals("BvB")) {
+            MongoCollection<Document> collection = dbReturnCollectionGames(database);
+            Document filter = new Document("_id", new ObjectId(gameId));
+            Document game = collection.find(filter).first();
+            if (game != null) {
+                game.put("turn", playerTurn);
+                collection.replaceOne(filter, game);
+            } else {
+                System.out.println("Aucun document trouvé avec l'ID " + gameId);
+            }
         }
     }
 
