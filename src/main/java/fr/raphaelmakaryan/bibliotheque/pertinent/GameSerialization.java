@@ -103,8 +103,9 @@ public class GameSerialization implements Persistence {
 
     /**
      * Met a jour le user car il a gagné
+     *
      * @param database Connexion a la base de donnée
-     * @param userId Id du user
+     * @param userId   Id du user
      */
     public void dbUpdateUser(MongoDatabase database, String userId) {
         MongoCollection<Document> collection = dbReturnCollectionUsers(database);

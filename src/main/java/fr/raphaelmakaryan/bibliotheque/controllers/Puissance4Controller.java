@@ -14,7 +14,8 @@ public class Puissance4Controller extends GameController {
      * @param choice Choix du joueur
      */
     @Override
-    public void getMoveFromPlayer(String choice) {
+    public void getMoveFromPlayer(String choice, DisplayBoard displayBoard) {
+        displayBoard.dispose();
         if (choice == null) {
             game.gameView.println("Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);

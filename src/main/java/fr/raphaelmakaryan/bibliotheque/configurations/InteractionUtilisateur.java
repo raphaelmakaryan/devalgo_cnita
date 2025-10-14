@@ -6,14 +6,11 @@ import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
-import fr.raphaelmakaryan.bibliotheque.pertinent.Persistence;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 import fr.raphaelmakaryan.bibliotheque.view.MenuObservable;
 import fr.raphaelmakaryan.bibliotheque.view.MenuObserver;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InteractionUtilisateur implements MenuObservable {
     public GameView gameView;
