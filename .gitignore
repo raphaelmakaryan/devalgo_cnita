@@ -36,4 +36,5 @@ gradle
 /build/tmp/compileJava/compileTransaction/stash-dir
 build/*
 build
+/build/
 out
