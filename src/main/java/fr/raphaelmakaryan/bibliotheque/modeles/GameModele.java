@@ -371,6 +371,8 @@ public class GameModele implements GameModeleInterface {
                 Cell c = cells[valeurColonne];
                 if (whoPlayNow.contains("J") && c.getRepresentation().equals(getPlayerPlayNow().representation)) {
                     valueEqualsPlayer = valueEqualsPlayer + 1;
+                } else if (whoPlayNow.contains("B") && c.getRepresentation().equals(getBotPlayNow().representation)) {
+                    valueEqualsPlayer = valueEqualsPlayer + 1;
                 } else {
                     valueEqualsPlayer = 0;
                 }
@@ -446,15 +448,6 @@ public class GameModele implements GameModeleInterface {
             case "BOT 2" -> bot2.getRepresentation();
             default -> "UNDEFINED";
         };
-    }
-
-    /**
-     * Renvoie le string selon le jeu
-     *
-     * @return Retourne la séparation
-     */
-    public String separationBoardGame() {
-        return "-----".repeat(size);
     }
 
     /**
