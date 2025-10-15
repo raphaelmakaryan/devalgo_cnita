@@ -1,22 +1,16 @@
 package fr.raphaelmakaryan.bibliotheque.view;
 
+import fr.raphaelmakaryan.bibliotheque.configurations.InteractionUtilisateur;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameView implements MenuObserver {
     public List<MenuObserver> observers = new ArrayList<>();
 
-    /**
-     * Fonction d'affichage dans la console à la ligne
-     *
-     * @param message Message a envoyé
-     */
-    public void println(String message) {
-        System.out.println(message);
-    }
-
     @Override
-    public void onLeaveGame(String message) {
-        System.out.println(message);
+    public void onLeaveGame(InteractionUtilisateur interactionUtilisateur, String message) {
+        interactionUtilisateur.inputMessage(message);
     }
 }

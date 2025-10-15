@@ -1,22 +1,28 @@
 package fr.raphaelmakaryan.bibliotheque.pertinent;
 
 import com.mongodb.client.MongoDatabase;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public interface Persistence {
-    String connectionString = "mongodb+srv://raph:ZtpI0vAe2RoDg3AQ@campusnumerique.8msqkrp.mongodb.net/?retryWrites=true&w=majority&appName=campusnumerique";
+    Dotenv dotenv = Dotenv.configure().directory("src/main/java/fr/raphaelmakaryan/bibliotheque")
+            .filename(".env")
+            .load();
+    String connectionString = dotenv.get("DATABASE_URL");
+
     MongoDatabase dbConnection();
 
     String dbCreateUser(MongoDatabase database, String type, String place, String symbole);
 
     String dbCreateGame(MongoDatabase database, String mode, String game, int taille, int jetonVictoire, String player1, String player2);
 
-    void dbUpdateUser(MongoDatabase database, String userId);
+    void dbUpdateUser(MongoDatabase database, GameModele game, String mode);
 
-    void dbUpdateGame(MongoDatabase database, String gameId, String symbole, int colonne, int row);
+    void dbUpdateGame(MongoDatabase database, String gameId, String symbole, int colonne, int row, String mode);
 
-    void dbUpdateGameState(MongoDatabase database, String gameId);
+    void dbUpdateGameState(MongoDatabase database, String gameId, String mode);
 
-    void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerId);
+    void dbUpdateGameTurnPlayer(MongoDatabase database, String gameId, String playerId, String mode);
 
     String dbGetGame(MongoDatabase database);
 
