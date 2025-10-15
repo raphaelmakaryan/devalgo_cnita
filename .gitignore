@@ -38,3 +38,4 @@ build/*
 build
 /build/
 out
+.env

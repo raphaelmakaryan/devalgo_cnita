@@ -159,20 +159,20 @@ public class GameModele implements GameModeleInterface {
     public int customGameSize() {
         boolean canLeave = false;
         while (!canLeave) {
-            String sizeUser = interactionUtilisateur.userInterfaceMessage("Quelle taille de plateau de jeu voulez-vous ?");
+            String sizeUser = interactionUtilisateur.inputInterface("Quelle taille de plateau de jeu voulez-vous ?");
             if (sizeUser == null) {
-                gameView.println("Veuillez donner une valeur pour la taille de votre plateau !");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez donner une valeur pour la taille de votre plateau !");
             } else {
                 try {
                     int sizeGame = Integer.parseInt(sizeUser);
                     if (sizeGame < 1) {
-                        gameView.println("Veuillez donner une valeur supérieur a 1 !");
+                        GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez donner une valeur supérieur a 1 !");
                     } else {
                         canLeave = true;
                         return sizeGame;
                     }
                 } catch (Exception e) {
-                    gameView.println("Les valeurs que vous avez définis ne sont pas des nombres !");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Les valeurs que vous avez définis ne sont pas des nombres !");
                 }
             }
         }
@@ -188,22 +188,22 @@ public class GameModele implements GameModeleInterface {
     public int customGameVictory(int sizeGame) {
         boolean canLeave = false;
         while (!canLeave) {
-            String victoryUser = interactionUtilisateur.userInterfaceMessage("Combien de jetons faudrait-il aligner pour avoir une victoire ?");
+            String victoryUser = interactionUtilisateur.inputInterface("Combien de jetons faudrait-il aligner pour avoir une victoire ?");
             if (victoryUser == null) {
-                gameView.println("Veuillez donner une valeur pour le nombre de jetons pour avoir une victoire !");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez donner une valeur pour le nombre de jetons pour avoir une victoire !");
             } else {
                 try {
                     int victoryGame = Integer.parseInt(victoryUser);
                     if (sizeGame < 1) {
-                        gameView.println("Veuillez donner une valeur supérieur a 1 !");
+                        GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez donner une valeur supérieur a 1 !");
                     } else if (sizeGame < victoryGame) {
-                        gameView.println("Veuillez spécifier le nombre de jetons pour la victoire qui est inférieur à la taille du plateau que vous avez défini a " + sizeGame + " !");
+                        GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez spécifier le nombre de jetons pour la victoire qui est inférieur à la taille du plateau que vous avez défini a " + sizeGame + " !");
                     } else {
                         canLeave = true;
                         return victoryGame;
                     }
                 } catch (Exception e) {
-                    gameView.println("Les valeurs que vous avez définis ne sont pas des nombres !");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Les valeurs que vous avez définis ne sont pas des nombres !");
                 }
             }
         }
@@ -238,16 +238,16 @@ public class GameModele implements GameModeleInterface {
             try {
                 valueUser[i] = Integer.parseInt(splitValeur[i]);
             } catch (Exception e) {
-                gameView.println("Veuillez récrire des chiffres avec un espace !");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez récrire des chiffres avec un espace !");
                 return false;
             }
         }
         if (choice.length() != 3) {
-            gameView.println("Veuillez récrire !");
+            GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez récrire !");
             return false;
         }
         if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
-            gameView.println("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
+            GameModeleInterface.interactionUtilisateur.inputMessage("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
             return false;
         }
         return true;
@@ -265,11 +265,11 @@ public class GameModele implements GameModeleInterface {
         if (type.equals("player")) {
             Player player = getPlayerPlayNow();
             board[ligne][colonne].setRepresentation(player.getRepresentation());
-            gameSerialization.dbUpdateGame(database, idGameDatabase, player.getRepresentation(), colonne, ligne);
+            gameSerialization.dbUpdateGame(database, idGameDatabase, player.getRepresentation(), colonne, ligne, mode);
         } else if (type.equals("bot")) {
             ArtificialPlayer bot = getBotPlayNow();
             board[ligne][colonne].setRepresentation(bot.getRepresentation());
-            gameSerialization.dbUpdateGame(database, idGameDatabase, bot.getRepresentation(), colonne, ligne);
+            gameSerialization.dbUpdateGame(database, idGameDatabase, bot.getRepresentation(), colonne, ligne, mode);
         }
     }
 
@@ -467,7 +467,8 @@ public class GameModele implements GameModeleInterface {
         if (userDatabase.length != 0) {
             for (String[] strings : userDatabase) {
                 if (strings[2].contains("J")) {
-                    int valueUserDbb = Integer.parseInt(strings[2].substring(1));
+                    int valueUserDbb = Integer.parseInt(strings[2].substring(7));
+
                     switch (valueUserDbb) {
                         case 1:
                             player1 = new Player(this, 1, strings[0]);
@@ -479,7 +480,7 @@ public class GameModele implements GameModeleInterface {
                             players.add(strings[1]);
                     }
                 } else if (strings[2].contains("B")) {
-                    int valueUserDbb = Integer.parseInt(strings[2].substring(1));
+                    int valueUserDbb = Integer.parseInt(strings[2].substring(4));
                     switch (valueUserDbb) {
                         case 1:
                             bot1 = new ArtificialPlayer(this, 1, strings[0]);

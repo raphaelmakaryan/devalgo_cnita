@@ -5,6 +5,7 @@ import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 import fr.raphaelmakaryan.bibliotheque.view.MenuObservable;
@@ -21,13 +22,22 @@ public class InteractionUtilisateur implements MenuObservable {
     }
 
     /**
-     * Affiche la boite de dialogue
+     * Affiche la boite de dialogue avec les boutons
      *
      * @param message Message à afficher
      * @return Retourne la valeur récupérée
      */
-    public String userInterfaceMessage(String message) {
+    public String inputInterface(String message) {
         return JOptionPane.showInputDialog(message);
+    }
+
+    /**
+     * Affiche la boite de dialogue avec juste un message
+     *
+     * @param message Message à afficher
+     */
+    public void inputMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
     }
 
     /**
@@ -50,23 +60,23 @@ public class InteractionUtilisateur implements MenuObservable {
 
         return switch (choix) {
             case 0 -> {
-                gameView.println("TicTacToe sélectionné");
+                GameModeleInterface.interactionUtilisateur.inputMessage("TicTacToe sélectionné");
                 yield "tictactoe";
             }
             case 1 -> {
-                gameView.println("Puissance 4 sélectionné");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Puissance 4 sélectionné");
                 yield "p4";
             }
             case 2 -> {
-                gameView.println("Gomoku sélectionné");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Gomoku sélectionné");
                 yield "gomoku";
             }
             case 3 -> {
-                gameView.println("Jeu personnalisé sélectionné");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Jeu personnalisé sélectionné");
                 yield "perso";
             }
             case 4 -> {
-                gameView.println("Charger une partie sélectionné");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Charger une partie sélectionné");
                 yield "loadGame";
             }
             default -> {
@@ -101,19 +111,19 @@ public class InteractionUtilisateur implements MenuObservable {
             switch (choix) {
                 case 0:
                     // Mode 1v1 Humain donc 10 (J1) et 11 (J2)
-                    gameView.println("Mode 1v1 Humain sélectionné");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Humain sélectionné");
                     creationElementImportant(modele, "tictactoe", "JvJ");
                     gameController.initializePlayers(new int[]{10, 11}, new String[][]{});
                     break;
                 case 1:
                     // Mode 1v1 Contre Bot donc 10 et 20 (B1)
-                    gameView.println("Mode 1v1 Contre Bot sélectionné");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Contre Bot sélectionné");
                     creationElementImportant(modele, "tictactoe", "JvB");
                     gameController.initializePlayers(new int[]{10, 20}, new String[][]{});
                     break;
                 case 2:
                     // Mode 1v1 Bots 20 et 21 (B2)
-                    gameView.println("Mode 1v1 Bots sélectionné");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Bots sélectionné");
                     creationElementImportant(modele, "tictactoe", "BvB");
                     gameController.initializePlayers(new int[]{20, 21}, new String[][]{});
                     break;
@@ -124,19 +134,19 @@ public class InteractionUtilisateur implements MenuObservable {
         } else {
             switch (mode) {
                 case "JvJ":
-                    gameView.println("Mode 1v1 Humain sélectionné");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Humain sélectionné");
                     creationElementImportant(modele, "tictactoe", "JvJ");
                     gameController.initializePlayers(new int[]{10, 20}, usersDatabase);
                     break;
 
                 case "JvB":
-                    gameView.println("Mode 1v1 Contre Bot sélectionné");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Contre Bot sélectionné");
                     creationElementImportant(modele, "tictactoe", "JvB");
                     gameController.initializePlayers(new int[]{10, 20}, usersDatabase);
                     break;
 
                 case "BvB":
-                    gameView.println("Mode 1v1 Bots sélectionné");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Bots sélectionné");
                     creationElementImportant(modele, "tictactoe", "BvB");
                     gameController.initializePlayers(new int[]{20, 21}, usersDatabase);
                     break;
@@ -153,7 +163,7 @@ public class InteractionUtilisateur implements MenuObservable {
     public void chooseGameP4(Puissance4Controller gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
         creationElementImportant(modele, "p4", "JvJ");
-        gameView.println("Mode 1v1 Humain");
+        GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Humain");
         gameController.initializePlayers(new int[]{10, 11}, usersDatabase);
     }
 
@@ -166,7 +176,7 @@ public class InteractionUtilisateur implements MenuObservable {
     public void chooseGameGomoku(GomokuController gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
         creationElementImportant(modele, "gomoku", "JvJ");
-        gameView.println("Mode 1v1 Humain");
+        GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Humain");
         gameController.initializePlayers(new int[]{10, 11}, usersDatabase);
     }
 
@@ -178,7 +188,7 @@ public class InteractionUtilisateur implements MenuObservable {
      */
     public void chooseGameCustomGame(CustomGameController gameController, String[][] usersDatabase) {
         GameModele modele = gameController.getGame();
-        gameView.println("Mode 1v1 Humain");
+        GameModeleInterface.interactionUtilisateur.inputMessage("Mode 1v1 Humain");
         creationElementImportant(modele, "perso", "JvJ");
         gameController.initializePlayers(new int[]{10, 11}, usersDatabase);
     }
@@ -210,7 +220,7 @@ public class InteractionUtilisateur implements MenuObservable {
     @Override
     public void notifyLeaveGame(String message) {
         for (MenuObserver observer : gameView.observers) {
-            observer.onLeaveGame(message);
+            observer.onLeaveGame(GameModeleInterface.interactionUtilisateur, message);
         }
     }
 }

@@ -45,7 +45,7 @@ public abstract class GameController extends DisplayBoard {
                 game.board
         );
         if (game.whoPlayNow.contains("J")) {
-            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.userInterfaceMessage("Quelle case souhaiteriez-vous capturer " + game.whoPlayNow + " ? (exemple : '1 1')"), displayBoard);
+            getMoveFromPlayer(GameModeleInterface.interactionUtilisateur.inputInterface("Quelle case souhaiteriez-vous capturer " + game.whoPlayNow + " ? (exemple : '1 1')"), displayBoard);
         } else {
             getMoveFromPlayer("bot", displayBoard);
         }
@@ -54,12 +54,20 @@ public abstract class GameController extends DisplayBoard {
     /**
      * Deuxieme fonction de vérification avant modification du plateau
      *
-     * @param choice Choix du joueur
+     * @param choice       Choix du joueur
+     * @param displayBoard Plateau d'affichage
      */
     public void getMoveFromPlayer(String choice, DisplayBoard displayBoard) {
-        displayBoard.dispose();
+        // Ferme la page du jeu
+        if (game.getMode().equals("BvB") || game.getMode().equals("JvB")) {
+            GameModeleInterface.tools.setTimeout(1);
+            displayBoard.dispose();
+        } else {
+            displayBoard.dispose();
+        }
+        //Si y'a rien fermeture du jeu
         if (choice == null) {
-            GameModeleInterface.gameView.onLeaveGame("Vous avez décidé de fermer la page, fermeture du jeu.");
+            GameModeleInterface.gameView.onLeaveGame(GameModeleInterface.interactionUtilisateur, "Vous avez décidé de fermer la page, fermeture du jeu.");
             System.exit(0);
         }
         Cell[][] board = game.getBoard();
@@ -72,10 +80,10 @@ public abstract class GameController extends DisplayBoard {
                     valueUser = game.returnValueUser(choice);
                 }
                 if (verificationOutside(valueUser)) {
-                    GameModeleInterface.gameView.println("Vous êtes sorti du tableau !");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Vous êtes sorti du tableau !");
                     display();
                 } else if (game.verificationHavePlayer(board, valueUser)) {
-                    GameModeleInterface.gameView.println("Vous avez choisi une case deja prise !");
+                    GameModeleInterface.interactionUtilisateur.inputMessage("Vous avez choisi une case deja prise !");
                     display();
                 } else {
                     handlePlayerMove(valueUser[0], valueUser[1], "player");
@@ -87,7 +95,7 @@ public abstract class GameController extends DisplayBoard {
             Minimax minimax = new Minimax(game);
             int[] best = minimax.findBestMove();
             if (game.verificationHavePlayer(board, best)) {
-                GameModeleInterface.gameView.println("Vous avez choisi une case deja prise !");
+                GameModeleInterface.interactionUtilisateur.inputMessage("Vous avez choisi une case deja prise !");
                 display();
             } else if (best[0] != -1) {
                 handlePlayerMove(best[0], best[1], "bot");
@@ -167,15 +175,15 @@ public abstract class GameController extends DisplayBoard {
             if (game.checkWin()) {
                 handleEvent("PartieTerminée");
                 game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase, game.getMode());
-                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase(), game.getMode());
-                System.out.println("GG " + game.whoPlayNow);
+                game.gameSerialization.dbUpdateUser(game.database, game, game.getMode());
+                GameModeleInterface.interactionUtilisateur.inputMessage("GG " + game.whoPlayNow);
                 System.exit(0);
             }
             if (game.checkCellFilled() == (game.size * game.size)) {
                 handleEvent("PartieTerminée");
                 game.gameSerialization.dbUpdateGameState(game.database, game.idGameDatabase, game.getMode());
-                game.gameSerialization.dbUpdateUser(game.database, game.getPlayerPlayNow().getIdDatabase(), game.getMode());
-                System.out.println("Match nul !");
+                game.gameSerialization.dbUpdateUser(game.database, game, game.getMode());
+                GameModeleInterface.interactionUtilisateur.inputMessage("Match nul !");
                 System.exit(0);
             }
         }
