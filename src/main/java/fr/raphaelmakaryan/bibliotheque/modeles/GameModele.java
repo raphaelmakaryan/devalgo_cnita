@@ -242,7 +242,8 @@ public class GameModele implements GameModeleInterface {
                 return false;
             }
         }
-        if (choice.length() != 3) {
+        if (!verificationSizeChoice(choice)) {
+
             GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez récrire !");
             return false;
         }
@@ -252,6 +253,23 @@ public class GameModele implements GameModeleInterface {
         }
         return true;
     }
+
+    /**
+     * Fonction de vérification à laquelle selon la taille du tableau la valeur à écrire diffère
+     *
+     * @param choice Choix écrit par l'user
+     * @return Vrai/Faux
+     */
+    public boolean verificationSizeChoice(String choice) {
+        int sizeVerification = Integer.parseInt(String.valueOf(String.valueOf(size).length()));
+        int calcul = (sizeVerification + sizeVerification + 1);
+        if (calcul != choice.length() && choice.length() > calcul) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     /**
      * Met a jour le plateau
