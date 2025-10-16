@@ -1,6 +1,4 @@
-package fr.raphaelmakaryan.bibliotheque.configurations;
-
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 public class ArtificialPlayer {
     public String representation;

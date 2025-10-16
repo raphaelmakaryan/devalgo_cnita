@@ -1,7 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import com.mongodb.client.MongoDatabase;
-import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.controllers.*;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 
@@ -243,12 +242,11 @@ public class GameModele implements GameModeleInterface {
             }
         }
         if (!verificationSizeChoice(choice)) {
-
             GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez récrire !");
             return false;
         }
         if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
-            GameModeleInterface.interactionUtilisateur.inputMessage("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
+            GameModeleInterface.interactionUtilisateur.inputMessage("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a " + size + " !");
             return false;
         }
         return true;
