@@ -260,8 +260,9 @@ public class GameModele implements GameModeleInterface {
      */
     public boolean verificationSizeChoice(String choice) {
         int sizeVerification = Integer.parseInt(String.valueOf(String.valueOf(size).length()));
-        int calcul = (sizeVerification + sizeVerification + 1);
-        if (calcul != choice.length() && choice.length() > calcul) {
+        int calculVerification = (sizeVerification * 2) + 1;
+        // Si le calcul est différent de la longueur du choix ET si la longueur du choix est supérieure au calcul
+        if (calculVerification != choice.length() && choice.length() > calculVerification) {
             return false;
         } else {
             return true;
