@@ -1,24 +1,22 @@
-package fr.raphaelmakaryan.bibliotheque.modeles;
+package fr.raphaelmakaryan.bibliotheque.models;
 
-public class ArtificialPlayer {
+public class Player {
     public String representation;
     public String idDatabase;
 
     /**
-     * Création d'un joueur "bot"
+     * Création d'un joueur "joueur"
      *
      * @param gameModele Le jeu
      * @param value      Valeur de la place
      */
-    public ArtificialPlayer(GameModele gameModele, int value, String idDatabase) {
-        if (gameModele.mode.equals("JvB")) {
-            this.representation = gameModele.listRepresentation[1];
+    public Player(GameModele gameModele, int value, String idDatabase) {
+        if (gameModele.getMode().equals("JvB")) {
+            this.representation = gameModele.listRepresentation[0];
         } else {
-            if (value == 1) {
-                this.representation = gameModele.listRepresentation[0];
-            } else {
-                this.representation = gameModele.listRepresentation[1];
-            }
+            this.representation = (value == 1)
+                    ? gameModele.listRepresentation[0]
+                    : gameModele.listRepresentation[1];
         }
         this.idDatabase = idDatabase;
     }
@@ -33,7 +31,7 @@ public class ArtificialPlayer {
     }
 
     /**
-     * Récupérer l'id du bot dans la base de donnée
+     * Récupérer l'id de l'user dans la base de donnée
      * @return L'id
      */
     public String getIdDatabase() {
@@ -41,7 +39,7 @@ public class ArtificialPlayer {
     }
 
     /**
-     * Insert l'id du bot de la base de donnée
+     * Insert l'id de l'user de la base de donnée
      * @param idDatabase Id
      */
     public void setIdDatabase(String idDatabase) {
@@ -49,7 +47,7 @@ public class ArtificialPlayer {
     }
 
     /**
-     * Ajoute la representation du bot
+     * Ajoute la representation de l'user
      * @param representation Symbole
      */
     public void setRepresentation(String representation) {
@@ -58,8 +56,6 @@ public class ArtificialPlayer {
 
     @Override
     public String toString() {
-        return "ArtificialPlayer{" +
-                "representation='" + representation + '\'' +
-                '}';
+        return "Player{" + "representation='" + representation + '\'' + '}';
     }
 }

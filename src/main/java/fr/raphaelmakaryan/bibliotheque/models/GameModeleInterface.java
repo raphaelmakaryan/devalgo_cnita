@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.bibliotheque.modeles;
+package fr.raphaelmakaryan.bibliotheque.models;
 
 import fr.raphaelmakaryan.bibliotheque.Tools;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;

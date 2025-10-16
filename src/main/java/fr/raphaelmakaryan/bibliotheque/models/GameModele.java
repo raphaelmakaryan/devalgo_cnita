@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.bibliotheque.modeles;
+package fr.raphaelmakaryan.bibliotheque.models;
 
 import com.mongodb.client.MongoDatabase;
 import fr.raphaelmakaryan.bibliotheque.controllers.*;

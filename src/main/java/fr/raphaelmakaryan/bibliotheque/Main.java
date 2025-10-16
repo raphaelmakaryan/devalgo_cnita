@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque;
 
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.models.GameModele;
 
 public class Main {
     public static void main(String[] args) {

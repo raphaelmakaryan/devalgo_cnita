@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.controllers;
 
-import fr.raphaelmakaryan.bibliotheque.modeles.Cell;
+import fr.raphaelmakaryan.bibliotheque.models.Cell;
 
 import javax.swing.*;
 import java.awt.*;

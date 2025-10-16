@@ -1,7 +1,7 @@
 package fr.raphaelmakaryan.bibliotheque.pertinent;
 
 import com.mongodb.client.MongoDatabase;
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.models.GameModele;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public interface Persistence {

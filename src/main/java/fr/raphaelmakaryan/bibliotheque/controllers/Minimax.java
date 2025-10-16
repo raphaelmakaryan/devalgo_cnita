@@ -1,7 +1,7 @@
 package fr.raphaelmakaryan.bibliotheque.controllers;
 
-import fr.raphaelmakaryan.bibliotheque.modeles.Cell;
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.models.Cell;
+import fr.raphaelmakaryan.bibliotheque.models.GameModele;
 
 public class Minimax {
     protected GameModele game;

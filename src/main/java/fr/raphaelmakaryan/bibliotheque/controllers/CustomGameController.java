@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.controllers;
 
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
+import fr.raphaelmakaryan.bibliotheque.models.GameModele;
 
 public class CustomGameController extends GameController {
     public CustomGameController(GameModele game) {

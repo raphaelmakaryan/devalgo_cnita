@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.bibliotheque.modeles;
+package fr.raphaelmakaryan.bibliotheque.models;
 
 import fr.raphaelmakaryan.bibliotheque.controllers.CustomGameController;
 import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;

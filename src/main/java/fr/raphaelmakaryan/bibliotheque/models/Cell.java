@@ -1,4 +1,4 @@
-package fr.raphaelmakaryan.bibliotheque.modeles;
+package fr.raphaelmakaryan.bibliotheque.models;
 
 public class Cell {
     private String representation = "   ";
