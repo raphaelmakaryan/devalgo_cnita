@@ -1,7 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import com.mongodb.client.MongoDatabase;
-import fr.raphaelmakaryan.bibliotheque.configurations.*;
 import fr.raphaelmakaryan.bibliotheque.controllers.*;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 
@@ -242,16 +241,34 @@ public class GameModele implements GameModeleInterface {
                 return false;
             }
         }
-        if (choice.length() != 3) {
+        if (!verificationSizeChoice(choice)) {
             GameModeleInterface.interactionUtilisateur.inputMessage("Veuillez récrire !");
             return false;
         }
         if (valueUser[0] < 0 || valueUser[0] > size || valueUser[1] < 0 || valueUser[1] > size) {
-            GameModeleInterface.interactionUtilisateur.inputMessage("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a" + size + " !");
+            GameModeleInterface.interactionUtilisateur.inputMessage("Une des valeur des cases définis et sois inférieur a 0 ou supérieur a " + size + " !");
             return false;
         }
         return true;
     }
+
+    /**
+     * Fonction de vérification à laquelle selon la taille du tableau la valeur à écrire diffère
+     *
+     * @param choice Choix écrit par l'user
+     * @return Vrai/Faux
+     */
+    public boolean verificationSizeChoice(String choice) {
+        int sizeVerification = Integer.parseInt(String.valueOf(String.valueOf(size).length()));
+        int calculVerification = (sizeVerification * 2) + 1;
+        // Si le calcul est différent de la longueur du choix ET si la longueur du choix est supérieure au calcul
+        if (calculVerification != choice.length() && choice.length() > calculVerification) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     /**
      * Met a jour le plateau

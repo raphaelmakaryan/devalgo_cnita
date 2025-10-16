@@ -4,7 +4,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.InsertOneResult;
-import fr.raphaelmakaryan.bibliotheque.configurations.Cell;
+import fr.raphaelmakaryan.bibliotheque.modeles.Cell;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
 import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
 import org.bson.Document;

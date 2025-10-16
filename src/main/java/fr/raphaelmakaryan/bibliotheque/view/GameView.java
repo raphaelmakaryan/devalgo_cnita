@@ -1,6 +1,6 @@
 package fr.raphaelmakaryan.bibliotheque.view;
 
-import fr.raphaelmakaryan.bibliotheque.configurations.InteractionUtilisateur;
+import fr.raphaelmakaryan.bibliotheque.modeles.InteractionUtilisateur;
 
 import java.util.ArrayList;
 import java.util.List;

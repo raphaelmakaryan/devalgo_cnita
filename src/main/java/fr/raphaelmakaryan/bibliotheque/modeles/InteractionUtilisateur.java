@@ -1,11 +1,9 @@
-package fr.raphaelmakaryan.bibliotheque.configurations;
+package fr.raphaelmakaryan.bibliotheque.modeles;
 
 import fr.raphaelmakaryan.bibliotheque.controllers.CustomGameController;
 import fr.raphaelmakaryan.bibliotheque.controllers.GomokuController;
 import fr.raphaelmakaryan.bibliotheque.controllers.Puissance4Controller;
 import fr.raphaelmakaryan.bibliotheque.controllers.TicTacToeController;
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModele;
-import fr.raphaelmakaryan.bibliotheque.modeles.GameModeleInterface;
 import fr.raphaelmakaryan.bibliotheque.pertinent.GameSerialization;
 import fr.raphaelmakaryan.bibliotheque.view.GameView;
 import fr.raphaelmakaryan.bibliotheque.view.MenuObservable;
